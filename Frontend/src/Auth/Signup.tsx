@@ -76,9 +76,6 @@ const Signup = () => {
             console.log(err)
         }
     }
-    const HandleClick = () => {
-        navigate("/login")
-    }
 
     return (
         <div className="ss-signup">
