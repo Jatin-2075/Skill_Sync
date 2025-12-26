@@ -1,0 +1,92 @@
+.ss-login {
+  min-height: 100vh;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.ss-login .login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(0, 245, 255, 0.12), transparent 40%),
+    radial-gradient(circle at 70% 80%, rgba(168, 85, 247, 0.15), transparent 45%),
+    linear-gradient(135deg, #020617, #05010a);
+}
+
+.ss-login .login-card {
+  width: 360px;
+  padding: 28px;
+  border-radius: 14px;
+
+  background: rgba(18, 18, 26, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.ss-login .login-header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.ss-login .brand {
+  font-size: 30px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.ss-login .subtitle {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #8a8f98;
+}
+
+.ss-login .login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ss-login .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ss-login .input-group label {
+  font-size: 12px;
+  color: #9aa0aa;
+}
+
+.ss-login .input-group input {
+  padding: 10px 12px;
+  border-radius: 8px;
+
+  background: #0f1117;
+  color: #ffffff;
+
+  border: 1px solid #1f2430;
+  outline: none;
+}
+
+.ss-login .input-group input::placeholder {
+  color: #5f6673;
+}
+
+.ss-login .input-group input:focus {
+  border-color: #00f5ff;
+}
+
+.ss-login .btn.primary {
+  margin-top: 8px;
+  padding: 11px;
+  border-radius: 10px;
+
+  background: linear-gradient(90deg, #00e5ff, #6a5cff);
+  color: #000;
+
+  font-weight: 600;
+  cursor: pointer;
+}
