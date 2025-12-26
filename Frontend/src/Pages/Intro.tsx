@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import '../Style/intro.css'
+import Footer from '../Components/Footer';
 
 const Intro = () => {
 
@@ -64,6 +65,7 @@ const Intro = () => {
                     </p>
                 </div>
             </section>
+            <Footer />
         </div>
     );
 };
