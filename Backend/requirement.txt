@@ -1,4 +1,0 @@
-django
-Pillow
-channel
-Rest Framework

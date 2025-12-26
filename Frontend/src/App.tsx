@@ -2,28 +2,32 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 
-import Login from "./Pages/Auth/Login";
-import Dashboard from "./Pages/Dashboard";
-import Signup from "./Pages/Auth/Signup";
-import Create_Profile from "./Pages/Auth/Create_Profile";
+import Login from "./Auth/Login";
+import Signup from "./Auth/Signup";
+import Create_Profile from "./Auth/Create_Profile";
 
+import Intro from "./Pages/Intro";
+import Dashboard from "./Pages/Dashboard";
+import MainLayout from "./Components/Mainlayout";
 
 const App:React.FC = () =>{
     return (
         <Routes>
 
             {/* Auth system files  */}
-            <Route path="/Login" element={<> <Login/> </>} />
-            <Route path="/Signup" element={<> <Signup/> </>} />
-            <Route path="/Create" element={<> <Create_Profile/> </>} />
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/signup" element={<Signup/>}/>
+            <Route path="/create" element={<Create_Profile/>} />
 
-            {/* Dashboard and other not useable */}
-            <Route path="/Dashboard" element={ <> <Dashboard/> </>} />
+            {/* Intro and other not useable */}
+            <Route path="/" element={<Intro/>}/>
 
             {/* Main Files Connection profile and other */}
-            
+            <Route element={<MainLayout/>} >
+            <Route path="/dashboard" element={<Dashboard/>}/>
+            </Route>
         </Routes>
     )
 }
 
-export default App;
+export default App;  
