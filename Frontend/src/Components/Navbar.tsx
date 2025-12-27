@@ -30,12 +30,10 @@ const Navbar = () => {
                     </NavLink>
                 ))}
             </div>
-
             <div>
                 <Profile />
             </div>
         </nav>
-
     );
 };
 
