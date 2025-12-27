@@ -3,7 +3,7 @@
 const Dashboard = () => {
     return (
         <div>
-            haalo
+            Chai mat peeyon
         </div>
     )
 }
