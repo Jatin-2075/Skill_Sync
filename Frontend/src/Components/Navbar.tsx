@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Book, BookHeart } from "lucide-react";
 
 import "../Style/navbar.css"
+import Profile from "./Profile/Profile";
 
 const Navbar = () => {
     const [width, setWidth] = useState<number>(0);
@@ -28,6 +29,10 @@ const Navbar = () => {
                         {width > 786 && <span className="nav-text">{name}</span>}
                     </NavLink>
                 ))}
+            </div>
+
+            <div>
+                <Profile />
             </div>
         </nav>
 
