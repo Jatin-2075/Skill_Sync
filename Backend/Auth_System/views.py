@@ -1,12 +1,14 @@
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
-from .models import Details
+from .models import Details, PersonalDetails, WorkDetails, StudentDetails
+from .serializers import StudentDetailsSerializers, WorkingProfileSerializers, PersonalDetailsSerializers
 import json
 
 @api_view(["POST"])
-def Signup(request):
+def FunctionSignup(request):
 
     data = request.data
     username = data.get("username")
@@ -33,3 +35,25 @@ def Signup(request):
     return JsonResponse({'success': True, 'msg': 'Account Created'})
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def FunctionPersonalDetails(request):
+    details, _= Details.objects.get_or_create(user=request.user)
+
+    personal, _= PersonalDetails.objects.get_or_create(details=details)
+
+    serializer = PersonalDetailsSerializers(
+        personal,
+        data = request.data
+    )
+    if serializer.is_valid():
+        serializer.save()
+        return JsonResponse({
+            "success" : True,
+            "uuid" : str(details.uuid),
+            "msg" : "done",
+        },
+            status = status.HTTP_200_OK,
+        )
+
+    return JsonResponse({"success":False, "msg":"details err occured"})

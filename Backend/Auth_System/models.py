@@ -17,12 +17,13 @@ class PersonalDetails(models.Model):
         on_delete=models.CASCADE,
         related_name="personal"
     )
-    Name = models.CharField(max_length=100)
-    PortfolioLink = models.URLField(blank=True, null=True)
-    Country = models.CharField(max_length=100)
-    Location = models.CharField(max_length=100)
-    CurrentStatus = models.CharField(max_length=100)
-    PreferredRole = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    contactemail = models.CharField(max_length=100)
+    portfolioLink = models.URLField(blank=True, null=True)
+    country = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    currentStatus = models.CharField(max_length=100)
+    preferredRole = models.CharField(max_length=100)
 
     def __str__(self):
         return self.Name
@@ -34,10 +35,9 @@ class WorkDetails(models.Model):
         on_delete=models.CASCADE,
         related_name="professional"
     )
-    YearExperience = models.PositiveIntegerField()
-    WorkingProfile = models.CharField(max_length=100)
-    Description = models.CharField(max_length=200)
-    Company = models.CharField(max_length=100)
+    yearexperience = models.PositiveIntegerField()
+    workingprofile = models.CharField(max_length=100)
+    company = models.CharField(max_length=100)
 
     def __str__(self):
         return f"{self.WorkingProfile} years"
@@ -49,10 +49,24 @@ class StudentDetails(models.Model):
         on_delete=models.CASCADE,
         related_name="student"
     )
-    Status = models.CharField(max_length=100)
-    Field = models.CharField(max_length=100)
-    Subject = models.CharField(max_length=100)
-    College = models.CharField(max_length=100)
+    level = models.CharField(max_length=100)
+    field = models.CharField(max_length=100)
+    subject = models.CharField(max_length=100)
+    college = models.CharField(max_length=100)
 
     def __str__(self):
         return self.Status
+
+
+class PlatfromUsernameDetails(models.Model):
+    detials = models.OneToOneField(
+        Details,
+        on_delete=models.CASCADE,
+        related_name="username"
+    )
+    codeforces = models.CharField(max_length=100)
+    github = models.CharField(max_length=100)
+    stackoverflow = models.CharField(max_length=100)
+
+    def __str__(self):
+        return "DONE"
