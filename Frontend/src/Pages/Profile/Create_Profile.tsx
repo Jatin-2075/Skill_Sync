@@ -3,6 +3,7 @@ import { API } from "../../config/Api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import "../../Style/createprofile.css"
 
 type PersonalDetails = {
     name: string;
@@ -340,3 +341,4 @@ const Create_Profile = () => {
     )
 }
 export default Create_Profile;
+
