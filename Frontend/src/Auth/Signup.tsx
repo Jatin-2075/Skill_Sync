@@ -64,7 +64,8 @@ const Signup = () => {
                 console.log(datalogin);
 
                 if (access) {
-                    navigate("/dashboard")
+                    
+                    navigate("/create")
                 }
 
                 else {

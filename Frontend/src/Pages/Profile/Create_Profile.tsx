@@ -1,443 +1,343 @@
+import React, { useState } from "react"
+import { API } from "../../config/Api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
-import React, { useState, useRef, ChangeEvent, KeyboardEvent } from 'react';
-import { X, Plus, Trash2 } from 'lucide-react';
-import '../Style/createprofile.css';
-type UserType = 'student' | 'freelancer' | 'professional' | '';
-
-interface Platform {
-  name: string;
-  url: string;
+type PersonalDetails = {
+    name: string;
+    contactmail: string;
+    portfolio: string;
+    country: string;
+    location: string;
 }
 
-interface FormData {
-  fullName: string;
-  email: string;
-  username: string;
-  city: string;
-  country: string;
-  userType: UserType;
-  university?: string;
-  degree?: string;
-  graduationYear?: number;
-  primaryService?: string;
-  freelancerExperience?: number;
-  projects?: string[];
-  currentRole?: string;
-  company?: string;
-  professionalExperience?: number;
-  skills: string[];
-  platforms: Platform[];
+type StudentDetails = {
+    currentstatus: string;
+    level: string,
+    college: string,
+    year: number,
+    passingyear: number,
+    branch : string,
 }
 
-export default function ProfileCreator(): JSX.Element {
-  const [userType, setUserType] = useState<UserType>('');
-  const [skills, setSkills] = useState<string[]>([]);
-  const [skillInput, setSkillInput] = useState<string>('');
-  const [platforms, setPlatforms] = useState<Platform[]>([]);
-  const [projects, setProjects] = useState<string[]>([]);
-  const skillInputRef = useRef<HTMLInputElement>(null);
+type WorkDetails = {
+    workingprofile: string;
+    preferredrole: string;
+    yearexpereience: number;
+    company: string;
+}
 
-  const handleSkillKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === 'Enter' && skillInput.trim()) {
-      e.preventDefault();
-      if (!skills.includes(skillInput.trim())) {
-        setSkills([...skills, skillInput.trim()]);
-      }
-      setSkillInput('');
+const Create_Profile = () => {
+
+    const navigate = useNavigate();
+
+    const [skills, setSkills] = useState<string[]>([]);
+    const [currentSkill, setCurrentSkill] = useState<string>("");
+    const [projects, setProjects] = useState<string[]>([""]);
+
+    const [personaldetails, setpersonaldetails] = useState<PersonalDetails>({
+        name: "",
+        contactmail: "",
+        country: "",
+        portfolio: "",
+        location: "",
+    })
+
+    const handlePersonal = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target
+        setpersonaldetails((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
     }
-  };
 
-  const removeSkill = (skillToRemove: string): void => {
-    setSkills(skills.filter(skill => skill !== skillToRemove));
-  };
+    const [studentdetails, setstudentdetails] = useState<StudentDetails>({
+        level: "",
+        college: "",
+        year: 0,
+        passingyear: 0,
+        branch : "",
+        currentstatus: "",
+    })
 
-  const addPlatform = (): void => {
-    setPlatforms([...platforms, { name: '', url: '' }]);
-  };
+    const handleStudent = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target
+        setstudentdetails((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
 
-  const updatePlatform = (index: number, field: keyof Platform, value: string): void => {
-    const updated = [...platforms];
-    updated[index][field] = value;
-    setPlatforms(updated);
-  };
+    const [workdetails, setworkdetails] = useState<WorkDetails>({
+        preferredrole : "",
+        yearexpereience: 0,
+        workingprofile: "",
+        company: "",
+    })
 
-  const removePlatform = (index: number): void => {
-    setPlatforms(platforms.filter((_, i) => i !== index));
-  };
+    const handleWork = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target
+        setworkdetails((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
 
-  const addProject = (): void => {
-    setProjects([...projects, '']);
-  };
-
-  const updateProject = (index: number, value: string): void => {
-    const updated = [...projects];
-    updated[index] = value;
-    setProjects(updated);
-  };
-
-  const removeProject = (index: number): void => {
-    setProjects(projects.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = (): void => {
-    const profileData: Partial<FormData> = {
-      userType,
-      skills,
-      platforms,
-      projects
+    const handleSkillKeyPress = (e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>) => {
+        if (e.key === 'Enter' && currentSkill.trim()) {
+            e.preventDefault();
+            if (!skills.includes(currentSkill.trim())) {
+                setSkills([...skills, currentSkill.trim()]);
+                setCurrentSkill('');
+            }
+        }
     };
-    console.log('Profile data:', profileData);
-    alert('Profile created successfully!');
-  };
 
-  const showSkills: boolean = userType === 'freelancer' || userType === 'professional';
+    const removeSkill = (skillToRemove: string) => {
+        setSkills(skills.filter(skill => skill !== skillToRemove));
+    };
 
-  return (
-    <div className="profile-creator">
-      <div className="profile-container">
-        <div className="profile-card">
-          {/* Header */}
-          <div className="profile-header">
-            <h1 className="profile-title">Create Your Profile</h1>
-            <p className="profile-subtitle">Join our community and showcase your expertise</p>
-          </div>
+    const addProject = () => {
+        if (projects.length < 3) {
+            setProjects([...projects, '']);
+        }
+    };
 
-          <div className="profile-content">
-            {/* Personal Details */}
-            <section className="profile-section">
-              <h2 className="section-title">
-                <div className="section-indicator"></div>
-                Personal Details
-              </h2>
-              
-              <div className="form-grid">
-                <div className="form-group">
-                  <label className="form-label">
-                    Full Name <span className="required">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="form-input"
-                    placeholder="John Doe"
-                  />
-                </div>
+    const removeProject = (index: number) => {
+        setProjects(projects.filter((_, i) => i !== index));
+    };
 
-                <div className="form-group">
-                  <label className="form-label">
-                    Email <span className="required">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    className="form-input"
-                    placeholder="john@example.com"
-                  />
-                </div>
 
-                <div className="form-group">
-                  <label className="form-label">
-                    Username <span className="required">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="form-input"
-                    placeholder="johndoe"
-                  />
-                </div>
+    const updateProject = (index: number, value: string) => {
+        const newProjects = [...projects];
+        newProjects[index] = value;
+        setProjects(newProjects);
+    };
 
-                <div className="form-group">
-                  <label className="form-label">
-                    City <span className="required">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="form-input"
-                    placeholder="San Francisco"
-                  />
-                </div>
+    const handleSubmit = async () => {
+        const formData = {
+            personal: personaldetails,
+            student: studentdetails,
+            work: workdetails,
+            skills: skills,
+            projects: projects.filter(p => p.trim() !== '')
+        };
 
-                <div className="form-group form-group-full">
-                  <label className="form-label">
-                    Country <span className="required">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="form-input"
-                    placeholder="United States"
-                  />
-                </div>
-              </div>
-            </section>
+        try {
+            const res = await API("POST", "/auth/personalsave/", formData)
+            const data = await res.json()
+            console.log(data.mg)
+            toast.info(data.mg);
+            if(res.ok){
+                navigate("/dashboard")
+            }
+            
+        } catch (err){
+            console.log(err)
+            toast.error('Something went wrong');
+        }
 
-            {/* User Type Selection */}
-            <section className="profile-section">
-              <h2 className="section-title">
-                <div className="section-indicator"></div>
-                I am a <span className="required">*</span>
-              </h2>
+        console.log('Form Data:', formData);
+        toast.success('Profile Created! Check console for data.');
 
-              <div className="user-type-grid">
-                {(['student', 'freelancer', 'professional'] as const).map((type) => (
-                  <div
-                    key={type}
-                    onClick={() => setUserType(type)}
-                    className={`user-type-card ${userType === type ? 'user-type-card-active' : ''}`}
-                  >
-                    <div className="radio-wrapper">
-                      <div className={`radio-dot ${userType === type ? 'radio-dot-active' : ''}`}>
-                        {userType === type && <div className="radio-dot-inner"></div>}
-                      </div>
-                      <span className={`user-type-label ${userType === type ? 'user-type-label-active' : ''}`}>
-                        {type}
-                      </span>
+    };
+
+
+    return (
+        <div>
+            <div className="bg-gradient"></div>
+            <div className="bg-grid"></div>
+            <div className="main-wrapper">
+                <div className="form-grid">
+                    <div className="child-container">
+                        <div className="personal-detail-card">
+                            <h1 className="card-heading">Personal Details</h1>
+                            <div className="input-row">
+                                <div className="general-option">
+                                    <label>Name</label>
+                                    <input name="name" onChange={handlePersonal} placeholder="ex. Joe" type="text" />
+                                </div>
+                                <div className="general-option">
+                                    <label>Email</label>
+                                    <input name="contactmail" onChange={handlePersonal} placeholder="ex. example@gmail.com" type="text" />
+                                </div>
+                            </div>
+                            <div className="input-row">
+                                <div className="general-option">
+                                    <label>Portfolio Link</label>
+                                    <input name="portfolio" onChange={handlePersonal} placeholder="ex. https://www.joesportfolio.com" type="text" />
+                                </div>
+                                <div className="general-option">
+                                    <label>Country</label>
+                                    <input name="country" onChange={handlePersonal} placeholder="ex. U.S.A" type="text" />
+                                </div>
+                            </div>
+                            <div className="input-row">
+                                <div className="general-option">
+                                    <label>City</label>
+                                    <input name="location" onChange={handlePersonal} placeholder="ex. California" type="text" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
 
-            {/* Student Section */}
-            {userType === 'student' && (
-              <section className="profile-section fade-in">
-                <h2 className="section-title">
-                  <div className="section-indicator"></div>
-                  Education
-                </h2>
-                
-                <div className="form-grid">
-                  <div className="form-group form-group-full">
-                    <label className="form-label">University / College</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="Stanford University"
-                    />
-                  </div>
+                    <div className="child-container">
+                        <div className="education-card">
+                            <h1>Education Details</h1>
+                            <div className="input-row">
+                                <div className="general-option">
+                                    <label>Current Status</label>
+                                    <select name="currentstatus" onChange={handleStudent}>
+                                        <option value="student">Student</option>
+                                        <option value="full-time">Working Professional</option>
+                                        <option value="intern">Intern</option>
+                                    </select>
+                                </div>
+                                <div className="general-option">
+                                    <label>Education Level</label>
+                                    <select name="level" onChange={handleStudent}>
+                                        <option value="bachelor">Bachelor's</option>
+                                        <option value="master">Master's</option>
+                                        <option value="phd">PhD</option>
+                                        <option value="diploma">Diploma</option>
+                                    </select>
+                                </div>
+                                <div className="general-option">
+                                    <label>College/University</label>
+                                    <input name="college" onChange={handleStudent}placeholder="Ex. IIT Mandi" type="text" />
+                                </div>
+                            </div>
+                            <div className="input-row">
+                                <div className="general-option">
+                                    <label>Year</label>
+                                    <input name="year" onChange={handleStudent} placeholder="ex. 2" type="number" />
+                                </div>
+                                <div className="general-option">
+                                    <label>Branch</label>
+                                    <input name="branch" onChange={handleStudent} placeholder="ex. Mathematics and Computing" type="text" />
+                                </div>
+                            </div>
+                            <div className="input-row">
+                                <div className="general-option">
+                                    <label>Passing Year</label>
+                                    <input name="passingyear" onChange={handleStudent} placeholder="ex. 2028" type="number" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Degree</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="Bachelor of Science"
-                    />
-                  </div>
+                    <div className="child-container">
+                        <div className="working-professional-card">
+                            <h1>Professional Details</h1>
+                            <div className="input-row">
+                                <div className="general-option">
+                                    <label>Preferred Role</label>
+                                    <input name="preferredrole" onChange={handleWork} placeholder="ex. Web Developer" type="text" />
+                                </div>
+                                <div className="general-option">
+                                    <label>Working Profile</label>
+                                    <select name="workingprofile" onChange={handleWork}>
+                                        <option value="part-time">Part Time</option>
+                                        <option value="full-time">Full Time</option>
+                                    
+                                    </select>
+                                </div>
+                                <div className="general-option">
+                                    <label>Company Name</label>
+                                    <input name="company" onChange={handleWork} placeholder="ex. Google" type="text" />
+                                </div>
+                            </div>
+                            <div className="input-row">
+                                <div className="general-option">
+                                    <label>Years of Experience</label>
+                                    <input name="yearexpereience" onChange={handleWork} placeholder="ex. 2" type="number" />
+                                </div>
+                            </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Graduation Year</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      placeholder="2024"
-                    />
-                  </div>
+                            <div className="project-container">
+                                <label>Project Links (Max 3)</label>
+                                {projects.map((project, index) => (
+                                    <div key={index} className="project-entry">
+                                        <input
+                                            placeholder={`Project ${index + 1} URL`}
+                                            type="text"
+                                            value={project}
+                                            name="project"
+                                            onChange={(e) => updateProject(index, e.target.value)}
+                                        />
+                                        {projects.length > 1 && (
+                                            <button
+                                                className="remove-project-btn"
+                                                onClick={() => removeProject(index)}
+                                            >
+                                                Remove
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                {projects.length < 3 && (
+                                    <button
+                                        className="add-project-btn"
+                                        onClick={addProject}
+                                    >
+                                        + Add Project
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className="skills-container">
+                                <label>Add Your Skills</label>
+                                <div className="skills-input-wrapper" onClick={() => document.getElementById('skillInput')?.focus()}>
+                                    <div className="skills-container-display">
+                                        {skills.map((skill, index) => (
+                                            <span key={index} className="skill-tag">
+                                                {skill}
+                                                <span className="remove-skill" onClick={() => removeSkill(skill)}> x </span>
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <input
+                                        id="skillInput"
+                                        className="skill-input"
+                                        placeholder="Type a skill and press Enter"
+                                        value={currentSkill}
+                                        onChange={(e) => setCurrentSkill(e.target.value)}
+                                        onKeyPress={handleSkillKeyPress}
+                                    />
+                                </div>
+                                <p className="help-text">Press Enter to add a skill. Click the x to remove.</p>
+                            </div>
+
+                            <div className="profile-section">
+                                <div className="input-row">
+                                    <div className="general-option">
+                                        <label>Codeforces Profile</label>
+                                        <input placeholder="ex. Joe12" type="text" />
+                                    </div>
+                                </div>
+                                <div className="input-row">
+                                    <div className="general-option">
+                                        <label>Github Profile</label>
+                                        <input placeholder="ex. Joe12" type="text" />
+                                    </div>
+                                </div>
+                                <div className="input-row">
+                                    <div className="general-option">
+                                        <label>StackOverflow Profile</label>
+                                        <input placeholder="ex. Joe12" type="text" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </section>
-            )}
 
-            {/* Freelancer Section */}
-            {userType === 'freelancer' && (
-              <section className="profile-section fade-in">
-                <h2 className="section-title">
-                  <div className="section-indicator"></div>
-                  Freelancer Details
-                </h2>
-                
-                <div className="form-grid form-grid-mb">
-                  <div className="form-group">
-                    <label className="form-label">Primary Service</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="Web Development"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Years of Experience</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      placeholder="5"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label form-label-mb">Project Portfolio</label>
-                  <div className="dynamic-list">
-                    {projects.map((project, index) => (
-                      <div key={index} className="dynamic-row">
-                        <input
-                          type="text"
-                          value={project}
-                          onChange={(e: ChangeEvent<HTMLInputElement>) => updateProject(index, e.target.value)}
-                          className="form-input dynamic-input"
-                          placeholder="Project name or URL"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeProject(index)}
-                          className="btn-remove"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={addProject}
-                    className="btn-add"
-                  >
-                    <Plus size={18} />
-                    Add Project
-                  </button>
-                </div>
-              </section>
-            )}
-
-            {/* Professional Section */}
-            {userType === 'professional' && (
-              <section className="profile-section fade-in">
-                <h2 className="section-title">
-                  <div className="section-indicator"></div>
-                  Professional Details
-                </h2>
-                
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label className="form-label">Current Role</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="Senior Software Engineer"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Company</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="Google"
-                    />
-                  </div>
-
-                  <div className="form-group form-group-full">
-                    <label className="form-label">Total Experience (Years)</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      placeholder="8"
-                    />
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* Skills Section */}
-            {showSkills && (
-              <section className="profile-section fade-in">
-                <h2 className="section-title">
-                  <div className="section-indicator"></div>
-                  Skills
-                </h2>
-                
-                <div className="form-group">
-                  <label className="form-label">Add your skills</label>
-                  <div className="skills-wrapper" onClick={() => skillInputRef.current?.focus()}>
-                    {skills.map((skill) => (
-                      <span key={skill} className="skill-tag">
-                        {skill}
-                        <button
-                          type="button"
-                          onClick={() => removeSkill(skill)}
-                          className="skill-remove"
-                        >
-                          <X size={14} />
-                        </button>
-                      </span>
-                    ))}
-                    <input
-                      ref={skillInputRef}
-                      type="text"
-                      value={skillInput}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => setSkillInput(e.target.value)}
-                      onKeyDown={handleSkillKeyDown}
-                      className="skill-input"
-                      placeholder={skills.length === 0 ? "Type a skill and press Enter" : ""}
-                    />
-                  </div>
-                  <p className="help-text">Press Enter to add a skill. Click the × to remove.</p>
-                </div>
-              </section>
-            )}
-
-            {/* Platform Links */}
-            <section className="profile-section">
-              <h2 className="section-title">
-                <div className="section-indicator"></div>
-                Platform Profiles
-              </h2>
-              
-              <p className="section-description">
-                Add links to your professional profiles (GitHub, LinkedIn, Portfolio, etc.)
-              </p>
-
-              <div className="dynamic-list">
-                {platforms.map((platform, index) => (
-                  <div key={index} className="platform-row">
-                    <input
-                      type="text"
-                      value={platform.name}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => updatePlatform(index, 'name', e.target.value)}
-                      className="form-input platform-name"
-                      placeholder="Platform name"
-                    />
-                    <input
-                      type="url"
-                      value={platform.url}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => updatePlatform(index, 'url', e.target.value)}
-                      className="form-input platform-url"
-                      placeholder="https://github.com/username"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removePlatform(index)}
-                      className="btn-remove"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={addPlatform}
-                className="btn-add"
-              >
-                <Plus size={18} />
-                Add Platform
-              </button>
-            </section>
-
-            {/* Submit Button */}
-            <button onClick={handleSubmit} className="btn-submit">
-              Create Profile
-            </button>
-          </div>
+                <button className="submit-button" onClick={handleSubmit}>
+                    Create Profile
+                </button>
+            </div>
         </div>
-
-        <p className="footer-text">
-          By creating a profile, you agree to our Terms of Service and Privacy Policy
-        </p>
-      </div>
-    </div>
-  );
+    )
 }
+export default Create_Profile;
