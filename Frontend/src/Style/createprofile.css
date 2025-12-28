@@ -174,11 +174,59 @@ input[type="number"]{
     border: 1px solid rgba(0, 255, 224, 0.2);
     border-radius: 12px;
     font-size: 0.95rem;
-    color: rgba(13, 57, 232, 0.909);
+    color: rgba(255, 255, 255, 0.909);
     background: rgba(255, 255, 255, 0.03);
     transition: all 0.3s ease;
     outline: none;
     font-family: inherit;
+}
+
+.option-class {
+    background: rgba(10, 10, 10, 0.95);
+    color: #00ffe0;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option-class:hover {
+    background: rgba(0, 255, 224, 0.15);
+    color: #ffffff;
+}
+
+.option-class:checked,
+.option-class:focus {
+    background: linear-gradient(135deg, #00ffe0, #7f5cff);
+    color: #000000;
+    font-weight: 600;
+}
+
+/* Style the select dropdown itself */
+select {
+    scrollbar-width: thin;
+    scrollbar-color: #00ffe0 rgba(10, 10, 10, 0.95);
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+select::-webkit-scrollbar {
+    width: 8px;
+}
+
+select::-webkit-scrollbar-track {
+    background: rgba(10, 10, 10, 0.95);
+    border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #00ffe0, #7f5cff);
+    border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #7f5cff, #ff0080);
 }
 
 input[type="text"]:focus,
@@ -192,6 +240,11 @@ select:focus {
 input::placeholder {
     color: rgba(255, 255, 255, 0.4);
 }
+/* input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+} */
 
 select {
     cursor: pointer;
