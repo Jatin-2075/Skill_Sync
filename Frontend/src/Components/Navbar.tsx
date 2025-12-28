@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Book, BookHeart } from "lucide-react";
 
 import "../Style/navbar.css"
-import Profile from "./Profile/Profile";
+import Profile from "../Pages/Profile/Profile";
 
 const Navbar = () => {
     const [width, setWidth] = useState<number>(0);
