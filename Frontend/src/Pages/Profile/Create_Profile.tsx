@@ -1,8 +1,7 @@
+
 import React, { useState, useRef, ChangeEvent, KeyboardEvent } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
 import '../Style/createprofile.css';
-
-// Types
 type UserType = 'student' | 'freelancer' | 'professional' | '';
 
 interface Platform {
