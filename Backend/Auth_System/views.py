@@ -31,3 +31,5 @@ def Signup(request):
     Details.objects.create(user=user)
 
     return JsonResponse({'success': True, 'msg': 'Account Created'})
+
+
