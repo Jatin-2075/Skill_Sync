@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Book, BookHeart } from "lucide-react";
+import { LayoutDashboard, Book, BookHeart ,Bell } from "lucide-react";
 
 import "../Style/navbar.css"
 import Profile from "../Pages/Profile/Profile";
@@ -18,6 +18,7 @@ const Navbar = () => {
         { path: "/dashboard", name: "Dashboard", icon: LayoutDashboard },
         { path: "/community", name: "Community", icon: Book },
         { path: "/knowns", name: "Knows", icon: BookHeart },
+        {path : "/notification", name : "Notification", icon : Bell}, 
     ];
 
     return (
@@ -26,9 +27,12 @@ const Navbar = () => {
                 {Nav.map(({ path, name, icon: Icon }) => (
                     <NavLink key={path} to={path} className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                         <Icon size={18} className="nav-icon" />
-                        {width > 786 && <span className="nav-text">{name}</span>}
+                        {width > 78600 && <span className="nav-text">{name}</span>}
                     </NavLink>
+                
                 ))}
+                
+                
             </div>
             <div>
                 <Profile />
