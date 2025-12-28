@@ -239,9 +239,9 @@ const Create_Profile = () => {
                                 </div>
                                 <div className="general-option">
                                     <label>Working Profile</label>
-                                    <select name="workingprofile" onChange={handleWork}>
-                                        <option value="part-time">Part Time</option>
-                                        <option value="full-time">Full Time</option>
+                                    <select className="select-student" name="workingprofile" onChange={handleWork}>
+                                        <option className="option-student" value="part-time">Part Time</option>
+                                        <option className="option-student" value="full-time">Full Time</option>
                                     
                                     </select>
                                 </div>
