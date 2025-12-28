@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-import { API_BASE_URL } from "../config/Backend_Api";
+import { API_BASE_URL } from "../config/Api";
 
 import "../Style/login.css"
 
