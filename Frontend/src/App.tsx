@@ -9,6 +9,7 @@ import Create_Profile from "./Pages/Profile/Create_Profile";
 import Intro from "./Pages/Intro";
 import Dashboard from "./Pages/Dashboard";
 import MainLayout from "./Components/Mainlayout";
+import Profile from "./Pages/Profile/Show_Profile";
 
 const App:React.FC = () =>{
     return (
@@ -24,7 +25,8 @@ const App:React.FC = () =>{
 
             {/* Main Files Connection profile and other */}
             <Route element={<MainLayout/>} >
-            <Route path="/dashboard" element={<Dashboard/>}/>
+                <Route path="/dashboard" element={<Dashboard/>}/>
+                <Route path="/profile" element={<Profile/>}/>
             </Route>
         </Routes>
     )

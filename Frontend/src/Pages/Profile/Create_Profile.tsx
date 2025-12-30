@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { API } from "../../config/Api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -132,7 +132,7 @@ const Create_Profile = () => {
 
     const addProject = () => {
         const last = projects[projects.length - 1];
-        if(!last.name || !last.description || !last.link) return;
+        if (!last.name || !last.description || !last.link) return;
         if (projects.length < 3) {
             setProjects([
                 ...projects,
@@ -369,19 +369,19 @@ const Create_Profile = () => {
                                     <div className="input-row">
                                         <div className="general-option">
                                             <label>Codeforces Profile</label>
-                                            <input required onChange={HandleUsername} name="codeforces" placeholder="ex. Joe12" type="text" />
+                                            <input onChange={HandleUsername} name="codeforces" placeholder="ex. Joe12" type="text" />
                                         </div>
                                     </div>
                                     <div className="input-row">
                                         <div className="general-option">
                                             <label>Github Profile</label>
-                                            <input required onChange={HandleUsername} name="github" placeholder="ex. Joe12" type="text" />
+                                            <input onChange={HandleUsername} name="github" placeholder="ex. Joe12" type="text" />
                                         </div>
                                     </div>
                                     <div className="input-row">
                                         <div className="general-option">
                                             <label>StackOverflow Profile</label>
-                                            <input required onChange={HandleUsername} name="stackoverflow" placeholder="ex. Joe12" type="text" />
+                                            <input onChange={HandleUsername} name="stackoverflow" placeholder="ex. Joe12" type="text" />
                                         </div>
                                     </div>
                                 </div>

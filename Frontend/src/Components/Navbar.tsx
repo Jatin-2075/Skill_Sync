@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Book, BookHeart ,Bell } from "lucide-react";
+import { LayoutDashboard, Book, BookHeart ,Bell, UserSquare2Icon } from "lucide-react";
 
 import "../Style/navbar.css"
-import Profile from "../Pages/Profile/Profile";
 
 const Navbar = () => {
     const [width, setWidth] = useState<number>(0);
@@ -35,7 +34,9 @@ const Navbar = () => {
                 
             </div>
             <div>
-                <Profile />
+                <NavLink to="/profile" className={ ({ isActive }) => isActive? "nav-item active" : "nav-item"}>
+                    <UserSquare2Icon className="nav-icon" size={18} />
+                </NavLink>
             </div>
         </nav>
     );
