@@ -1,7 +1,7 @@
 .profile-wrapper {
   padding: 40px;
   padding-top: 120px;
-  padding-left: 140px; /* Space for navbar */
+  padding-left: 140px;
   color: rgba(255, 255, 255, 0.9);
   min-height: 100vh;
   max-width: 1400px;
@@ -70,7 +70,6 @@
   transform: translateY(-2px);
 }
 
-/* Header - full width at top */
 .profile-header {
   display: flex;
   justify-content: space-between;
@@ -115,7 +114,6 @@
           drop-shadow(0 0 20px rgba(127, 92, 255, 0.6));
 }
 
-/* 2x2 Grid for the 4 cards + Projects full width */
 .profile-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -212,7 +210,6 @@
   transform: translateX(4px);
 }
 
-/* Skills tags */
 .skill-tags {
   display: flex;
   flex-wrap: wrap;
@@ -298,7 +295,6 @@
   transform: translateY(-3px) scale(1.05);
 }
 
-/* Project items */
 .project-item {
   margin-bottom: 16px;
   padding: 16px;
@@ -367,7 +363,6 @@
   color: rgba(255, 255, 255, 1);
 }
 
-/* Projects card - spans full width at bottom */
 .profile-projects {
   grid-column: 1 / -1;
 }
@@ -394,7 +389,6 @@
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
   .profile-wrapper {
     padding-left: 120px;
@@ -472,12 +466,10 @@
   }
 }
 
-/* Smooth scroll */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar matching navbar theme */
 .profile-wrapper::-webkit-scrollbar {
   width: 4px;
 }
