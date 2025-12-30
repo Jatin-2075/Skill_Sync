@@ -84,7 +84,7 @@ def FunctionsSaveProfile(request):
             defaults={
                 "workingprofile": work_data.get("workingprofile", ""),
                 "preferredrole": work_data.get("preferredrole", ""),
-                "yearexperience": work_data.get("yearexperience", 0),
+                "yearexperience": int(work_data.get("yearexperience", 0)),
                 "company": work_data.get("company", ""),
             }
         )
@@ -117,9 +117,90 @@ def FunctionsSaveProfile(request):
         Skill.objects.filter(details=details).delete()
         for skill in skills_data:
             if isinstance(skill, str) and skill.strip():
-                Skill.objects.create(details=details, name=skill.strip())
+                Skill.objects.create(details=details, skill=skill.strip())
 
     return JsonResponse({
         "success": True,
         "msg": "Profile saved / updated successfully"
     })
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def Functionshowprofile(request):
+    user = request.user
+
+    # SAFE: prevents 500
+    details, _ = Details.objects.get_or_create(user=user)
+
+    response = {
+        "personal": None,
+        "student": None,
+        "work": None,
+        "platformusername": None,
+        "skills": [],
+        "projects": [],
+    }
+
+    # PERSONAL
+    try:
+        p = details.personal
+        response["personal"] = {
+            "name": p.name,
+            "contactmail": p.contactmail,
+            "portfolio": p.portfolio,
+            "country": p.country,
+            "location": p.location,
+        }
+    except:
+        pass
+
+    # STUDENT
+    try:
+        s = details.student
+        response["student"] = {
+            "currentstatus": s.currentstatus,
+            "level": s.level,
+            "college": s.college,
+            "year": s.year,
+            "passingyear": s.passingyear,
+            "branch": s.branch,
+        }
+    except:
+        pass
+
+    # WORK (professional)
+    try:
+        w = details.professional
+        response["work"] = {
+            "workingprofile": w.workingprofile,
+            "preferredrole": w.preferredrole,
+            "yearexperience": w.yearexperience,
+            "company": w.company,
+        }
+    except:
+        pass
+
+    # PLATFORM USERNAMES
+    try:
+        pu = details.platformusername
+        response["platformusername"] = {
+            "codeforces": pu.codeforces,
+            "github": pu.github,
+            "stackoverflow": pu.stackoverflow,
+        }
+    except:
+        pass
+
+    # SKILLS
+    response["skills"] = list(
+        Skill.objects.filter(details=details)
+        .values_list("skill", flat=True)
+    )
+
+    # PROJECTS
+    response["projects"] = list(
+        Project.objects.filter(details=details)
+        .values("name", "description", "link")
+    )
+
+    return JsonResponse(response)
