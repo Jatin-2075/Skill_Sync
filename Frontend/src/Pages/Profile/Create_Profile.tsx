@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { API } from "../../config/Api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
