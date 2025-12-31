@@ -18,30 +18,13 @@ class PersonalDetails(models.Model):
         related_name="personal"
     )
     name = models.CharField(max_length=100)
-    contactemail = models.CharField(max_length=100)
-    portfolioLink = models.URLField(blank=True, null=True)
+    contactmail = models.EmailField()
+    portfolio = models.URLField()
     country = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    currentStatus = models.CharField(max_length=100)
-    preferredRole = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.Name
-
-
-class WorkDetails(models.Model):
-    details = models.OneToOneField(
-        Details,
-        on_delete=models.CASCADE,
-        related_name="professional"
-    )
-    yearexperience = models.PositiveIntegerField()
-    workingprofile = models.CharField(max_length=100)
-    company = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"{self.WorkingProfile} years"
-
+        return self.name
 
 class StudentDetails(models.Model):
     details = models.OneToOneField(
@@ -49,24 +32,63 @@ class StudentDetails(models.Model):
         on_delete=models.CASCADE,
         related_name="student"
     )
+    currentstatus = models.CharField(max_length=100)
     level = models.CharField(max_length=100)
-    field = models.CharField(max_length=100)
-    subject = models.CharField(max_length=100)
-    college = models.CharField(max_length=100)
+    college = models.CharField(max_length=200)
+    year = models.PositiveIntegerField()
+    passingyear = models.PositiveIntegerField()
+    branch = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.Status
+        return self.currentstatus
 
-
-class PlatfromUsernameDetails(models.Model):
-    detials = models.OneToOneField(
+class WorkDetails(models.Model):
+    details = models.OneToOneField(
         Details,
         on_delete=models.CASCADE,
-        related_name="username"
+        related_name="professional"
     )
-    codeforces = models.CharField(max_length=100)
+    workingprofile = models.CharField(max_length=100)
+    preferredrole = models.CharField(max_length=100)
+    yearexperience = models.PositiveIntegerField()
+    company = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.preferredrole
+
+class PlatformUsernameDetails(models.Model):
+    details = models.OneToOneField(
+        Details,
+        on_delete=models.CASCADE,
+        related_name="platformusername"
+    )
     github = models.CharField(max_length=100)
+    codeforces = models.CharField(max_length=100)
     stackoverflow = models.CharField(max_length=100)
 
     def __str__(self):
-        return "DONE"
+        return self.github
+
+class Project(models.Model):
+    details = models.ForeignKey(
+        Details,
+        on_delete=models.CASCADE,
+        related_name="projects"
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    link = models.URLField()
+
+    def __str__(self):
+        return self.name
+
+class Skill(models.Model):
+    details = models.ForeignKey(
+        Details,
+        on_delete=models.CASCADE,
+        related_name="skills"
+    )
+    skill = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.skill
