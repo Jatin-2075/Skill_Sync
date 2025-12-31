@@ -14,7 +14,7 @@ class Details(models.Model):
 class PersonalDetails(models.Model):
     details = models.OneToOneField(
         Details,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE,      
         related_name="personal"
     )
     name = models.CharField(max_length=100)

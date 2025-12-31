@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Book, BookHeart ,Bell, UserSquare2Icon } from "lucide-react";
-
-import "../Style/navbar.css"
+import { LayoutDashboard, Book, BookHeart, Bell, UserSquare2Icon } from "lucide-react";
+import "../Style/navbar.css";
 
 const Navbar = () => {
-    const [width, setWidth] = useState<number>(0);
+    const [width, setWidth] = useState<number>(window.innerWidth);
 
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
@@ -13,30 +12,23 @@ const Navbar = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const Nav = [
+    const mainNav = [
         { path: "/dashboard", name: "Dashboard", icon: LayoutDashboard },
         { path: "/community", name: "Community", icon: Book },
-        { path: "/knowns", name: "Knows", icon: BookHeart },
-        {path : "/notification", name : "Notification", icon : Bell}, 
+        { path: "/Peopleall", name: "Knows", icon: BookHeart },
+        { path: "/notification", name: "Notification", icon: Bell },
+        { path: "/profile", name: "Profile", icon: UserSquare2Icon },
     ];
 
     return (
         <nav className="navbar">
             <div className="navbar-container">
-                {Nav.map(({ path, name, icon: Icon }) => (
-                    <NavLink key={path} to={path} className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                        <Icon size={18} className="nav-icon" />
-                        {width > 78600 && <span className="nav-text">{name}</span>}
+                {mainNav.map(({ path, name, icon: Icon }) => (
+                    <NavLink key={path}  to={path}  className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} >
+                        <Icon size={20} className="nav-icon" />
+                        {width > 768 && <span className="nav-text">{name}</span>}
                     </NavLink>
-                
                 ))}
-                
-                
-            </div>
-            <div>
-                <NavLink to="/profile" className={ ({ isActive }) => isActive? "nav-item active" : "nav-item"}>
-                    <UserSquare2Icon className="nav-icon" size={18} />
-                </NavLink>
             </div>
         </nav>
     );

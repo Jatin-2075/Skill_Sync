@@ -30,11 +30,6 @@ type WorkDetails = {
     company: string,
 }
 
-type Platformusername = {
-    github: string,
-    codeforces: string,
-    stackoverflow: string,
-}
 
 type ProjectDetails = {
     name: string,
@@ -101,20 +96,6 @@ const Create_Profile = () => {
         }))
     }
 
-    const [platformuser, setplatformusername] = useState<Platformusername>({
-        github: "",
-        codeforces: "",
-        stackoverflow: "",
-    })
-
-    const HandleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setplatformusername((prev) => ({
-            ...prev,
-            [name]: value,
-        }))
-    }
-
     const handleSkillKeyPress = (e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>) => {
         if (e.key === 'Enter' && currentSkill.trim()) {
             e.preventDefault();
@@ -163,7 +144,6 @@ const Create_Profile = () => {
             student: studentdetails,
             work: workdetails,
             skills: skills,
-            platformusername: platformuser,
 
             projects: projects.filter(
                 p => p.name.trim() && p.description.trim() && p.link.trim()
@@ -304,48 +284,31 @@ const Create_Profile = () => {
                                     {projects.map((project, index) => (
                                         <div key={index} className="project-entry">
 
-                                            <input
-                                                placeholder="Project Name"
-                                                value={project.name}
+                                            <input placeholder="Project Name" value={project.name}
                                                 onChange={(e) =>
                                                     updateProject(index, "name", e.target.value)
-                                                }
-                                                required
-                                            />
+                                                } required />
 
-                                            <textarea
-                                                placeholder="Project Description"
-                                                value={project.description}
+                                            <textarea placeholder="Project Description" value={project.description}
                                                 onChange={(e) =>
                                                     updateProject(index, "description", e.target.value)
-                                                }
-                                                required
-                                            />
+                                                } required />
 
-                                            <input
-                                                placeholder="Project Link"
-                                                value={project.link}
+                                            <input placeholder="Project Link" value={project.link}
                                                 onChange={(e) =>
                                                     updateProject(index, "link", e.target.value)
-                                                }
-                                                required
-                                            />
+                                                } required />
 
                                             {projects.length > 1 && (
                                                 <button
                                                     type="button"
-                                                    onClick={() => removeProject(index)}
-                                                >
-                                                    Remove
-                                                </button>
+                                                    onClick={() => removeProject(index)} > Remove </button>
                                             )}
                                         </div>
                                     ))}
 
                                     {projects.length < 3 && (
-                                        <button type="button" onClick={addProject}>
-                                            + Add Project
-                                        </button>
+                                        <button type="button" onClick={addProject}>+ Add Project</button>
                                     )}
                                 </div>
 
@@ -363,27 +326,6 @@ const Create_Profile = () => {
                                         <input id="skillInput" className="skill-input" placeholder="Type a skill and press Enter" value={currentSkill} onChange={(e) => setCurrentSkill(e.target.value)} onKeyPress={handleSkillKeyPress} />
                                     </div>
                                     <p className="help-text">Press Enter to add a skill. Click the x to remove.</p>
-                                </div>
-
-                                <div className="profile-section">
-                                    <div className="input-row">
-                                        <div className="general-option">
-                                            <label>Codeforces Profile</label>
-                                            <input onChange={HandleUsername} name="codeforces" placeholder="ex. Joe12" type="text" />
-                                        </div>
-                                    </div>
-                                    <div className="input-row">
-                                        <div className="general-option">
-                                            <label>Github Profile</label>
-                                            <input onChange={HandleUsername} name="github" placeholder="ex. Joe12" type="text" />
-                                        </div>
-                                    </div>
-                                    <div className="input-row">
-                                        <div className="general-option">
-                                            <label>StackOverflow Profile</label>
-                                            <input onChange={HandleUsername} name="stackoverflow" placeholder="ex. Joe12" type="text" />
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

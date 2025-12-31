@@ -1,99 +1,115 @@
-import { useEffect, useState } from "react";
-import { API } from "../../config/Api";
-import {
-    User,
-    Mail,
-    MapPin,
-    Briefcase,
-    GraduationCap,
-    Code,
-    Folder
-} from "lucide-react";
-
+// ProfilePage.jsx
 import "../../Style/profile.css";
 
-const Profile = () => {
-    const [profile, setProfile] = useState<any>(null);
+export default function ProfilePage() {
+  return (
+    <div className="profile-page">
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const res = await API("GET", "/auth/profile/");
-                const data = await res.json();
-                setProfile(data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
+      {/* Header */}
+      <header className="navbar">
+        <div className="logo">SkillRank</div>
+        <nav>
+          <a>Dashboard</a>
+          <a>Challenges</a>
+          <a>Projects</a>
+          <a>Jobs</a>
+        </nav>
+      </header>
 
-        fetchProfile();
-    }, []);
-
-    if (!profile) return <div className="profile-loading">Loading...</div>;
-
-    return (
-        <div className="profile-wrapper">
-            {/* Header - full width */}
-            <div className="profile-header glass">
-                <div>
-                    <h1>{profile.personal?.name}</h1>
-                    <p>{profile.work?.preferredrole}</p>
-                </div>
-                <User size={42} />
-            </div>
-
-            {/* Grid: 2x2 + Projects full width */}
-            <div className="profile-grid">
-                {/* Personal */}
-                <div className="profile-card glass">
-                    <h3><User size={16} /> Personal</h3>
-                    <p><Mail size={14} /> {profile.personal?.contactmail}</p>
-                    <p><MapPin size={14} /> {profile.personal?.location}, {profile.personal?.country}</p>
-                    <a href={profile.personal?.portfolio} target="_blank" rel="noopener noreferrer">
-                        Portfolio
-                    </a>
-                </div>
-
-                {/* Education */}
-                <div className="profile-card glass">
-                    <h3><GraduationCap size={16} /> Education</h3>
-                    <p>{profile.student?.college}</p>
-                    <p>{profile.student?.branch}</p>
-                    <p>{profile.student?.year} → {profile.student?.passingyear}</p>
-                </div>
-
-                {/* Work */}
-                <div className="profile-card glass">
-                    <h3><Briefcase size={16} /> Work</h3>
-                    <p>{profile.work?.workingprofile}</p>
-                    <p>{profile.work?.company}</p>
-                    <p>{profile.work?.yearexperience} yrs</p>
-                </div>
-
-                {/* Skills */}
-                <div className="profile-card glass">
-                    <h3><Code size={16} /> Skills</h3>
-                    <div className="skill-tags">
-                        {profile.skills.map((s: string) => (
-                            <span key={s}>{s}</span>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Projects - spans full width */}
-                <div className="profile-card profile-projects glass">
-                    <h3><Folder size={16} /> Projects</h3>
-                    {profile.projects.map((p: any) => (
-                        <div key={p.name} className="project-item">
-                            <h4>{p.name}</h4>
-                            <p>{p.description}</p>
-                            <a href={p.link} target="_blank" rel="noopener noreferrer">View</a>
-                        </div>
-                    ))}
-                </div>
-            </div>
+      {/* Profile Header */}
+      <section className="profile-header card">
+        <div className="profile-left">
+          <img className="avatar" src="/avatar.jpg" alt="profile" />
+          <span className="verified">✔</span>
         </div>
-    );
-};
 
-export default Profile;
+        <div className="profile-center">
+          <h1>Alex Dev</h1>
+          <p className="username">@alexcode</p>
+          <p className="headline">Senior Backend Engineer • San Francisco</p>
+          <p className="bio">
+            Building scalable distributed systems and high-frequency trading
+            algorithms.
+          </p>
+
+          <div className="actions">
+            <button className="primary">Connect</button>
+            <button>Download Resume</button>
+          </div>
+        </div>
+
+        <div className="profile-right">
+          <div>
+            <span>Global Rank</span>
+            <strong>#42</strong>
+          </div>
+          <div>
+            <span>Rating</span>
+            <strong>2894 ↑</strong>
+          </div>
+        </div>
+      </section>
+
+      {/* Contribution Bar */}
+      <section className="card">
+        <h3>Unified Contribution Score</h3>
+
+        <div className="contribution-bar">
+          <div className="s1" style={{ width: "30%" }} />
+          <div className="s2" style={{ width: "25%" }} />
+          <div className="s3" style={{ width: "15%" }} />
+          <div className="s4" style={{ width: "20%" }} />
+          <div className="s5" style={{ width: "10%" }} />
+        </div>
+      </section>
+
+      {/* Projects */}
+      <section className="card">
+        <h3>Featured Projects</h3>
+
+        <div className="projects">
+          <div className="project-card">
+            <h4>Distributed Ledger System</h4>
+            <p>High-throughput ledger processing 50k TPS.</p>
+            <span className="tag s2">S2</span>
+            <span className="tag s5">S5</span>
+          </div>
+
+          <div className="project-card">
+            <h4>AlgoVis Library</h4>
+            <p>Algorithm visualization used by universities.</p>
+            <span className="tag s1">S1</span>
+            <span className="tag s3">S3</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Experience */}
+      <section className="card">
+        <h3>Experience</h3>
+
+        <div className="timeline">
+          <div className="timeline-item">
+            <h4>Senior Backend Engineer</h4>
+            <span>TechFlow Systems • 2021–Present</span>
+            <p>Reduced latency by 40%, reliability 99.999%.</p>
+          </div>
+
+          <div className="timeline-item">
+            <h4>Software Engineer</h4>
+            <span>Startup Inc • 2018–2021</span>
+            <p>Built MVP securing Series-A funding.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Education */}
+      <section className="card">
+        <h3>Education</h3>
+        <p>Stanford University — M.S. Computer Science</p>
+        <p>UC Berkeley — B.S. Electrical Engineering</p>
+      </section>
+
+    </div>
+  );
+}
