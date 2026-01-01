@@ -14,47 +14,21 @@ class Details(models.Model):
 class PersonalDetails(models.Model):
     details = models.OneToOneField(
         Details,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE,      
         related_name="personal"
     )
-    name = models.CharField(max_length=100)
-    contactmail = models.EmailField()
-    portfolio = models.URLField()
+    fullname = models.CharField(max_length=100)
+    username = models.CharField(max_length=40)
     country = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    timezone = models.CharField(max_length=20)
+    headline = models.CharField(max_length=100)
+    bio = models.CharField(max_length=100, editable=True)
+    visibility = models.CharField(max_length=20)
 
     def __str__(self):
         return self.name
 
-class StudentDetails(models.Model):
-    details = models.OneToOneField(
-        Details,
-        on_delete=models.CASCADE,
-        related_name="student"
-    )
-    currentstatus = models.CharField(max_length=100)
-    level = models.CharField(max_length=100)
-    college = models.CharField(max_length=200)
-    year = models.PositiveIntegerField()
-    passingyear = models.PositiveIntegerField()
-    branch = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.currentstatus
-
-class WorkDetails(models.Model):
-    details = models.OneToOneField(
-        Details,
-        on_delete=models.CASCADE,
-        related_name="professional"
-    )
-    workingprofile = models.CharField(max_length=100)
-    preferredrole = models.CharField(max_length=100)
-    yearexperience = models.PositiveIntegerField()
-    company = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.preferredrole
 
 class PlatformUsernameDetails(models.Model):
     details = models.OneToOneField(
@@ -69,6 +43,26 @@ class PlatformUsernameDetails(models.Model):
     def __str__(self):
         return self.github
 
+
+
+class StudentDetails(models.Model):
+    details = models.ForeignKey(
+        Details,
+        on_delete=models.CASCADE,
+        related_name="student"
+    )
+    schoolname = models.CharField(max_length=100, editable=True)
+    degree = models.CharField(max_length=100)
+    fieldofstudy = models.CharField(max_length=100)
+    startdate = models.CharField(max_length=10)
+    enddate = models.CharField(max_length=100)
+    currentlytheir = models.BooleanField(default=False)
+    descritpion = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.currentstatus
+
+
 class Project(models.Model):
     details = models.ForeignKey(
         Details,
@@ -76,8 +70,10 @@ class Project(models.Model):
         related_name="projects"
     )
     name = models.CharField(max_length=100)
+    role = models.CharField(max_length=20)
     description = models.TextField()
-    link = models.URLField()
+    githublink = models.URLField()
+    livelink = models.URLField()
 
     def __str__(self):
         return self.name

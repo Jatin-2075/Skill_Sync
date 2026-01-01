@@ -2,17 +2,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-
-from .models import (
-    Details,
-    PersonalDetails,
-    WorkDetails,
-    StudentDetails,
-    PlatformUsernameDetails,
-    Project,
-    Skill,
-)
-
+from .models import (Details, PersonalDetails, WorkDetails, StudentDetails, PlatformUsernameDetails, Project, Skill)
 import json
 
 @api_view(["POST"])
@@ -24,7 +14,7 @@ def FunctionSignup(request):
     password = data.get("password")
 
     if not username or not email or not password:
-        return JsonResponse({'success':False, 'msg':'some credentials didnt reach backend'})
+        return JsonResponse({'success':False, 'msg':'some credentials didnt  reach backend'})
 
     if User.objects.filter(username=username).exists():
         return JsonResponse({'success': False, 'msg': 'Username Already Exists'})
@@ -89,17 +79,6 @@ def FunctionsSaveProfile(request):
             }
         )
 
-    platform_data = data.get("platformusername")
-    if platform_data:
-        PlatformUsernameDetails.objects.update_or_create(
-            details=details,
-            defaults={
-                "github": platform_data.get("github", ""),
-                "codeforces": platform_data.get("codeforces", ""),
-                "stackoverflow": platform_data.get("stackoverflow", ""),
-            }
-        )
-
     projects_data = data.get("projects")
     if isinstance(projects_data, list):
         Project.objects.filter(details=details).delete()
@@ -124,83 +103,3 @@ def FunctionsSaveProfile(request):
         "msg": "Profile saved / updated successfully"
     })
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def Functionshowprofile(request):
-    user = request.user
-
-    # SAFE: prevents 500
-    details, _ = Details.objects.get_or_create(user=user)
-
-    response = {
-        "personal": None,
-        "student": None,
-        "work": None,
-        "platformusername": None,
-        "skills": [],
-        "projects": [],
-    }
-
-    # PERSONAL
-    try:
-        p = details.personal
-        response["personal"] = {
-            "name": p.name,
-            "contactmail": p.contactmail,
-            "portfolio": p.portfolio,
-            "country": p.country,
-            "location": p.location,
-        }
-    except:
-        pass
-
-    # STUDENT
-    try:
-        s = details.student
-        response["student"] = {
-            "currentstatus": s.currentstatus,
-            "level": s.level,
-            "college": s.college,
-            "year": s.year,
-            "passingyear": s.passingyear,
-            "branch": s.branch,
-        }
-    except:
-        pass
-
-    # WORK (professional)
-    try:
-        w = details.professional
-        response["work"] = {
-            "workingprofile": w.workingprofile,
-            "preferredrole": w.preferredrole,
-            "yearexperience": w.yearexperience,
-            "company": w.company,
-        }
-    except:
-        pass
-
-    # PLATFORM USERNAMES
-    try:
-        pu = details.platformusername
-        response["platformusername"] = {
-            "codeforces": pu.codeforces,
-            "github": pu.github,
-            "stackoverflow": pu.stackoverflow,
-        }
-    except:
-        pass
-
-    # SKILLS
-    response["skills"] = list(
-        Skill.objects.filter(details=details)
-        .values_list("skill", flat=True)
-    )
-
-    # PROJECTS
-    response["projects"] = list(
-        Project.objects.filter(details=details)
-        .values("name", "description", "link")
-    )
-
-    return JsonResponse(response)
