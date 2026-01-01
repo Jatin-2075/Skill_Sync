@@ -17,11 +17,12 @@ class PersonalDetails(models.Model):
         on_delete=models.CASCADE,      
         related_name="personal"
     )
-    name = models.CharField(max_length=100)
+    fullname = models.CharField(max_length=100)
+    username = models.CharField(max_length=40)
     country = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     timezone = models.CharField(max_length=20)
-    professionheading = models.CharField(max_length=100)
+    headline = models.CharField(max_length=100)
     bio = models.CharField(max_length=100, editable=True)
     visibility = models.CharField(max_length=20)
 

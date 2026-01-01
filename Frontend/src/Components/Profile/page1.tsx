@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./style/page1.css";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../config/Api";
+
 type Country = {
   cca2: string;
   name: {

@@ -14,6 +14,7 @@ import Page2 from "./Components/Profile/page2";
 import Page3 from "./Components/Profile/page3";
 import Page4 from "./Components/Profile/page4";
 import Page5 from "./Components/Profile/page5";
+
 const App:React.FC = () =>{
     return (
         <Routes>
@@ -22,6 +23,7 @@ const App:React.FC = () =>{
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<Signup/>}/>
 
+            {/*profile creation page*/}
             <Route path="/pageone" element={<Page1/>}/>
             <Route path="/pagetwo" element={<Page2/>}/>
             <Route path="/pagethree" element={<Page3/>}/>
