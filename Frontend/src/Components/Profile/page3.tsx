@@ -12,25 +12,32 @@ interface Education {
   current: boolean;
   description: string;
 }
-
+interface ValidationErrors {
+  schoolname?: string;
+  degree?: string;
+  field?: string;
+  startdate?: string;
+  enddate?: string;
+}
 const Page3 = () => {
 
+  const [errors, setErrors] = useState<ValidationErrors>({});
   useEffect(() => {
     FunctionFetch();
   }, [])
 
   const FunctionFetch = async () => {
-  try {
-    const res = await API("GET", "/auth/sendstudent/");
-    const result = await res.json();
+    try {
+      const res = await API("GET", "/auth/sendstudent/");
+      const result = await res.json();
 
-    if (result.success) {
-      setTimeline(result.data);
+      if (result.success) {
+        setTimeline(result.data);
+      }
+    } catch (err) {
+      console.log("Fetch timeline error", err);
     }
-  } catch (err) {
-    console.log("Fetch timeline error", err);
-  }
-};
+  };
 
 
   const navigate = useNavigate();
@@ -59,38 +66,84 @@ const Page3 = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+
+    // Add this part to clear errors
+    if (errors[name as keyof ValidationErrors]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+
+    if (!formData.schoolname.trim()) {
+      newErrors.schoolname = "School name is required";
+    }
+
+    if (!formData.degree) {
+      newErrors.degree = "Degree is required";
+    }
+
+    if (!formData.field.trim()) {
+      newErrors.field = "Field of study is required";
+    }
+
+    if (!formData.startdate) {
+      newErrors.startdate = "Start date is required";
+    }
+
+    if (!formData.current && !formData.enddate) {
+      newErrors.enddate = "End date is required (or check 'currently studying')";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleAddEducation = async () => {
-  console.log(formData);
-
-  try {
-    const res = await API("POST", "/auth/studentsave/", formData); // ✅ FIXED
-    const backendres = await res.json();
-    setdatabackend(backendres);
-
-    if (backendres.success) {
-      await FunctionFetch(); // refresh timeline
-
-      setFormData({
-        schoolname: "",
-        degree: "",
-        field: "",
-        startdate: "",
-        enddate: "",
-        current: false,
-        description: "",
-      });
-
-      alert("Education added to timeline!");
-    } else {
-      alert(backendres.msg || "Failed to save education");
+    if (!validateForm()) {
+      alert("Please fill in all required fields");
+      return;
     }
 
-  } catch (err) {
-    console.log("Save error", err);
-  }
-};
+    console.log(formData);
+
+    try {
+      const res = await API("POST", "/auth/studentsave/", formData);
+      const backendres = await res.json();
+      setdatabackend(backendres);
+
+      if (backendres.success) {
+        await FunctionFetch();
+
+        setFormData({
+          schoolname: "",
+          degree: "",
+          field: "",
+          startdate: "",
+          enddate: "",
+          current: false,
+          description: "",
+        });
+
+        console.log("ulalalaa")
+        console.log(formData)
+        console.log(databackend)
+
+        setErrors({});
+
+        alert("Education added to timeline!");
+      } else {
+        alert(backendres.msg || "Failed to save education");
+      }
+
+    } catch (err) {
+      console.log("Save error", err);
+    }
+  };
 
 
   const handleBack = () => {
@@ -111,6 +164,7 @@ const Page3 = () => {
       current: false,
       description: "",
     })
+    setErrors({});
   }
 
   return (
@@ -132,7 +186,7 @@ const Page3 = () => {
 
       <main className="page3-main">
         <div className="page3-container">
-          {/* Progress */}
+
           <section className="page3-progress-section">
             <div className="page3-progress-info">
               <span className="page3-phase-text">Phase 3 : Education & Timeline</span>
@@ -158,7 +212,9 @@ const Page3 = () => {
               <h3>Add New Education</h3>
 
               <label className="page3-form-label">
-                <span className="page3-label-text">schoolname or University</span>
+                <span className="page3-label-text">
+                  School or University <span style={{ color: 'red' }}>*</span>
+                </span>
                 <input
                   name="schoolname"
                   value={formData.schoolname}
@@ -166,17 +222,23 @@ const Page3 = () => {
                   className="page3-form-input"
                   placeholder="Ex: Stanford University"
                 />
+                {errors.schoolname && (
+                  <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
+                    {errors.schoolname}
+                  </span>
+                )}
               </label>
 
               <div className="page3-grid-2">
                 <label className="page3-form-label">
-                  <span className="page3-label-text">Degree</span>
+                  <span className="page3-label-text">
+                    Degree <span style={{ color: 'red' }}>*</span>
+                  </span>
                   <select
                     name="degree"
                     value={formData.degree}
                     onChange={handleInputChange}
                     className="page3-form-select"
-                    
                   >
                     <option value="" disabled>Select Degree</option>
                     <option value="Bachelor">Bachelor's</option>
@@ -185,10 +247,17 @@ const Page3 = () => {
                     <option value="Associate">Associate</option>
                     <option value="High School">High school</option>
                   </select>
+                  {errors.degree && (
+                    <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
+                      {errors.degree}
+                    </span>
+                  )}
                 </label>
 
                 <label className="page3-form-label">
-                  <span className="page3-label-text">Field of Study</span>
+                  <span className="page3-label-text">
+                    Field of Study <span style={{ color: 'red' }}>*</span>
+                  </span>
                   <input
                     name="field"
                     value={formData.field}
@@ -196,12 +265,19 @@ const Page3 = () => {
                     className="page3-form-input"
                     placeholder="Ex: Computer Science"
                   />
+                  {errors.field && (
+                    <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
+                      {errors.field}
+                    </span>
+                  )}
                 </label>
               </div>
 
               <div className="page3-grid-2">
                 <label className="page3-form-label">
-                  <span className="page3-label-text">Start Date</span>
+                  <span className="page3-label-text">
+                    Start Date <span style={{ color: 'red' }}>*</span>
+                  </span>
                   <input
                     name="startdate"
                     value={formData.startdate}
@@ -209,10 +285,17 @@ const Page3 = () => {
                     type="date"
                     className="page3-form-input"
                   />
+                  {errors.startdate && (
+                    <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
+                      {errors.startdate}
+                    </span>
+                  )}
                 </label>
 
                 <label className="page3-form-label">
-                  <span className="page3-label-text">End Date</span>
+                  <span className="page3-label-text">
+                    End Date <span style={{ color: 'red' }}>*</span>
+                  </span>
                   <input
                     name="enddate"
                     value={formData.enddate}
@@ -221,11 +304,17 @@ const Page3 = () => {
                     className="page3-form-input"
                     disabled={formData.current}
                   />
+                  {errors.enddate && (
+                    <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
+                      {errors.enddate}
+                    </span>
+                  )}
                 </label>
               </div>
 
               <label className="page3-checkbox-label">
                 <input
+                  required
                   type="checkbox"
                   name="current"
                   checked={formData.current}
@@ -274,7 +363,7 @@ const Page3 = () => {
                         />
                         <div className="page3-timeline-content">
                           <span className="page3-timeline-year">
-                            {item.startdate} - {item.enddate}
+                            {item.startdate} - {item.current ? "Present" : item.enddate}
                           </span>
                           <h4>{item.schoolname}</h4>
                           <p>
