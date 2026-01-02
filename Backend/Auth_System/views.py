@@ -165,7 +165,7 @@ def FunctionSaveStudent(request):
 
     details = Details.objects.filter(user=user).first()
     if not item or not details:
-        return Response(
+        return JsonResponse(
             {"success": False, "msg": "Data didn't reach us"},
             status=400
         )
@@ -191,14 +191,14 @@ def FunctionSaveStudent(request):
             description=item.get("description", ""),
         )
 
-        return Response({
+        return JsonResponse({
             "success": True,
             "msg": "Education history updated successfully"
         })
 
     except Exception as e:
         print(f"Error saving education: {str(e)}")
-        return Response(
+        return JsonResponse(
             {
                 "success": False,
                 "msg": "A database error occurred",
@@ -215,7 +215,7 @@ def FunctionSendStudent(request):
 
     details = Details.objects.filter(user=user).first()
     if not details:
-        return Response({
+        return JsonResponse({
             "success": False,
             "msg": "User details not found",
             "data": []
@@ -240,7 +240,7 @@ def FunctionSendStudent(request):
             "description": ed.description,
         })
 
-    return Response({
+    return JsonResponse({
         "success": True,
         "msg": "Education timeline fetched",
         "data": data

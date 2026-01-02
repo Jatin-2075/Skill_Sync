@@ -39,8 +39,8 @@ const Page3 = () => {
     schoolname: "",
     degree: "",
     field: "",
-    startdate: "",
-    enddate: "",
+    startdate: "0-0-2020",
+    enddate: "0-0-2020",
     current: false,
     description: "",
   });
