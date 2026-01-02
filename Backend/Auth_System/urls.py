@@ -7,7 +7,9 @@ from .views import (
     FunctionSaveUsername,
     FunctionSaveStudent,
     FunctionSaveProject,
-    FunctionSaveColaboration
+    FunctionSaveColaboration,
+
+    FunctionSendStudent,
 )
 
 urlpatterns = [
@@ -19,4 +21,6 @@ urlpatterns = [
     path("projectsave/", FunctionSaveProject),
     path("colaboration/", FunctionSaveColaboration),
     path("studentsave/", FunctionSaveStudent),
+
+    path("sendstudent/", FunctionSendStudent),
 ]

@@ -150,17 +150,16 @@ export default function Page2() {
 
   return (
     <div className="page2-root">
-      <header className="page2-header">
-        <div className="page2-brand">
-          <div className="page2-logo" />
-          <span className="page2-brand-title">SkillRank</span>
+      <header className="page3-header">
+        <div className="page3-brand">
+          <div className="page3-logo" />
+          <span className="page3-brand-title">SkillRank</span>
         </div>
-
-        <div className="page2-header-right">
-          <button className="page2-help-link">
-            <span className="page2-help-icon">?</span>
+        <div className="page3-header-right">
+          <a className="page3-help-link">
+            <span className="page3-help-icon">?</span>
             Help
-          </button>
+          </a>
         </div>
       </header>
 
