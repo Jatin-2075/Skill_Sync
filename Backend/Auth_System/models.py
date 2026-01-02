@@ -36,9 +36,9 @@ class PlatformUsernameDetails(models.Model):
         on_delete=models.CASCADE,
         related_name="platformusername"
     )
-    github = models.CharField(max_length=100)
-    codeforces = models.CharField(max_length=100)
-    stackoverflow = models.CharField(max_length=100)
+    gitusername = models.CharField(max_length=100)
+    cfusername = models.CharField(max_length=100)
+    stackusername = models.CharField(max_length=100)
 
     def __str__(self):
         return self.github
@@ -51,12 +51,13 @@ class StudentDetails(models.Model):
         on_delete=models.CASCADE,
         related_name="student"
     )
+    number = models.PositiveIntegerField()
     schoolname = models.CharField(max_length=100, editable=True)
     degree = models.CharField(max_length=100)
-    fieldofstudy = models.CharField(max_length=100)
+    field = models.CharField(max_length=100)
     startdate = models.CharField(max_length=10)
     enddate = models.CharField(max_length=100)
-    currentlytheir = models.BooleanField(default=False)
+    current = models.BooleanField(default=False)
     descritpion = models.CharField(max_length=100)
 
     def __str__(self):

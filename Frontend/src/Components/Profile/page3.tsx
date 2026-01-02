@@ -2,7 +2,7 @@ import { useState } from 'react';
 import "./style/page3.css"
 import { useNavigate } from "react-router-dom";
 interface Education {
-  id: string;
+ number: string;
   school: string;
   degree: string;
   field: string;
@@ -25,7 +25,7 @@ const Page3 = () => {
 
   const [timeline] = useState<Education[]>([
     {
-      id: '1',
+     number: '1',
       school: 'Massachusetts Institute of Technology',
       degree: 'BSc',
       field: 'Computer Science',
@@ -36,7 +36,7 @@ const Page3 = () => {
         'Graduated with Honors. Specialization in Artificial Intelligence and Machine Learning. President of the…',
     },
     {
-      id: '2',
+     number: '2',
       school: 'Lincoln High School',
       degree: 'High School Diploma',
       field: '',
@@ -237,7 +237,7 @@ const Page3 = () => {
 
               <div className="timeline">
                 {timeline.map((item, index) => (
-                  <div key={item.id} className="timeline-item">
+                  <div key={item.number} className="timeline-item">
                     <div className={`timeline-dot ${index === 0 ? 'active' : ''}`} />
                     <div className="timeline-content">
                       <span className="timeline-year">
