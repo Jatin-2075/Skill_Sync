@@ -234,28 +234,43 @@ const Page3 = () => {
             {/* Timeline Card */}
             <div className="page3-card">
               <h3>Your Timeline</h3>
-
-              <div className="page3-timeline">
-                {timeline.map((item, index) => (
-                  <div key={item.id} className="page3-timeline-item">
-                    <div className={`page3-timeline-dot ${index === 0 ? 'page3-active' : ''}`} />
-                    <div className="page3-timeline-content">
-                      <span className="page3-timeline-year">
-                        {item.startDate} - {item.endDate}
-                      </span>
-                      <h4>{item.school}</h4>
-                      <p>
-                        {item.degree} {item.field && item.field}
+                <div className="page3-timeline">
+                  {timeline.length === 0 ? (
+                    <p className="page3-empty-state">
+                      No Timeline to display
+                    </p>
+                  ) : (
+                    <>
+                      {timeline.map((item, index) => (
+                        <div key={item.id} className="page3-timeline-item">
+                          <div
+                            className={`page3-timeline-dot ${
+                              index === 0 ? 'page3-active' : ''
+                            }`}
+                          />
+                          <div className="page3-timeline-content">
+                            <span className="page3-timeline-year">
+                              {item.startDate} - {item.endDate}
+                            </span>
+                            <h4>{item.school}</h4>
+                            <p>
+                              {item.degree}
+                              {item.field && ` · ${item.field}`}
+                            </p>
+                            {item.description && (
+                              <p className="page3-timeline-description">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      <p className="page3-empty-state">
+                        Add more education above…
                       </p>
-                      {item.description && (
-                        <p className="page3-timeline-description">{item.description}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-
-                <p className="page3-empty-state">Add more education above…</p>
-              </div>
+                    </>
+                  )}
+                </div>
             </div>
           </section>
 

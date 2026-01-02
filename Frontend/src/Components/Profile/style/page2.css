@@ -16,7 +16,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2.5rem;
-  background: #ffffff;
+  background-color: #ffffff;
   border-bottom: 1px solid #e2e8f0;
 }
 
@@ -27,23 +27,51 @@
 }
 
 .page2-logo {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
+  background-color: #137fec;
   border-radius: 8px;
-  background: linear-gradient(135deg, #a78bfa, #8b5cf6);
 }
 
 .page2-brand-title {
+  font-size: 1.25rem;
   font-weight: 800;
-  font-size: 1.1rem;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+}
+
+.page2-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .page2-help-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #64748b;
+  text-decoration: none;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
+.page2-help-link:hover {
+  color: #137fec;
+}
+
+.page2-help-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
 /* =====================
    MAIN LAYOUT
    ===================== */
