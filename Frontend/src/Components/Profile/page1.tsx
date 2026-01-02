@@ -54,6 +54,7 @@ const Page1 = ({ }) => {
   }, []);
 
   const handlenext = async () => {
+    console.log("Sending data:", formData);
     try {
       const ressubmit = await API("POST", "/auth/personalsave/", { personal: formData });
       const data = await ressubmit.json();
@@ -253,6 +254,7 @@ const Page1 = ({ }) => {
                   value={formData.gender}
                   onChange={handleInputChange}
                 >
+                  <option value=""></option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">other</option>

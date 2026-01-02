@@ -82,7 +82,7 @@ def FunctionSavePersonal(request):
     user = request.user
     data = request.data
 
-    details, _ = Details.objects.get(user=user)
+    details= Details.objects.get(user=user)
 
     personal_data = request.data.get("personal")
 
@@ -95,7 +95,7 @@ def FunctionSavePersonal(request):
             "username": personal_data.get("username", ""),
             "country": personal_data.get("country", ""),
             "city": personal_data.get("city"),
-            "timezone": personal_data.get("timezone", ""),
+            "gender": personal_data.get("gender", ""),
             "headline" : personal_data.get("headline",""),
             "bio" : personal_data.get("bio",""),
             "visibility" : personal_data.get("visibility",""),
@@ -111,7 +111,7 @@ def FunctionSavePersonal(request):
             "username": obj.username,
             "country": obj.country,
             "city": obj.city,
-            "timezone": obj.timezone,
+            "gender": obj.gender,
             "headline": obj.headline,
             "bio": obj.bio,
             "visibility": obj.visibility,
@@ -122,61 +122,78 @@ def FunctionSavePersonal(request):
 @permission_classes([IsAuthenticated])
 def FunctionSaveUsername(request):
     user = request.user
-    data = request.data("usernames")
+    data = request.data
 
-    details,_= Details.objects.get(user=user)
+    details, created = Details.objects.get_or_create(user=user)
 
-    username = request.data.get("usernames")
+    usernames_data = data.get("usernames")
 
-    if not data:
-        return JsonResponse({"success" : False, "msg": "data not recieved"})
+    if not usernames_data:
+        return JsonResponse({"success": False, "msg": "No username data received"}, status=400)
 
-    obj,_= platformusername.objects.update_or_create(
-        details,
-        defaults = {
-            "cfusername" : username.get("cfusername"),
-            "stackusername" : username.get("stackusername"),
-            "gitusername" : username.get("gitusername"),
-        }
-    )
+    try:
+        obj, _ = PlatformUsernameDetails.objects.update_or_create(
+            details=details,
+            defaults={
+                "cfusername": usernames_data.get("cfusername", ""),
+                "stackusername": usernames_data.get("stackusername", ""),
+                "gitusername": usernames_data.get("gitusername", ""),
+            }
+        )
 
-    return JsonResponse({"success" : True, "msg" : "Username saved" , 
-        data : {
-            "cfusername" : obj.cfusername,
-            "stackusernam" : obj.stackoverflow,
-            "gitusername" : obj.gitusername,
-        }
-    })
+        return JsonResponse({
+            "success": True, 
+            "msg": "Usernames saved successfully", 
+            "data": {
+                "cfusername": obj.cfusername,
+                "stackusername": obj.stackusername, 
+                "gitusername": obj.gitusername,
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({"success": False, "msg": str(e)}, status=500)
 
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def FunctionSaveStudent(request):
     user = request.user
-    data = request.data.get("data")
+    item = request.data
+    details= Details.objects.get(user=user)
 
-    if not data:
+
+    if not item or not details:
         return JsonResponse(
-            {"success": False, "msg": "data not received"},
+            {"success": False, "msg": "Data Didn't Reach Us"},
             status=400
         )
 
-    details = Details.objects.get(user=user)
-
-    for student in data:
-        StudentDetails.objects.create(
+    try:
+        last_number = StudentDetails.objects.filter(details=details).order_by("-number").first()
+        number_wehave = (last_number.number + 1) if last_number else 1
+        StudentDetails.objects.update_or_create(
             details=details,
-            school=student.get("school"),
-            degree=student.get("degree"),
-            field=student.get("field"),
-            start_date=student.get("startDate"),
-            end_date=None if student.get("current") else student.get("endDate"),
-            current=student.get("current", False),
-            description=student.get("description", ""),
+            defaults={
+                "number" : number_wehave,
+                "schoolname" : item.get("schoolname"),
+                "degree" : item.get("degree"),
+                "field": item.get("field"),
+                "startdate": item.get("startDate"),
+                "enddate": None if item.get("current") else item.get("endDate"),
+                "current": item.get("current", False),
+                "description": item.get("description", ""),
+            }
         )
 
-    return JsonResponse({"success": True, "msg": "education saved"})
+        return JsonResponse({"success": True, "msg": "Education history updated successfully"})
 
+    except Exception as e:
+        print(f"Error saving education: {str(e)}")
+        return JsonResponse(
+            {"success": False, "msg": "A database error occurred", "error": str(e)},
+            status=500
+        )
 
 
 @api_view(["POST"])

@@ -29,7 +29,7 @@ export async function API<T = any>(
         }
 
         const refreshToken = await fetch(
-            backend_base_url + "api/token/refresh/",
+            backend_base_url + "/api/token/refresh/",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

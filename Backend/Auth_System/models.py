@@ -21,7 +21,7 @@ class PersonalDetails(models.Model):
     username = models.CharField(max_length=40)
     country = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
-    timezone = models.CharField(max_length=20)
+    gender = models.CharField(max_length=20)
     headline = models.CharField(max_length=100)
     bio = models.CharField(max_length=100, editable=True)
     visibility = models.CharField(max_length=20)
@@ -58,8 +58,8 @@ class PlatformUsernameDetails(models.Model):
         on_delete=models.CASCADE,
         related_name="platformusername"
     )
-    gitusername = models.CharField(max_length=100)
     cfusername = models.CharField(max_length=100)
+    gitusername = models.CharField(max_length=100)
     stackusername = models.CharField(max_length=100)
 
     def __str__(self):
@@ -73,16 +73,16 @@ class StudentDetails(models.Model):
         related_name="student"
     )
     number = models.PositiveIntegerField()
-    schoolname = models.CharField(max_length=100, editable=True)
+    schoolname = models.CharField(max_length=100)
     degree = models.CharField(max_length=100)
     field = models.CharField(max_length=100)
     startdate = models.CharField(max_length=10)
     enddate = models.CharField(max_length=100)
     current = models.BooleanField(default=False)
-    descritpion = models.CharField(max_length=100)
+    description = models.TextField()
 
     def __str__(self):
-        return self.school
+        return f"{self.schoolname} - {self.degree}"
 
 
 class ProjectDetails(models.Model):
