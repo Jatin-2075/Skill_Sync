@@ -1,8 +1,7 @@
 from django.urls import path, include
-from .views import FunctionSignup, FunctionsSaveProfile, Functionshowprofile
+from .views import FunctionSignup, FunctionsSavePersonal
 
 urlpatterns = [
     path("signup/", FunctionSignup),
-    path("personalsave/", FunctionsSaveProfile),
-    path("profile/", Functionshowprofile),
+    path("personalsave/", FunctionsSavePersonal),
 ]

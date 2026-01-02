@@ -51,7 +51,7 @@ export default function Page1() {
 
   const handlenext = async () => {
     try {
-      const ressubmit = await API("POST", "/auth/personal/", FormData);
+      const ressubmit = await API("POST", "/auth/personalsave/", {personal : FormData});
       const data = await ressubmit.json();
       if (data.success) {
         navigate("/pagetwo");
@@ -73,10 +73,6 @@ export default function Page1() {
     }));
   };
 
-  const handleContinue = () => {
-    console.log('Continuing to Phase 2');
-    navigate("/pagetwo");
-  };
 
   return (
     <div className="page-root">
@@ -292,7 +288,7 @@ export default function Page1() {
 
           {/* Footer Navigation */}
           <footer className="footer-nav">
-            <button onClick={handleContinue} className="btn-continue">Save & Continue →</button>
+            <button onClick={handlenext} className="btn-continue">Save & Continue →</button>
           </footer>
         </div>
       </main>

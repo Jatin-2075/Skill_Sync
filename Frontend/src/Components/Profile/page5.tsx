@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import "./style/page5.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
-export default function AvailabilityCollaboration() {
+export default function Page5() {
   const [currentStatus, setCurrentStatus] = useState('open');
   const [collaborationInterests, setCollaborationInterests] = useState({
     openSource: true,
@@ -10,7 +10,7 @@ export default function AvailabilityCollaboration() {
     startups: true,
     mentorship: false
   });
-  const [weeklyHours, setWeeklyHours] = useState(15);
+  const [weeklyHours, setWeeklyHours] = useState(10);
   const [makeProfilePublic, setMakeProfilePublic] = useState(true);
 
   const handleCollaborationToggle = (interest) => {
@@ -20,14 +20,14 @@ export default function AvailabilityCollaboration() {
     }));
   };
 
-  const navigate = useNavigate();
+  const navigate = useNavigate() ; 
 
-  const handleBack = () => {
-    navigate('/pagefour');
-  };
+  const handleBack = () =>{
+    navigate("/pagefour");
+  }
+  const sliderPercentage = (weeklyHours / 60) * 100;
 
   return (
-      
     <div className="page-container">
       <header className="header">
         <div className="brand">
@@ -46,13 +46,13 @@ export default function AvailabilityCollaboration() {
       <main className="main-content">
         <section className="progress-section">
             <div className="progress-info">
-              <span className="phase-text">Phase 5: Availibility & Collaboration</span>
+              <span className="phase-text">Phase 5: Availibility & Calibaration</span>
               <span className="completion-text">Final Step</span>
             </div>
             <div className="progress-bar">
               <div className="progress-fill" style={{ width: "100%" }} />
             </div>
-        </section>
+          </section>
 
         <section className="page-title-section">
           <h2 className="page-title">Availability & Collaboration</h2>
@@ -92,7 +92,7 @@ export default function AvailabilityCollaboration() {
                 onClick={() => handleCollaborationToggle('openSource')}
               >
                 <div className="collaboration-icon blue-bg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
                     <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                     <line x1="8" y1="21" x2="16" y2="21"></line>
                     <line x1="12" y1="17" x2="12" y2="21"></line>
@@ -103,7 +103,7 @@ export default function AvailabilityCollaboration() {
                   <div className="collaboration-subtitle">contribute to public repos</div>
                 </div>
                 <div className={`checkbox ${collaborationInterests.openSource ? 'checked' : ''}`}>
-                  {collaborationInterests.openSource && <span>✓</span>}
+                  {collaborationInterests.openSource && <span className="checkmark">✓</span>}
                 </div>
               </div>
 
@@ -112,7 +112,7 @@ export default function AvailabilityCollaboration() {
                 onClick={() => handleCollaborationToggle('paidProjects')}
               >
                 <div className="collaboration-icon green-bg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2">
                     <line x1="12" y1="1" x2="12" y2="23"></line>
                     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                   </svg>
@@ -122,7 +122,7 @@ export default function AvailabilityCollaboration() {
                   <div className="collaboration-subtitle">freelance & contract</div>
                 </div>
                 <div className={`checkbox ${collaborationInterests.paidProjects ? 'checked' : ''}`}>
-                  {collaborationInterests.paidProjects && <span>✓</span>}
+                  {collaborationInterests.paidProjects && <span className="checkmark">✓</span>}
                 </div>
               </div>
 
@@ -131,7 +131,7 @@ export default function AvailabilityCollaboration() {
                 onClick={() => handleCollaborationToggle('startups')}
               >
                 <div className="collaboration-icon purple-bg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333ea" strokeWidth="2">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                   </svg>
                 </div>
@@ -140,7 +140,7 @@ export default function AvailabilityCollaboration() {
                   <div className="collaboration-subtitle">co-founding or equity</div>
                 </div>
                 <div className={`checkbox ${collaborationInterests.startups ? 'checked' : ''}`}>
-                  {collaborationInterests.startups && <span>✓</span>}
+                  {collaborationInterests.startups && <span className="checkmark">✓</span>}
                 </div>
               </div>
 
@@ -149,7 +149,7 @@ export default function AvailabilityCollaboration() {
                 onClick={() => handleCollaborationToggle('mentorship')}
               >
                 <div className="collaboration-icon orange-bg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -161,7 +161,7 @@ export default function AvailabilityCollaboration() {
                   <div className="collaboration-subtitle">teaching others</div>
                 </div>
                 <div className={`checkbox ${collaborationInterests.mentorship ? 'checked' : ''}`}>
-                  {collaborationInterests.mentorship && <span>✓</span>}
+                  {collaborationInterests.mentorship && <span className="checkmark">✓</span>}
                 </div>
               </div>
             </div>
@@ -180,6 +180,9 @@ export default function AvailabilityCollaboration() {
                 value={weeklyHours}
                 onChange={(e) => setWeeklyHours(parseInt(e.target.value))}
                 className="availability-slider"
+                style={{
+                  background: `linear-gradient(to right, #2563eb 0%, #2563eb ${sliderPercentage}%, #e5e7eb ${sliderPercentage}%, #e5e7eb 100%)`
+                }}
               />
               <div className="slider-labels">
                 <span>0 hrs</span>
@@ -196,7 +199,7 @@ export default function AvailabilityCollaboration() {
               onClick={() => setMakeProfilePublic(!makeProfilePublic)}
             >
               <div className={`checkbox ${makeProfilePublic ? 'checked' : ''}`}>
-                {makeProfilePublic && <span>✓</span>}
+                {makeProfilePublic && <span className="checkmark">✓</span>}
               </div>
               <div className="toggle-content">
                 <div className="toggle-title">Make Profile Public</div>
@@ -211,7 +214,7 @@ export default function AvailabilityCollaboration() {
           <div className="review-card">
             <div className="profile-header">
               <div className="profile-avatar-large">
-                <span>SJ</span>
+                <span className="avatar-text">SJ</span>
                 <div className="online-indicator"></div>
               </div>
               <div className="profile-info">
@@ -233,21 +236,21 @@ export default function AvailabilityCollaboration() {
 
             <div className="verification-grid">
               <div className="verification-item completed">
-                <span className="check-icon">✓</span>
-                <span>Identity Verified</span>
+                <span className="check-icon-green">✓</span>
+                <span className="verification-text">Identity Verified</span>
               </div>
               <div className="verification-item completed">
-                <span className="check-icon">✓</span>
-                <span>GitHub Linked</span>
+                <span className="check-icon-green">✓</span>
+                <span className="verification-text">GitHub Linked</span>
               </div>
               <div className="verification-item completed">
-                <span className="check-icon">✓</span>
-                <span>Experience Added</span>
+                <span className="check-icon-green">✓</span>
+                <span className="verification-text">Experience Added</span>
               </div>
               <div className="verification-item warning">
                 <span className="warning-icon">!</span>
                 <div className="warning-content">
-                  <span>Portfolio</span>
+                  <span className="verification-text">Portfolio</span>
                   <span className="warning-subtext">1 project missing for calibration</span>
                 </div>
                 <button className="add-button">Add</button>
@@ -257,9 +260,9 @@ export default function AvailabilityCollaboration() {
         </section>
 
         <div className="action-buttons">
-          <button className="back-button">Back</button>
+          <button onClick={handleBack} className="back-button">Back</button>
           <div className="right-actions">
-            <button className="refine-button">Refine Later</button>
+            
             <button className="create-button">
               Create Profile
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -271,6 +274,6 @@ export default function AvailabilityCollaboration() {
         </div>
       </main>
     </div>
-    
   );
 }
+
