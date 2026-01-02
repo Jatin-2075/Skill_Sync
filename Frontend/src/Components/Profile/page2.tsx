@@ -129,6 +129,25 @@ export default function Page2() {
     return "Connect";
   };
 
+  const handlenext = async () => {
+    console.log(usernames)
+    try {
+      const res = await API("POST", "/auth/usernamesave/", { usernames })
+      const data = await res.json()
+
+      console.log(data)
+      if (data.success) {
+        navigate("/pagethree")
+      }
+      if (!data.success) {
+        alert("some err occured")
+      }
+    } catch (err) {
+      console.error(err);
+      alert("some err occurred");
+    }
+  }
+
   return (
     <div className="page2-root">
       <header className="page3-header">
@@ -179,9 +198,8 @@ export default function Page2() {
           <div className="page2-cards-stack">
             {/* Codeforces */}
             <article
-              className={`page2-platform-card ${
-                connectionStatus.cf === "loading" ? "verifying" : ""
-              }`}
+              className={`page2-platform-card ${connectionStatus.cf === "loading" ? "verifying" : ""
+                }`}
             >
               {connectionStatus.cf === "loading" && (
                 <div className="page2-loading-line" />
@@ -196,7 +214,7 @@ export default function Page2() {
                 <p className="page2-sub-text">
                   Maps to <strong>(Problem Solving)</strong> &{" "}
                   <strong>(Algorithms)</strong>.
-                  
+
                 </p>
 
                 <div className="page2-input-row">
@@ -219,9 +237,8 @@ export default function Page2() {
                   </div>
 
                   <button
-                    className={`page2-btn-connect-solid ${
-                      connectionStatus.cf === "connected" ? "connected" : ""
-                    }`}
+                    className={`page2-btn-connect-solid ${connectionStatus.cf === "connected" ? "connected" : ""
+                      }`}
                     onClick={handleCodeforces}
                     disabled={connectionStatus.cf === "loading"}
                   >
@@ -234,9 +251,8 @@ export default function Page2() {
 
                 <p className="page2-input-hint">
                   {connectionStatus.cf === "connected" && results.cf
-                    ? `Connected as ${results.cf.handle} (Rating: ${
-                        results.cf.rating || "N/A"
-                      })`
+                    ? `Connected as ${results.cf.handle} (Rating: ${results.cf.rating || "N/A"
+                    })`
                     : "We only fetch public profile and submission data."}
                 </p>
               </div>
@@ -244,9 +260,8 @@ export default function Page2() {
 
             {/* GitHub */}
             <article
-              className={`page2-platform-card ${
-                connectionStatus.git === "loading" ? "verifying" : ""
-              }`}
+              className={`page2-platform-card ${connectionStatus.git === "loading" ? "verifying" : ""
+                }`}
             >
               {connectionStatus.git === "loading" && (
                 <div className="page2-loading-line" />
@@ -281,9 +296,8 @@ export default function Page2() {
                   </div>
 
                   <button
-                    className={`page2-btn-connect-solid ${
-                      connectionStatus.git === "connected" ? "connected" : ""
-                    }`}
+                    className={`page2-btn-connect-solid ${connectionStatus.git === "connected" ? "connected" : ""
+                      }`}
                     onClick={handleGitHub}
                     disabled={connectionStatus.git === "loading"}
                   >
@@ -304,9 +318,8 @@ export default function Page2() {
 
             {/* Stack Overflow */}
             <article
-              className={`page2-platform-card ${
-                connectionStatus.stack === "loading" ? "verifying" : ""
-              }`}
+              className={`page2-platform-card ${connectionStatus.stack === "loading" ? "verifying" : ""
+                }`}
             >
               {connectionStatus.stack === "loading" && (
                 <div className="page2-loading-line" />
@@ -342,9 +355,8 @@ export default function Page2() {
                   </div>
 
                   <button
-                    className={`page2-btn-connect-solid ${
-                      connectionStatus.stack === "connected" ? "connected" : ""
-                    }`}
+                    className={`page2-btn-connect-solid ${connectionStatus.stack === "connected" ? "connected" : ""
+                      }`}
                     onClick={handleStackOverflow}
                     disabled={connectionStatus.stack === "loading"}
                   >
@@ -366,15 +378,10 @@ export default function Page2() {
 
           <footer className="page2-footer-nav">
             <button
-              onClick={() => navigate("/pageone")}
-              className="page4-btn-back"
-            >
+              onClick={() => navigate("/pageone")} className="page4-btn-back">
               Back
             </button>
-            <button
-              onClick={() => navigate("/pagethree")}
-              className="page4-btn-continue"
-            >
+            <button onClick={handlenext} className="page4-btn-continue">
               Save & Continue →
             </button>
           </footer>

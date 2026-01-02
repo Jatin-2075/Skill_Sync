@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import "./style/page3.css"
 import { useNavigate } from "react-router-dom";
+import { API } from '../../config/Api';
 
 interface Education {
-  id: string;
   school: string;
   degree: string;
   field: string;
@@ -14,39 +14,20 @@ interface Education {
 }
 
 const Page3 = () => {
-  const [formData, setFormData] = useState({
-    school: '',
-    degree: "Bachelor's",
-    field: '',
-    startDate: '',
-    endDate: '',
+
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState<Education>({
+    school: "",
+    degree: "",
+    field: "",
+    startDate: "",
+    endDate: "",
     current: false,
-    description: '',
+    description: "",
   });
 
-  const [timeline] = useState<Education[]>([
-    {
-      id: '1',
-      school: 'Massachusetts Institute of Technology',
-      degree: 'BSc',
-      field: 'Computer Science',
-      startDate: '2018',
-      endDate: '2022',
-      current: false,
-      description:
-        'Graduated with Honors. Specialization in Artificial Intelligence and Machine Learning. President of the…',
-    },
-    {
-      id: '2',
-      school: 'Lincoln High School',
-      degree: 'High School Diploma',
-      field: '',
-      startDate: '2016',
-      endDate: '2018',
-      current: false,
-      description: '',
-    },
-  ]);
+  const [databackend, setdatabackend] = useState<any[]>([])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -60,24 +41,18 @@ const Page3 = () => {
     }));
   };
 
-  const handleAddEducation = () => {
+  const handleAddEducation = async () => {
+    try {
+      const res = await API("POST", "/auth/studentsave/", { formData })
+      const backendres = await res.json()
+      setdata
+         
+    } catch (err) {
+      console.log(err)
+    }
     console.log('Adding education:', formData);
     alert('Education added to timeline!');
   };
-
-  const handleCancel = () => {
-    setFormData({
-      school: '',
-      degree: "Bachelor's",
-      field: '',
-      startDate: '',
-      endDate: '',
-      current: false,
-      description: '',
-    });
-  };
-
-  const navigate = useNavigate();
 
   const handleBack = () => {
     navigate("/pagetwo");
@@ -85,8 +60,9 @@ const Page3 = () => {
   };
 
   const handleContinue = () => {
-    navigate("/pagefour");
-    console.log('Continuing to Phase 4');
+    if (data) {
+      navigate("/pagefour")
+    }
   };
 
   return (
@@ -232,8 +208,9 @@ const Page3 = () => {
             </div>
 
             {/* Timeline Card */}
-            <div className="page3-card">
+            {/* <div className="page3-card">
               <h3>Your Timeline</h3>
+<<<<<<< HEAD
                 <div className="page3-timeline">
                   {timeline.length === 0 ? (
                     <p className="page3-empty-state">
@@ -272,6 +249,31 @@ const Page3 = () => {
                   )}
                 </div>
             </div>
+=======
+
+              <div className="page3-timeline">
+                {timeline.map((item, index) => (
+                  <div key={item.number} className="timeline-item">
+                    <div className={`timeline-dot ${index === 0 ? 'active' : ''}`} />
+                    <div className="timeline-content">
+                      <span className="timeline-year">
+                        {item.startDate} - {item.endDate}
+                      </span>
+                      <h4>{item.school}</h4>
+                      <p>
+                        {item.degree} {item.field && item.field}
+                      </p>
+                      {item.description && (
+                        <p className="page3-timeline-description">{item.description}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                <p className="page3-empty-state">Add more education above…</p>
+              </div>
+            </div> */}
+>>>>>>> c1876ef84de3eb2e0a35a35934e5975e5e417142
           </section>
 
           {/* Footer */}

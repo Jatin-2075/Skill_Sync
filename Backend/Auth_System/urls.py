@@ -17,5 +17,6 @@ urlpatterns = [
     path("saveskills/", FunctionSaveSkills),
     path("sendskills/", FunctionSendSkill),
     path("projectsave/", FunctionSaveProject),
-    path("colaboration/", FunctionSaveColaboration)
+    path("colaboration/", FunctionSaveColaboration),
+    path("studentsave/", FunctionSaveStudent),
 ]
