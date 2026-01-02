@@ -73,13 +73,46 @@ class StudentDetails(models.Model):
         related_name="student"
     )
     number = models.PositiveIntegerField()
-    schoolname = models.CharField(max_length=100)
-    degree = models.CharField(max_length=100)
-    field = models.CharField(max_length=100)
-    startdate = models.CharField(max_length=10)
-    enddate = models.CharField(max_length=100)
-    current = models.BooleanField(default=False)
-    description = models.TextField()
+
+    schoolname = models.CharField(
+        max_length=100,
+        blank=False,
+        null=False
+    )
+
+    degree = models.CharField(
+        max_length=100,
+        blank=False,
+        null=False
+    )
+
+    field = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    startdate = models.CharField(
+        max_length=10,
+        blank=False,
+        null=False
+    )
+
+    enddate = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    current = models.BooleanField(
+        default=False
+    )
+
+    description = models.TextField(
+        blank=True,
+        null=True
+    )
+
 
     def __str__(self):
         return f"{self.schoolname} - {self.degree}"
