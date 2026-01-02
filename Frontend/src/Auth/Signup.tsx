@@ -65,7 +65,7 @@ const Signup = () => {
 
                 if (access) {
                     
-                    navigate("/create")
+                    navigate("/pageone")
                 }
 
                 else {

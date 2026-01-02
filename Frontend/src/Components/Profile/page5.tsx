@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "./style/page5.css";
-import { useNavigate } from "react-router-dom";
+import { Weight } from 'lucide-react';
 
-export default function AvailabilityCollaboration() {
+
+export default function Page5() {
   const [currentStatus, setCurrentStatus] = useState('open');
   const [collaborationInterests, setCollaborationInterests] = useState({
     openSource: true,
@@ -10,10 +12,9 @@ export default function AvailabilityCollaboration() {
     startups: true,
     mentorship: false
   });
-  const [weeklyHours, setWeeklyHours] = useState(15);
+  const [weeklyHours, setWeeklyHours] = useState(10);
   const [makeProfilePublic, setMakeProfilePublic] = useState(true);
-
-  const handleCollaborationToggle = (interest) => {
+  const handleCollaborationToggle = (interest: string) => {
     setCollaborationInterests(prev => ({
       ...prev,
       [interest]: !prev[interest]
@@ -22,255 +23,140 @@ export default function AvailabilityCollaboration() {
 
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    navigate('/pagefour');
-  };
+  const handleBack = () => { navigate("/pagefour"); };
+  const [visibility,setVisibility] = useState<string>("Private") ; 
+  const sliderPercentage = (weeklyHours / 60) * 100;
 
   return (
-      
-    <div className="page-container">
-      <header className="header">
-        <div className="brand">
-          <div className="logo" />
-          <span className="brand-title">SkillRank</span>
+    <div className="page5-container">
+      <header className="page5-header">
+        <div className="page5-brand">
+          <div className="page5-logo" />
+          <span className="page5-brand-title">SkillRank</span>
         </div>
 
-        <div className="header-right">
-          <a className="help-link">
-            <span className="help-icon">?</span>
+        <div className="page5-header-right">
+          <a className="page5-help-link">
+            <span className="page5-help-icon">?</span>
             Help
           </a>
         </div>
       </header>
 
-      <main className="main-content">
-        <section className="progress-section">
-            <div className="progress-info">
-              <span className="phase-text">Phase 5: Availibility & Collaboration</span>
-              <span className="completion-text">Final Step</span>
-            </div>
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: "100%" }} />
-            </div>
+      <main className="page5-main-content">
+        <section className="page5-progress-section">
+          <div className="page5-progress-info">
+            <span className="page5-phase-text">Phase 5</span>
+            <span className="page5-completion-text">Final Step</span>
+          </div>
+          <div className="page5-progress-bar">
+            <div className="page5-progress-fill" style={{ width: "100%" }} />
+          </div>
         </section>
 
-        <section className="page-title-section">
-          <h2 className="page-title">Availability & Collaboration</h2>
-          <p className="page-subtitle">Customize how you interact with recruiters and the community.</p>
+        <section className="page5-title-section">
+          <h2 className="page5-page-title">Availability & Collaboration</h2>
+          <p className="page5-page-subtitle">Customize how you interact with recruiters and the community.</p>
         </section>
 
-        <section className="form-section">
-          <div className="form-card">
-            <h3 className="section-title">Current Status</h3>
-            <div className="status-options">
+        <section className="page5-form-card">
+          <div className="page5-input-group">
+            <h3 className="page5-section-title">Current Status</h3>
+            <div className="page5-status-container">
               <button 
-                className={`status-option ${currentStatus === 'active' ? 'active' : ''}`}
+                className={`page5-status-btn ${currentStatus === 'active' ? 'page5-active' : ''}`}
                 onClick={() => setCurrentStatus('active')}
-              >
-                Actively Looking
-              </button>
+              >Actively Looking</button>
               <button 
-                className={`status-option ${currentStatus === 'open' ? 'active' : ''}`}
+                className={`page5-status-btn ${currentStatus === 'open' ? 'page5-active' : ''}`}
                 onClick={() => setCurrentStatus('open')}
-              >
-                Open to Offers
-              </button>
+              >Open to Offers</button>
               <button 
-                className={`status-option ${currentStatus === 'unavailable' ? 'active' : ''}`}
+                className={`page5-status-btn ${currentStatus === 'unavailable' ? 'page5-active' : ''}`}
                 onClick={() => setCurrentStatus('unavailable')}
-              >
-                Unavailable
-              </button>
+              >Unavailable</button>
             </div>
           </div>
 
-          <div className="form-card">
-            <h3 className="section-title">Collaboration Interests</h3>
-            <div className="collaboration-grid">
-              <div 
-                className={`collaboration-card ${collaborationInterests.openSource ? 'selected' : ''}`}
-                onClick={() => handleCollaborationToggle('openSource')}
-              >
-                <div className="collaboration-icon blue-bg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                    <line x1="8" y1="21" x2="16" y2="21"></line>
-                    <line x1="12" y1="17" x2="12" y2="21"></line>
-                  </svg>
+          <div className="page5-input-group">
+            <h3 className="page5-section-title">Collaboration Interests</h3>
+            <div className="page5-collaboration-grid">
+              {/* Card 1 */}
+              <div className={`page5-collab-card ${collaborationInterests.openSource ? 'page5-selected' : ''}`} onClick={() => handleCollaborationToggle('openSource')}>
+                <div className="page5-card-icon blue">📂</div>
+                <div className="page5-card-info">
+                   <span className="page5-card-title">Open Source</span>
+                   <span className="page5-card-sub">contribute to public repos</span>
                 </div>
-                <div className="collaboration-text">
-                  <div className="collaboration-title">Open Source</div>
-                  <div className="collaboration-subtitle">contribute to public repos</div>
-                </div>
-                <div className={`checkbox ${collaborationInterests.openSource ? 'checked' : ''}`}>
-                  {collaborationInterests.openSource && <span>✓</span>}
-                </div>
+                <input type="checkbox" checked={collaborationInterests.openSource} readOnly />
               </div>
-
-              <div 
-                className={`collaboration-card ${collaborationInterests.paidProjects ? 'selected' : ''}`}
-                onClick={() => handleCollaborationToggle('paidProjects')}
-              >
-                <div className="collaboration-icon green-bg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="12" y1="1" x2="12" y2="23"></line>
-                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                  </svg>
+              {/* Card 2 */}
+              <div className={`page5-collab-card ${collaborationInterests.paidProjects ? 'page5-selected' : ''}`} onClick={() => handleCollaborationToggle('paidProjects')}>
+                <div className="page5-card-icon green">💰</div>
+                <div className="page5-card-info">
+                   <span className="page5-card-title">Paid Projects</span>
+                   <span className="page5-card-sub">freelance & contract</span>
                 </div>
-                <div className="collaboration-text">
-                  <div className="collaboration-title">Paid Projects</div>
-                  <div className="collaboration-subtitle">freelance & contract</div>
-                </div>
-                <div className={`checkbox ${collaborationInterests.paidProjects ? 'checked' : ''}`}>
-                  {collaborationInterests.paidProjects && <span>✓</span>}
-                </div>
+                <input type="checkbox" checked={collaborationInterests.paidProjects} readOnly />
               </div>
-
-              <div 
-                className={`collaboration-card ${collaborationInterests.startups ? 'selected' : ''}`}
-                onClick={() => handleCollaborationToggle('startups')}
-              >
-                <div className="collaboration-icon purple-bg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                  </svg>
+              {/* Card 3 */}
+              <div className={`page5-collab-card ${collaborationInterests.startups ? 'page5-selected' : ''}`} onClick={() => handleCollaborationToggle('startups')}>
+                <div className="page5-card-icon purple">🚀</div>
+                <div className="page5-card-info">
+                   <span className="page5-card-title">Startups</span>
+                   <span className="page5-card-sub">co-founding or equity</span>
                 </div>
-                <div className="collaboration-text">
-                  <div className="collaboration-title">Startups</div>
-                  <div className="collaboration-subtitle">co-founding or equity</div>
-                </div>
-                <div className={`checkbox ${collaborationInterests.startups ? 'checked' : ''}`}>
-                  {collaborationInterests.startups && <span>✓</span>}
-                </div>
+                <input type="checkbox" checked={collaborationInterests.startups} readOnly />
               </div>
-
-              <div 
-                className={`collaboration-card ${collaborationInterests.mentorship ? 'selected' : ''}`}
-                onClick={() => handleCollaborationToggle('mentorship')}
-              >
-                <div className="collaboration-icon orange-bg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                  </svg>
+              {/* Card 4 */}
+              <div className={`page5-collab-card ${collaborationInterests.mentorship ? 'page5-selected' : ''}`} onClick={() => handleCollaborationToggle('mentorship')}>
+                <div className="page5-card-icon orange">🎓</div>
+                <div className="page5-card-info">
+                   <span className="page5-card-title">Mentorship</span>
+                   <span className="page5-card-sub">teaching others</span>
                 </div>
-                <div className="collaboration-text">
-                  <div className="collaboration-title">Mentorship</div>
-                  <div className="collaboration-subtitle">teaching others</div>
-                </div>
-                <div className={`checkbox ${collaborationInterests.mentorship ? 'checked' : ''}`}>
-                  {collaborationInterests.mentorship && <span>✓</span>}
-                </div>
+                <input type="checkbox" checked={collaborationInterests.mentorship} readOnly />
               </div>
             </div>
           </div>
 
-          <div className="form-card">
-            <div className="availability-header">
-              <h3 className="section-title">Weekly Availability</h3>
-              <span className="hours-display">{weeklyHours} - {weeklyHours + 10} hrs</span>
-            </div>
-            <div className="slider-container">
-              <input 
-                type="range" 
-                min="0" 
-                max="60" 
-                value={weeklyHours}
-                onChange={(e) => setWeeklyHours(parseInt(e.target.value))}
-                className="availability-slider"
-              />
-              <div className="slider-labels">
-                <span>0 hrs</span>
-                <span>20 hrs</span>
-                <span>40 hrs</span>
-                <span>60+ hrs</span>
-              </div>
+          <div className="page5-input-group">
+          <div className="page5-availability-header">
+            <h3 className="page5-section-title">Weekly Availability</h3>
+            <span className="page5-hours-text">{weeklyHours} - {weeklyHours + 10} hrs</span>
+          </div>
+          <div className="page5-slider-wrapper">
+            <input 
+              type="range" 
+              min="0" 
+              max="60" 
+              value={weeklyHours} 
+              onChange={(e) => setWeeklyHours(parseInt(e.target.value))} 
+              className="page5-slider"
+              style={{
+                background: `linear-gradient(to right, #2563eb 0%, #2563eb ${sliderPercentage}%, #e2e8f0 ${sliderPercentage}%, #e2e8f0 100%)`
+              }}
+            />
+            <div className="page5-slider-labels">
+              <span>0 hrs</span><span>20 hrs</span><span>40 hrs</span><span>60+ hrs</span>
             </div>
           </div>
+          </div>
 
-          <div className="form-card">
-            <div 
-              className="public-profile-toggle"
-              onClick={() => setMakeProfilePublic(!makeProfilePublic)}
-            >
-              <div className={`checkbox ${makeProfilePublic ? 'checked' : ''}`}>
-                {makeProfilePublic && <span>✓</span>}
-              </div>
-              <div className="toggle-content">
-                <div className="toggle-title">Make Profile Public</div>
-                <div className="toggle-description">Your profile will be visible to recruiters and the SkillRank community. Uncheck to keep it private.</div>
-              </div>
-            </div>
+          <div className="page5-public-toggle">
+            {/* <input type="checkbox" checked={makeProfilePublic} onChange={() => setMakeProfilePublic(!makeProfilePublic)} id="public-check" /> */}
+            <label htmlFor="public-check">
+              <strong style={{color : 'red'}}>Disclaimer *</strong>
+              <p>Your profile will be <span style={{ fontWeight: 'bold' }}>{visibility}</span> to recruiters and the SkillRank community. <br />If wanna modify it then go to Phase-1 .</p>
+            </label>
           </div>
         </section>
 
-        <section className="final-review-section">
-          <h3 className="section-title">Final Review</h3>
-          <div className="review-card">
-            <div className="profile-header">
-              <div className="profile-avatar-large">
-                <span>SJ</span>
-                <div className="online-indicator"></div>
-              </div>
-              <div className="profile-info">
-                <h4 className="profile-name">Sarah Jenkins</h4>
-                <p className="profile-role">Senior Full Stack Developer</p>
-                <div className="profile-meta">
-                  <span className="rank-badge">Rank: Uncalibrated</span>
-                  <span className="location-badge">San Francisco, CA</span>
-                </div>
-              </div>
-              <div className="profile-strength">
-                <div className="strength-label">Profile Strength</div>
-                <div className="strength-bar">
-                  <div className="strength-fill"></div>
-                </div>
-                <div className="strength-text">Good (85%)</div>
-              </div>
-            </div>
-
-            <div className="verification-grid">
-              <div className="verification-item completed">
-                <span className="check-icon">✓</span>
-                <span>Identity Verified</span>
-              </div>
-              <div className="verification-item completed">
-                <span className="check-icon">✓</span>
-                <span>GitHub Linked</span>
-              </div>
-              <div className="verification-item completed">
-                <span className="check-icon">✓</span>
-                <span>Experience Added</span>
-              </div>
-              <div className="verification-item warning">
-                <span className="warning-icon">!</span>
-                <div className="warning-content">
-                  <span>Portfolio</span>
-                  <span className="warning-subtext">1 project missing for calibration</span>
-                </div>
-                <button className="add-button">Add</button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div className="action-buttons">
-          <button className="back-button">Back</button>
-          <div className="right-actions">
-            <button className="refine-button">Refine Later</button>
-            <button className="create-button">
-              Create Profile
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-          </div>
-        </div>
+        <footer className="page4-footer-nav">
+            <button onClick={handleBack} className="page4-btn-back">Back</button>
+            <button className="page4-btn-continue">Save & Continue →</button>
+        </footer>
       </main>
     </div>
-    
   );
 }
