@@ -9,7 +9,7 @@ interface Project {
   techStack: string[];
   skills: string[];
 }
-
+  
 interface SkillVector {
   id: string;
   number: string;
