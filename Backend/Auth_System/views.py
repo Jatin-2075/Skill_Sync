@@ -160,40 +160,91 @@ def FunctionSaveUsername(request):
 def FunctionSaveStudent(request):
     user = request.user
     item = request.data
-    details= Details.objects.get(user=user)
 
+    print(item)
 
+    details = Details.objects.filter(user=user).first()
     if not item or not details:
-        return JsonResponse(
-            {"success": False, "msg": "Data Didn't Reach Us"},
+        return Response(
+            {"success": False, "msg": "Data didn't reach us"},
             status=400
         )
 
+    last_entry = (
+        StudentDetails.objects
+        .filter(details=details)
+        .order_by("-number")
+        .first()
+    )
+    number_wehave = last_entry.number + 1 if last_entry else 1
+
     try:
-        last_number = StudentDetails.objects.filter(details=details).order_by("-number").first()
-        number_wehave = (last_number.number + 1) if last_number else 1
-        StudentDetails.objects.update_or_create(
+        StudentDetails.objects.create(
             details=details,
-            defaults={
-                "number" : number_wehave,
-                "schoolname" : item.get("schoolname"),
-                "degree" : item.get("degree"),
-                "field": item.get("field"),
-                "startdate": item.get("startDate"),
-                "enddate": None if item.get("current") else item.get("endDate"),
-                "current": item.get("current", False),
-                "description": item.get("description", ""),
-            }
+            number=number_wehave,                      
+            schoolname=item.get("schoolname"),
+            degree=item.get("degree"),
+            field=item.get("field"),
+            startdate=item.get("startdate") or None,
+            enddate=None if item.get("startdate") else item.get("enddate"),
+            current=item.get("current", False),
+            description=item.get("description", ""),
         )
 
-        return JsonResponse({"success": True, "msg": "Education history updated successfully"})
+        return Response({
+            "success": True,
+            "msg": "Education history updated successfully"
+        })
 
     except Exception as e:
         print(f"Error saving education: {str(e)}")
-        return JsonResponse(
-            {"success": False, "msg": "A database error occurred", "error": str(e)},
+        return Response(
+            {
+                "success": False,
+                "msg": "A database error occurred",
+                "error": str(e)
+            },
             status=500
         )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def FunctionSendStudent(request):
+    user = request.user
+
+    details = Details.objects.filter(user=user).first()
+    if not details:
+        return Response({
+            "success": False,
+            "msg": "User details not found",
+            "data": []
+        }, status=404)
+
+    education = (
+        StudentDetails.objects
+        .filter(details=details)
+        .order_by("-number")
+    )
+
+    data = []
+    for ed in education:
+        data.append({
+            "number": ed.number,
+            "schoolname": ed.schoolname,
+            "degree": ed.degree,
+            "field": ed.field,
+            "startdate": str(ed.startdate) if ed.startdate else None,
+            "enddate": str(ed.enddate) if ed.enddate else None,
+            "current": ed.current,
+            "description": ed.description,
+        })
+
+    return Response({
+        "success": True,
+        "msg": "Education timeline fetched",
+        "data": data
+    })
 
 
 @api_view(["POST"])

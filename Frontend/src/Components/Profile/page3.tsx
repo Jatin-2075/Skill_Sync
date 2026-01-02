@@ -1,31 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import "./style/page3.css"
 import { useNavigate } from "react-router-dom";
 import { API } from '../../config/Api';
 
 interface Education {
-  school: string;
+  schoolname: string;
   degree: string;
   field: string;
-  startDate: string;
-  endDate: string;
+  startdate: string;
+  enddate: string;
   current: boolean;
   description: string;
 }
 
 const Page3 = () => {
 
+  useEffect(() => {
+    FunctionFetch();
+  }, [])
+
+  const FunctionFetch = async () => {
+  try {
+    const res = await API("GET", "/auth/sendstudent/");
+    const result = await res.json();
+
+    if (result.success) {
+      setTimeline(result.data);
+    }
+  } catch (err) {
+    console.log("Fetch timeline error", err);
+  }
+};
+
+
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<Education>({
-    school: "",
+    schoolname: "",
     degree: "",
     field: "",
-    startDate: "",
-    endDate: "",
+    startdate: "",
+    enddate: "",
     current: false,
     description: "",
   });
+
+  const [timeline, setTimeline] = useState<any[]>([])
 
   const [databackend, setdatabackend] = useState<any[]>([])
 
@@ -42,17 +62,36 @@ const Page3 = () => {
   };
 
   const handleAddEducation = async () => {
-    try {
-      const res = await API("POST", "/auth/studentsave/", { formData })
-      const backendres = await res.json()
-      setdata
-         
-    } catch (err) {
-      console.log(err)
+  console.log(formData);
+
+  try {
+    const res = await API("POST", "/auth/studentsave/", formData); // ✅ FIXED
+    const backendres = await res.json();
+    setdatabackend(backendres);
+
+    if (backendres.success) {
+      await FunctionFetch(); // refresh timeline
+
+      setFormData({
+        schoolname: "",
+        degree: "",
+        field: "",
+        startdate: "",
+        enddate: "",
+        current: false,
+        description: "",
+      });
+
+      alert("Education added to timeline!");
+    } else {
+      alert(backendres.msg || "Failed to save education");
     }
-    console.log('Adding education:', formData);
-    alert('Education added to timeline!');
-  };
+
+  } catch (err) {
+    console.log("Save error", err);
+  }
+};
+
 
   const handleBack = () => {
     navigate("/pagetwo");
@@ -60,10 +99,19 @@ const Page3 = () => {
   };
 
   const handleContinue = () => {
-    if (data) {
-      navigate("/pagefour")
-    }
   };
+
+  const handleCancel = () => {
+    setFormData({
+      schoolname: "",
+      degree: "",
+      field: "",
+      startdate: "",
+      enddate: "",
+      current: false,
+      description: "",
+    })
+  }
 
   return (
     <div className="page3-page-root">
@@ -82,7 +130,6 @@ const Page3 = () => {
         </div>
       </header>
 
-      {/* Main */}
       <main className="page3-main">
         <div className="page3-container">
           {/* Progress */}
@@ -111,10 +158,10 @@ const Page3 = () => {
               <h3>Add New Education</h3>
 
               <label className="page3-form-label">
-                <span className="page3-label-text">School or University</span>
+                <span className="page3-label-text">schoolname or University</span>
                 <input
-                  name="school"
-                  value={formData.school}
+                  name="schoolname"
+                  value={formData.schoolname}
                   onChange={handleInputChange}
                   className="page3-form-input"
                   placeholder="Ex: Stanford University"
@@ -129,12 +176,14 @@ const Page3 = () => {
                     value={formData.degree}
                     onChange={handleInputChange}
                     className="page3-form-select"
+                    
                   >
-                    <option>Bachelor's</option>
-                    <option>Master's</option>
-                    <option>PhD</option>
-                    <option>Associate</option>
-                    <option>High School</option>
+                    <option value="" disabled>Select Degree</option>
+                    <option value="Bachelor">Bachelor's</option>
+                    <option value="Master's">Master's</option>
+                    <option value="PHD">PhD</option>
+                    <option value="Associate">Associate</option>
+                    <option value="High School">High school</option>
                   </select>
                 </label>
 
@@ -154,8 +203,8 @@ const Page3 = () => {
                 <label className="page3-form-label">
                   <span className="page3-label-text">Start Date</span>
                   <input
-                    name="startDate"
-                    value={formData.startDate}
+                    name="startdate"
+                    value={formData.startdate}
                     onChange={handleInputChange}
                     type="date"
                     className="page3-form-input"
@@ -165,8 +214,8 @@ const Page3 = () => {
                 <label className="page3-form-label">
                   <span className="page3-label-text">End Date</span>
                   <input
-                    name="endDate"
-                    value={formData.endDate}
+                    name="enddate"
+                    value={formData.enddate}
                     onChange={handleInputChange}
                     type="date"
                     className="page3-form-input"
@@ -187,7 +236,7 @@ const Page3 = () => {
               </label>
 
               <label className="page3-form-label">
-                <span className="page3-label-text">Description (Optional)</span>
+                <span className="page3-label-text">description (Optional)</span>
                 <textarea
                   name="description"
                   value={formData.description}
@@ -208,72 +257,46 @@ const Page3 = () => {
             </div>
 
             {/* Timeline Card */}
-            {/* <div className="page3-card">
+            <div className="page3-card">
               <h3>Your Timeline</h3>
-<<<<<<< HEAD
-                <div className="page3-timeline">
-                  {timeline.length === 0 ? (
-                    <p className="page3-empty-state">
-                      No Timeline to display
-                    </p>
-                  ) : (
-                    <>
-                      {timeline.map((item, index) => (
-                        <div key={item.id} className="page3-timeline-item">
-                          <div
-                            className={`page3-timeline-dot ${
-                              index === 0 ? 'page3-active' : ''
-                            }`}
-                          />
-                          <div className="page3-timeline-content">
-                            <span className="page3-timeline-year">
-                              {item.startDate} - {item.endDate}
-                            </span>
-                            <h4>{item.school}</h4>
-                            <p>
-                              {item.degree}
-                              {item.field && ` · ${item.field}`}
-                            </p>
-                            {item.description && (
-                              <p className="page3-timeline-description">
-                                {item.description}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                      <p className="page3-empty-state">
-                        Add more education above…
-                      </p>
-                    </>
-                  )}
-                </div>
-            </div>
-=======
-
               <div className="page3-timeline">
-                {timeline.map((item, index) => (
-                  <div key={item.number} className="timeline-item">
-                    <div className={`timeline-dot ${index === 0 ? 'active' : ''}`} />
-                    <div className="timeline-content">
-                      <span className="timeline-year">
-                        {item.startDate} - {item.endDate}
-                      </span>
-                      <h4>{item.school}</h4>
-                      <p>
-                        {item.degree} {item.field && item.field}
-                      </p>
-                      {item.description && (
-                        <p className="page3-timeline-description">{item.description}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-
-                <p className="page3-empty-state">Add more education above…</p>
+                {timeline.length === 0 ? (
+                  <p className="page3-empty-state">
+                    No Timeline to display
+                  </p>
+                ) : (
+                  <>
+                    {timeline.map((item, index) => (
+                      <div key={item.number} className="page3-timeline-item">
+                        <div
+                          className={`page3-timeline-dot ${index === 0 ? 'page3-active' : ''
+                            }`}
+                        />
+                        <div className="page3-timeline-content">
+                          <span className="page3-timeline-year">
+                            {item.startdate} - {item.enddate}
+                          </span>
+                          <h4>{item.schoolname}</h4>
+                          <p>
+                            {item.degree}
+                            {item.field && ` · ${item.field}`}
+                          </p>
+                          {item.description && (
+                            <p className="page3-timeline-description">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    <p className="page3-empty-state">
+                      Add more education above…
+                    </p>
+                  </>
+                )}
               </div>
-            </div> */}
->>>>>>> c1876ef84de3eb2e0a35a35934e5975e5e417142
+            </div>
+
           </section>
 
           {/* Footer */}
