@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import "./style/page4.css"
+
 interface Project {
   id: string;
   title: string;
@@ -110,100 +111,99 @@ const Page4 = () => {
   }
 
   return (
-    <div className="page-root">
+    <div className="page4-page-root">
       {/* Header */}
-      <header className="header">
-        <div className="brand">
-          <div className="logo" />
-          <span className="brand-title">SkillRank</span>
+      <header className="page4-header">
+        <div className="page4-brand">
+          <div className="page4-logo" />
+          <span className="page4-brand-title">SkillRank</span>
         </div>
 
-        <div className="header-right">
-          <a className="help-link">
-            <span className="help-icon">?</span>
+        <div className="page4-header-right">
+          <a className="page4-help-link">
+            <span className="page4-help-icon">?</span>
             Help
           </a>
-          
         </div>
       </header>
 
       {/* Main */}
-      <main className="main">
-        <div className="container">
+      <main className="page4-main">
+        <div className="page4-container">
           {/* Progress */}
-          <section className="progress-section">
-            <div className="progress-info">
-              <span className="phase-text">Phase 4: Projects & Contributions</span>
-              <span className="completion-text">80% Completed</span>
+          <section className="page4-progress-section">
+            <div className="page4-progress-info">
+              <span className="page4-phase-text">Phase 4: Projects & Contributions</span>
+              <span className="page4-completion-text">80% Completed</span>
             </div>
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: "80%" }} />
+            <div className="page4-progress-bar">
+              <div className="page4-progress-fill" style={{ width: "80%" }} />
             </div>
           </section>
 
           {/* Heading */}
-          <section className="heading-section">
+          <section className="page4-heading-section">
             <h1>Showcase Your Work</h1>
             <p>
-              Add projects that demonstrate your technical capabilities. Map them to specific skill
+              Add projects that demonstrate your technical capabilities. Map them to specific skills
               to validate your expertise for the global ranking algorithm.
             </p>
           </section>
 
           {/* Added Projects */}
-          <section className="added-projects-section">
-            <h2 className="section-title">Added Projects</h2>
+          <section className="page4-added-projects-section">
+            <h2 className="page4-section-title">Added Projects</h2>
             {projects.map((project) => (
-              <div key={project.id} className="project-card">
-                <div className="project-icon">💼</div>
-                <div className="project-info">
-                  <h3 className="project-title">{project.title}</h3>
-                  <p className="project-meta">
+              <div key={project.id} className="page4-project-card">
+                <div className="page4-project-icon">💼</div>
+                <div className="page4-project-info">
+                  <h3 className="page4-project-title">{project.title}</h3>
+                  <p className="page4-project-meta">
                     {project.role} • {project.techStack.join(', ')}
                   </p>
                 </div>
-                <div className="project-tags">
+                <div className="page4-project-tags">
                   {project.skills.map((skill) => (
-                    <span key={skill} className="skill-tag">
+                    <span key={skill} className="page4-skill-tag">
                       {skill}
                     </span>
                   ))}
                 </div>
-                <button className="edit-btn">✏️</button>
+                <button className="page4-edit-btn">✏️</button>
               </div>
             ))}
           </section>
 
           {/* New Project Entry */}
-          <section className="new-project-section">
-            <div className="section-header">
-              <h2 className="section-title">New Project </h2>
-              <a className="clear-link" onClick={handleClearForm}>
+          <section className="page4-new-project-section">
+            <div className="page4-section-header">
+              <h2 className="page4-section-title">New Project</h2>
+              <a className="page4-clear-link" onClick={handleClearForm}>
                 Clear Form
               </a>
             </div>
 
-            <div className="form-card">
+            <div className="page4-form-card">
               {/* Title and Role */}
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Project Title</label>
+              <div className="page4-form-row">
+                <div className="page4-form-group">
+                  <label className="page4-form-label">Project Title</label>
                   <input
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="form-input"
+                    className="page4-form-input"
                     placeholder="e.g. Distributed Task Queue"
                   />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Your Role</label>
+                <div className="page4-form-group">
+                  <label className="page4-form-label">Your Role</label>
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleInputChange}
-                    className="form-select"
+                    className="page4-form-select"
                   >
                     <option value="">Select your role</option>
                     <option value="Lead Developer">Lead Developer</option>
@@ -216,29 +216,29 @@ const Page4 = () => {
               </div>
 
               {/* Description */}
-              <div className="form-group">
-                <label className="form-label">Project Description & Impact</label>
-                <p className="form-helper">
+              <div className="page4-form-group">
+                <label className="page4-form-label">Project Description & Impact</label>
+                <p className="page4-form-helper">
                   Briefly explain the problem statement and the solution. Mention key metrics if available.
                 </p>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="form-textarea"
+                  className="page4-form-textarea"
                   placeholder="Describe what you built, why it matters, and the outcome..."
                 />
               </div>
 
               {/* Tech Stack */}
-              <div className="form-group">
-                <label className="form-label">Tech Stack</label>
-                <div className="tech-stack">
+              <div className="page4-form-group">
+                <label className="page4-form-label">Tech Stack</label>
+                <div className="page4-tech-stack">
                   {formData.techStack.map((tech) => (
-                    <span key={tech} className="tech-tag">
+                    <span key={tech} className="page4-tech-tag">
                       {tech}
                       <button
-                        className="remove-tag"
+                        className="page4-remove-tag"
                         onClick={() => removeTechTag(tech)}
                       >
                         x
@@ -247,7 +247,7 @@ const Page4 = () => {
                   ))}
                   <input
                     type="text"
-                    className="tech-input"
+                    className="page4-tech-input"
                     placeholder="Type and press Enter..."
                     value={techInput}
                     onChange={(e) => setTechInput(e.target.value)}
@@ -257,60 +257,60 @@ const Page4 = () => {
               </div>
 
               {/* Skill Vector Mapping */}
-              <div className="skill-mapping">
-                <div className="mapping-header">
-                  <div className="mapping-title">
-                    <span className="mapping-icon">🎯</span>
+              <div className="page4-skill-mapping">
+                <div className="page4-mapping-header">
+                  <div className="page4-mapping-title">
+                    <span className="page4-mapping-icon">🎯</span>
                     Skill Mapping
                   </div>
-                  <span className="required-badge">Required</span>
+                  <span className="page4-required-badge">Required</span>
                 </div>
-                <p className="mapping-description">
+                <p className="page4-mapping-description">
                   Select the core competency vectors this project demonstrates. This directly influences your SkillRank.
                 </p>
-                <div className="skill-grid">
+                <div className="page4-skill-grid">
                   {skillVectors.map((skill) => (
                     <div
                       key={skill.id}
-                      className={`skill-card ${
-                        selectedSkills.includes(skill.number) ? 'selected' : ''
+                      className={`page4-skill-card ${
+                        selectedSkills.includes(skill.number) ? 'page4-selected' : ''
                       }`}
                       onClick={() => toggleSkill(skill.number)}
                     >
-                      <span className="skill-number">{skill.number}</span>
-                      <span className="skill-name">{skill.name}</span>
-                      <span className="skill-description">{skill.description}</span>
-                      <div className="skill-check">✓</div>
+                      <span className="page4-skill-number">{skill.number}</span>
+                      <span className="page4-skill-name">{skill.name}</span>
+                      <span className="page4-skill-description">{skill.description}</span>
+                      <div className="page4-skill-check">✓</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* URLs */}
-              <div className="url-row">
-                <div className="form-group">
-                  <label className="form-label">Repository URL</label>
-                  <div className="url-input-wrapper">
-                    <span className="url-icon">🔗</span>
+              <div className="page4-url-row">
+                <div className="page4-form-group">
+                  <label className="page4-form-label">Repository URL</label>
+                  <div className="page4-url-input-wrapper">
+                    <span className="page4-url-icon">🔗</span>
                     <input
                       name="repositoryUrl"
                       value={formData.repositoryUrl}
                       onChange={handleInputChange}
-                      className="form-input url-input"
+                      className="page4-form-input page4-url-input"
                       placeholder="github.com/username/project"
                     />
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Live Demo / Docs</label>
-                  <div className="url-input-wrapper">
-                    <span className="url-icon">🚀</span>
+                <div className="page4-form-group">
+                  <label className="page4-form-label">Live Demo / Docs</label>
+                  <div className="page4-url-input-wrapper">
+                    <span className="page4-url-icon">🚀</span>
                     <input
                       name="demoUrl"
                       value={formData.demoUrl}
                       onChange={handleInputChange}
-                      className="form-input url-input"
+                      className="page4-form-input page4-url-input"
                       placeholder="https://..."
                     />
                   </div>
@@ -318,16 +318,16 @@ const Page4 = () => {
               </div>
 
               {/* Add Button */}
-              <button className="add-project-btn" onClick={handleAddProject}>
+              <button className="page4-add-project-btn" onClick={handleAddProject}>
                 + Add Project
               </button>
             </div>
           </section>
 
           {/* Footer */}
-          <footer className="footer-nav">
-            <button onClick={handleBack} className="btn-back">Back to Phase 3</button>
-            <button className="btn-continue">Save & Continue →</button>
+          <footer className="page4-footer-nav">
+            <button onClick={handleBack} className="page4-btn-back">Back</button>
+            <button className="page4-btn-continue">Save & Continue →</button>
           </footer>
         </div>
       </main>

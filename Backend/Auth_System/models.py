@@ -17,7 +17,7 @@ class PersonalDetails(models.Model):
         on_delete=models.CASCADE,      
         related_name="personal"
     )
-    fullname = models.CharField(max_length=100)
+    fullName = models.CharField(max_length=100)
     username = models.CharField(max_length=40)
     country = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
@@ -27,7 +27,29 @@ class PersonalDetails(models.Model):
     visibility = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.name
+        return self.fullName
+
+
+class SkillList(models.Model):
+    skill = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.skill
+
+class UserSkill(models.Model):
+    details = models.ForeignKey(
+        Details,
+        on_delete=models.CASCADE,
+        related_name="user_skills"
+    )
+    skill = models.ForeignKey(
+        SkillList,
+        on_delete=models.CASCADE,
+        related_name="users"
+    )
+
+    class Meta:
+        unique_together = ("details", "skill")
 
 
 class PlatformUsernameDetails(models.Model):
@@ -42,7 +64,6 @@ class PlatformUsernameDetails(models.Model):
 
     def __str__(self):
         return self.github
-
 
 
 class StudentDetails(models.Model):
@@ -61,15 +82,16 @@ class StudentDetails(models.Model):
     descritpion = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.currentstatus
+        return self.school
 
 
-class Project(models.Model):
+class ProjectDetails(models.Model):
     details = models.ForeignKey(
         Details,
         on_delete=models.CASCADE,
         related_name="projects"
     )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=20)
     description = models.TextField()
@@ -79,13 +101,17 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
-class Skill(models.Model):
+
+class Colaboration(models.Model):
     details = models.ForeignKey(
         Details,
         on_delete=models.CASCADE,
-        related_name="skills"
+        related_name="colab"
     )
-    skill = models.CharField(max_length=100)
+    opensource = models.BooleanField(default=False),
+    paidprojects = models.BooleanField(default=False),
+    startup = models.BooleanField(default=False),
+    mentorship = models.BooleanField(default=False),
 
     def __str__(self):
-        return self.skill
+        return self.opensource

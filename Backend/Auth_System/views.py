@@ -2,7 +2,16 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import (Details, PersonalDetails, WorkDetails, StudentDetails, PlatformUsernameDetails, Project, Skill)
+from .models import (
+    Details,
+    PersonalDetails,
+    SkillList,
+    UserSkill,
+    PlatformUsernameDetails,
+    StudentDetails,
+    ProjectDetails,
+    Colaboration
+)
 import json
 
 @api_view(["POST"])
@@ -32,74 +41,207 @@ def FunctionSignup(request):
 
     return JsonResponse({'success': True, 'msg': 'Account Created'})
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def FunctionsSaveProfile(request):
+def FunctionSaveSkills(request):
+    skills = request.data.get("skills", [])
+
+    if not skills:
+        return JsonResponse(
+            {"success": False, "msg": "No skills provided"},
+            status=400
+        )
+
+    details = Details.objects.get(user=request.user)
+
+    for skill_name in skills:
+        skill, _ = Skill.objects.get_or_create(skill=skill_name)
+
+        UserSkill.objects.get_or_create(
+            details=details,
+            skill=skill
+        )
+
+    return JsonResponse({"success": True})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def FunctionSendSkill(request):
+    skill = SkillList.objects.all().order_by("skill")
+
+    return JsonResponse({
+        "success" : True,
+        "skills" : [s.skills for s in skills]
+    })
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def FunctionSavePersonal(request):
     user = request.user
     data = request.data
 
-    details, _ = Details.objects.get_or_create(user=user)
+    details, _ = Details.objects.get(user=user)
 
-    personal_data = data.get("personal")
-    if personal_data:
-        PersonalDetails.objects.update_or_create(
-            details=details,
-            defaults={
-                "name": personal_data.get("name", ""),
-                "contactmail": personal_data.get("contactmail", ""),
-                "portfolio": personal_data.get("portfolio"),
-                "country": personal_data.get("country", ""),
-                "location": personal_data.get("location", ""),
-            }
-        )
+    personal_data = request.data.get("personal")
 
-    student_data = data.get("student")
-    if student_data:
-        StudentDetails.objects.update_or_create(
-            details=details,
-            defaults={
-                "currentstatus": student_data.get("currentstatus", ""),
-                "level": student_data.get("level", ""),
-                "college": student_data.get("college", ""),
-                "year": student_data.get("year"),
-                "passingyear": student_data.get("passingyear"),
-                "branch": student_data.get("branch", ""),
-            }
-        )
+    if not personal_data:
+        return JsonResponse({"success":True, "msg":"data didn't reach backend"})
+    obj,_= PersonalDetails.objects.update_or_create(
+        details=details,
+        defaults={
+            "fullName": personal_data.get("fullName", ""),
+            "username": personal_data.get("username", ""),
+            "country": personal_data.get("country", ""),
+            "city": personal_data.get("city"),
+            "timezone": personal_data.get("timezone", ""),
+            "headline" : personal_data.get("headline",""),
+            "bio" : personal_data.get("bio",""),
+            "visibility" : personal_data.get("visibility",""),
+        }
+    )
 
-    work_data = data.get("work")
-    if work_data:
-        WorkDetails.objects.update_or_create(
-            details=details,
-            defaults={
-                "workingprofile": work_data.get("workingprofile", ""),
-                "preferredrole": work_data.get("preferredrole", ""),
-                "yearexperience": int(work_data.get("yearexperience", 0)),
-                "company": work_data.get("company", ""),
-            }
-        )
-
-    projects_data = data.get("projects")
-    if isinstance(projects_data, list):
-        Project.objects.filter(details=details).delete()
-        for proj in projects_data:
-            if proj.get("name") and proj.get("description") and proj.get("link"):
-                Project.objects.create(
-                    details=details,
-                    name=proj["name"],
-                    description=proj["description"],
-                    link=proj["link"]
-                )
-
-    skills_data = data.get("skills")
-    if isinstance(skills_data, list):
-        Skill.objects.filter(details=details).delete()
-        for skill in skills_data:
-            if isinstance(skill, str) and skill.strip():
-                Skill.objects.create(details=details, skill=skill.strip())
 
     return JsonResponse({
-        "success": True,
-        "msg": "Profile saved / updated successfully"
+        "success" : True,
+        "msg" : "profile create next page",
+         "personal": {
+            "fullName": obj.fullName,
+            "username": obj.username,
+            "country": obj.country,
+            "city": obj.city,
+            "timezone": obj.timezone,
+            "headline": obj.headline,
+            "bio": obj.bio,
+            "visibility": obj.visibility,
+        }})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def FunctionSaveUsername(request):
+    user = request.user
+    data = request.data("usernames")
+
+    details,_= Details.objects.get(user=user)
+
+    username = request.data.get("usernames")
+
+    if not data:
+        return JsonResponse({"success" : False, "msg": "data not recieved"})
+
+    obj,_= platformusername.objects.update_or_create(
+        details,
+        defaults = {
+            "cfusername" : username.get("cfusername"),
+            "stackusername" : username.get("stackusername"),
+            "gitusername" : username.get("gitusername"),
+        }
+    )
+
+    return JsonResponse({"success" : True, "msg" : "Username saved" , 
+        data : {
+            "cfusername" : obj.cfusername,
+            "stackusernam" : obj.stackoverflow,
+            "gitusername" : obj.gitusername,
+        }
     })
 
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def FunctionSaveStudent(request):
+    user = request.user
+    data = request.data.get("data")
+
+    if not data:
+        return JsonResponse(
+            {"success": False, "msg": "data not received"},
+            status=400
+        )
+
+    details = Details.objects.get(user=user)
+
+    for student in data:
+        StudentDetails.objects.create(
+            details=details,
+            school=student.get("school"),
+            degree=student.get("degree"),
+            field=student.get("field"),
+            start_date=student.get("startDate"),
+            end_date=None if student.get("current") else student.get("endDate"),
+            current=student.get("current", False),
+            description=student.get("description", ""),
+        )
+
+    return JsonResponse({"success": True, "msg": "education saved"})
+
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def FunctionSaveProject(request):
+    user = request.user
+    payload = request.data.get("projects", [])
+
+    if not payload:
+        return JsonResponse(
+            {"success": False, "msg": "No project data received"},
+            status=400
+        )
+
+    details = Details.objects.get(user=user)
+
+    for proj in payload:
+        project_obj = ProjectDetails.objects.create(
+            details=details,
+            name=proj.get("name"),
+            role=proj.get("role"),
+            description=proj.get("description"),
+            githublink=proj.get("githublink"),
+            livelink=proj.get("livelink"),
+        )
+
+        skills = proj.get("skills", [])
+        for skill_name in skills:
+            skill, _ = SkillList.objects.get_or_create(
+                skill=skill_name.strip()
+            )
+
+            ProjectSkill.objects.get_or_create(
+                project=project_obj,
+                skill=skill
+            )
+
+    return JsonResponse({"success": True, "msg": "Projects saved"})
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def FunctionSaveColaboration(request):
+    user = request.user
+    data = request.data.get("colab")
+
+    if not data:
+        return JsonResponse({"success" : False, "msg" : "no data recieved"})
+
+    obj,_= Colaboration.objects.get_or_create(
+        details,
+        defaults={
+            "opensource" : data.get("opensource"),
+            "paidprojects" : data.get("paidprojects"),
+            "startup" : data.get("startup"),
+            "mentorship" : data.get("mentorship")
+        }
+    )
+
+    return JsonResponse({
+        "success" : True,
+        "msg" : "done",
+        data : {
+            "opensource" : obj.opensource,
+            "paidproject" : obj.paidprojects,
+            "startup" : obj.startup,
+            "mentorship" : obj.mentorship
+        }
+    })
