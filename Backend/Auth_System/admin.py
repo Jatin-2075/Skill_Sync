@@ -3,3 +3,5 @@ from .models import *
 
 admin.site.register(Details)
 admin.site.register(PersonalDetails)
+admin.site.register(PlatformUsernameDetails)
+admin.site.register(StudentDetails)

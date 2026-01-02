@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import "./style/page1.css";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../config/Api";
+import { uploadProfileImage } from "../ImageService";
+import { supabase } from "../ImageService";
 
 type Country = {
   cca2: string;
@@ -15,27 +17,29 @@ interface FormData {
   username: string;
   country: string;
   city: string;
-  timezone: string;
+  gender: string;
   headline: string;
   bio: string;
   visibility: string;
 }
 
-export default function Page1() {
+const Page1 = ({ }) => {
   const navigate = useNavigate();
 
   const [countries, setcountries] = useState<Country[]>([]);
-
-  const [FormData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormData>({
     fullName: "",
     username: "",
     country: "",
     city: "",
-    timezone: "",
+    gender: "",
     headline: "",
     bio: "",
     visibility: "",
   });
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+
   const countryfetch = async () => {
     const res = await fetch(
       "https://restcountries.com/v3.1/all?fields=name,cca2"
@@ -51,9 +55,10 @@ export default function Page1() {
 
   const handlenext = async () => {
     try {
-      const ressubmit = await API("POST", "/auth/personalsave/", {personal : FormData});
+      const ressubmit = await API("POST", "/auth/personalsave/", { personal: formData });
       const data = await ressubmit.json();
       if (data.success) {
+        console.log(data);
         navigate("/pagetwo");
       }
     } catch (err) {
@@ -73,40 +78,78 @@ export default function Page1() {
     }));
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("You must be logged in to upload a photo!");
+      return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const maxSize = 2 * 1024 * 1024;
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("Format not supported. Please use JPG, PNG, or WebP.");
+      return;
+    }
+
+    if (file.size > maxSize) {
+      alert("Image is too large. Max size is 2MB.");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const uploadedUrl = await uploadProfileImage(file, user.id);
+      if (uploadedUrl) {
+        setPreviewUrl(uploadedUrl);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
 
   return (
-    <div className="page-root">
+    <div className="page1-page-root">
       {/* Top Navigation */}
-      <header className="header">
-        <div className="brand">
-          <div className="logo" />
-          <span className="brand-title">SkillRank</span>
+      <header className="page1-header">
+        <div className="page1-brand">
+          <div className="page1-logo" />
+          <span className="page1-brand-title">SkillRank</span>
         </div>
 
-        <div className="header-right">
-          <a className="help-link">
-            <span className="help-icon">?</span>
+        <div className="page1-header-right">
+          <a className="page1-help-link">
+            <span className="page1-help-icon">?</span>
             Help
           </a>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="main">
-        <div className="container">
+      <main className="page1-main">
+        <div className="page1-container">
           {/* Progress Section */}
-          <section className="progress-section">
-            <div className="progress-info">
-                <span className="phase-text">Phase 1 : Personal details</span>
-                <span className="completion-text">20% Completed</span>
+          <section className="page1-progress-section">
+            <div className="page1-progress-info">
+              <span className="page1-phase-text">Phase 1 : Personal details</span>
+              <span className="page1-completion-text">20% Completed</span>
             </div>
-            <div className="progress-bar">
-                <div className="progress-fill" style={{ width: "20%" }} />
+            <div className="page1-progress-bar">
+              <div className="page1-progress-fill" style={{ width: "20%" }} />
             </div>
-            </section>
+          </section>
 
           {/* Page Heading */}
-          <section className="heading-section">
+          <section className="page1-heading-section">
             <h1>Phase 1: Personal & Identity Details</h1>
             <p>
               Your profile is the foundation of your Global Skill Vector. Accurate data ensures precise
@@ -115,38 +158,59 @@ export default function Page1() {
           </section>
 
           {/* Main Form Card */}
-          <form className="form-card" onSubmit={(e) => e.preventDefault()}>
+          <form className="page1-form-card" onSubmit={(e) => e.preventDefault()}>
             {/* Profile Photo Row */}
-            <div className="photo-upload-row">
-              <div className="avatar-preview">
-                <span className="material-symbols-outlined">person</span>
+            <div className="page1-photo-upload-row">
+              <div className="page1-avatar-preview">
+                {previewUrl ? (
+                  <img src={previewUrl} alt="Preview" className="page1-avatar-img" />
+                ) : (
+                  <span className="material-symbols-outlined">person</span>
+                )}
               </div>
-              <div className="photo-instructions">
+
+              <div className="page1-photo-instructions">
                 <h3>Profile Photo</h3>
                 <p>Upload a professional image. This will be visible on your public ranking card.</p>
               </div>
-              <button type="button" className="upload-btn">Upload Image</button>
+
+              <input
+                type="file"
+                id="avatar-upload"
+                hidden
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileChange}
+              />
+
+              <button
+                type="button"
+                className="page1-upload-btn"
+                disabled={isUploading}
+                onClick={() => document.getElementById('avatar-upload')?.click()}
+              >
+                {isUploading ? "Uploading..." : "Upload Image"}
+              </button>
             </div>
 
             {/* Identity Grid */}
-            <div className="form-grid-2">
-              <label className="input-group">
+            <div className="page1-form-grid-2">
+              <label className="page1-input-group">
                 <span>Full Name</span>
                 <input
                   name="fullName"
-                  value={FormData.fullName}
+                  value={formData.fullName}
                   onChange={handleInputChange}
                   placeholder="e.g. Jane Doe"
                 />
               </label>
 
-              <label className="input-group">
+              <label className="page1-input-group">
                 <span>Unique Username</span>
-                <div className="username-wrapper">
-                  <span className="prefix">@</span>
+                <div className="page1-username-wrapper">
+                  <span className="page1-prefix">@</span>
                   <input
                     name="username"
-                    value={FormData.username}
+                    value={formData.username}
                     onChange={handleInputChange}
                     placeholder="janedoe_dev"
                   />
@@ -155,12 +219,12 @@ export default function Page1() {
             </div>
 
             {/* Location Grid */}
-            <div className="form-grid-3">
-              <label className="input-group">
+            <div className="page1-form-grid-3">
+              <label className="page1-input-group">
                 <span>Country</span>
                 <select
                   name="country"
-                  value={FormData.country}
+                  value={formData.country}
                   onChange={handleInputChange}
                 >
                   <option value="">Select Country</option>
@@ -172,61 +236,62 @@ export default function Page1() {
                 </select>
               </label>
 
-              <label className="input-group">
+              <label className="page1-input-group">
                 <span>City</span>
                 <input
                   name="city"
-                  value={FormData.city}
+                  value={formData.city}
                   onChange={handleInputChange}
                   placeholder="e.g. San Francisco"
                 />
               </label>
 
-              <label className="input-group">
-                <span>Timezone</span>
+              <label className="page1-input-group">
+                <span>Gender</span>
                 <select
-                  name="timezone"
-                  value={FormData.timezone}
+                  name="gender"
+                  value={formData.gender}
                   onChange={handleInputChange}
                 >
-                  <option value="auto">Auto-detect (UTC-08:00)</option>
-                  <option value="ist">UTC+05:30 (IST)</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">other</option>
                 </select>
               </label>
             </div>
 
             {/* Verification Info Box */}
-            <div className="info-alert">
+            <div className="page1-info-alert">
               <span className="material-symbols-outlined">info</span>
               <div>
-                <p className="alert-title">Verification Matters</p>
-                <p className="alert-desc">
-                  Our algorithms cross-reference your inputs with external APIs (GitHub, LinkedIn, LeetCode). 
+                <p className="page1-alert-title">Verification Matters</p>
+                <p className="page1-alert-desc">
+                  Our algorithms cross-reference your inputs with external APIs (GitHub, LinkedIn, LeetCode).
                   Please ensure your headline and bio are accurate to maintain a high trust score.
                 </p>
               </div>
             </div>
 
             {/* Professional Details */}
-            <div className="form-stack">
-              <label className="input-group">
+            <div className="page1-form-stack">
+              <label className="page1-input-group">
                 <span>Professional Headline</span>
                 <input
                   name="headline"
-                  value={FormData.headline}
+                  value={formData.headline}
                   onChange={handleInputChange}
                   placeholder="e.g. Full Stack Engineer | Top 5% LeetCode"
                 />
               </label>
 
-              <label className="input-group">
-                <div className="label-header">
+              <label className="page1-input-group">
+                <div className="page1-label-header">
                   <span>Bio</span>
-                  <small>{FormData.bio.length}/240</small>
+                  <small>{formData.bio.length}/240</small>
                 </div>
                 <textarea
                   name="bio"
-                  value={FormData.bio}
+                  value={formData.bio}
                   onChange={handleInputChange}
                   maxLength={240}
                   placeholder="Briefly describe your expertise and interests..."
@@ -235,48 +300,48 @@ export default function Page1() {
             </div>
 
             {/* Visibility Options */}
-            <div className="visibility-section">
-              <span className="section-label">Profile Visibility</span>
-              <div className="visibility-grid">
-                <label className={`radio-tile ${FormData.visibility === "public" ? "active" : ""}`}>
+            <div className="page1-visibility-section">
+              <span className="page1-section-label">Profile Visibility</span>
+              <div className="page1-visibility-grid">
+                <label className={`page1-radio-tile ${formData.visibility === "public" ? "page1-active" : ""}`}>
                   <input
                     type="radio"
                     name="visibility"
                     value="public"
-                    checked={FormData.visibility === "public"}
+                    checked={formData.visibility === "public"}
                     onChange={handleInputChange}
                   />
-                  <div className="tile-content">
+                  <div className="page1-tile-content">
                     <span className="material-symbols-outlined">public</span>
                     <h4>Public</h4>
                     <p>Visible to everyone. Indexed in global rankings.</p>
                   </div>
                 </label>
 
-                <label className={`radio-tile ${FormData.visibility === "private" ? "active" : ""}`}>
+                <label className={`page1-radio-tile ${formData.visibility === "private" ? "page1-active" : ""}`}>
                   <input
                     type="radio"
                     name="visibility"
                     value="private"
-                    checked={FormData.visibility === "private"}
+                    checked={formData.visibility === "private"}
                     onChange={handleInputChange}
                   />
-                  <div className="tile-content">
+                  <div className="page1-tile-content">
                     <span className="material-symbols-outlined">visibility_off</span>
                     <h4>Private</h4>
                     <p>Only visible to you. Excluded from rankings.</p>
                   </div>
                 </label>
 
-                <label className={`radio-tile ${FormData.visibility === "recruiters" ? "active" : ""}`}>
+                <label className={`page1-radio-tile ${formData.visibility === "recruiters" ? "page1-active" : ""}`}>
                   <input
                     type="radio"
                     name="visibility"
                     value="recruiters"
-                    checked={FormData.visibility === "recruiters"}
+                    checked={formData.visibility === "recruiters"}
                     onChange={handleInputChange}
                   />
-                  <div className="tile-content">
+                  <div className="page1-tile-content">
                     <span className="material-symbols-outlined">work</span>
                     <h4>Recruiters Only</h4>
                     <p>Visible to verified hiring partners only.</p>
@@ -287,11 +352,13 @@ export default function Page1() {
           </form>
 
           {/* Footer Navigation */}
-          <footer className="footer-nav">
-            <button onClick={handlenext} className="btn-continue">Save & Continue →</button>
+          <footer className="page1-footer-nav">
+            <button onClick={handlenext} className="page4-btn-continue">Save & Continue →</button>
           </footer>
         </div>
       </main>
     </div>
   );
 }
+
+export default Page1;

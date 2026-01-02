@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import "./style/page3.css"
 import { useNavigate } from "react-router-dom";
+
 interface Education {
   id: string;
   school: string;
@@ -89,38 +90,38 @@ const Page3 = () => {
   };
 
   return (
-    <div className="page-root">
+    <div className="page3-page-root">
       {/* Header */}
-      <header className="header">
-        <div className="brand">
-          <div className="logo" />
-          <span className="brand-title">SkillRank</span>
+      <header className="page3-header">
+        <div className="page3-brand">
+          <div className="page3-logo" />
+          <span className="page3-brand-title">SkillRank</span>
         </div>
 
-        <div className="header-right">
-          <a className="help-link">
-            <span className="help-icon">?</span>
+        <div className="page3-header-right">
+          <a className="page3-help-link">
+            <span className="page3-help-icon">?</span>
             Help
           </a>
         </div>
       </header>
 
       {/* Main */}
-      <main className="main">
-        <div className="container">
+      <main className="page3-main">
+        <div className="page3-container">
           {/* Progress */}
-          <section className="progress-section">
-            <div className="progress-info">
-                <span className="phase-text">Phase 3 : Education & Timeline</span>
-                <span className="completion-text">60% Completed</span>
+          <section className="page3-progress-section">
+            <div className="page3-progress-info">
+              <span className="page3-phase-text">Phase 3 : Education & Timeline</span>
+              <span className="page3-completion-text">60% Completed</span>
             </div>
-            <div className="progress-bar">
-                <div className="progress-fill" style={{ width: "60%" }} />
+            <div className="page3-progress-bar">
+              <div className="page3-progress-fill" style={{ width: "60%" }} />
             </div>
-            </section>
+          </section>
 
           {/* Heading */}
-          <section className="heading-section">
+          <section className="page3-heading-section">
             <h1>Education History</h1>
             <p>
               Showcase your academic background, degrees, and certifications to
@@ -128,31 +129,30 @@ const Page3 = () => {
             </p>
           </section>
 
-  
-          <section className="content-grid">
- 
-            <div className="card">
+          <section className="page3-content-grid">
+            {/* Form Card */}
+            <div className="page3-card">
               <h3>Add New Education</h3>
 
-              <label className="form-label">
-                <span className="label-text">School or University</span>
+              <label className="page3-form-label">
+                <span className="page3-label-text">School or University</span>
                 <input
                   name="school"
                   value={formData.school}
                   onChange={handleInputChange}
-                  className="form-input"
+                  className="page3-form-input"
                   placeholder="Ex: Stanford University"
                 />
               </label>
 
-              <div className="grid-2">
-                <label className="form-label">
-                  <span className="label-text">Degree</span>
+              <div className="page3-grid-2">
+                <label className="page3-form-label">
+                  <span className="page3-label-text">Degree</span>
                   <select
                     name="degree"
                     value={formData.degree}
                     onChange={handleInputChange}
-                    className="form-select"
+                    className="page3-form-select"
                   >
                     <option>Bachelor's</option>
                     <option>Master's</option>
@@ -162,85 +162,85 @@ const Page3 = () => {
                   </select>
                 </label>
 
-                <label className="form-label">
-                  <span className="label-text">Field of Study</span>
+                <label className="page3-form-label">
+                  <span className="page3-label-text">Field of Study</span>
                   <input
                     name="field"
                     value={formData.field}
                     onChange={handleInputChange}
-                    className="form-input"
+                    className="page3-form-input"
                     placeholder="Ex: Computer Science"
                   />
                 </label>
               </div>
 
-              <div className="grid-2">
-                <label className="form-label">
-                  <span className="label-text">Start Date</span>
+              <div className="page3-grid-2">
+                <label className="page3-form-label">
+                  <span className="page3-label-text">Start Date</span>
                   <input
                     name="startDate"
                     value={formData.startDate}
                     onChange={handleInputChange}
                     type="date"
-                    className="form-input"
+                    className="page3-form-input"
                   />
                 </label>
 
-                <label className="form-label">
-                  <span className="label-text">End Date</span>
+                <label className="page3-form-label">
+                  <span className="page3-label-text">End Date</span>
                   <input
                     name="endDate"
                     value={formData.endDate}
                     onChange={handleInputChange}
                     type="date"
-                    className="form-input"
+                    className="page3-form-input"
                     disabled={formData.current}
                   />
                 </label>
               </div>
 
-              <label className="checkbox-label">
+              <label className="page3-checkbox-label">
                 <input
                   type="checkbox"
                   name="current"
                   checked={formData.current}
                   onChange={handleInputChange}
-                  className="checkbox-input"
+                  className="page3-checkbox-input"
                 />
                 <span>I am currently studying here</span>
               </label>
 
-              <label className="form-label">
-                <span className="label-text">Description (Optional)</span>
+              <label className="page3-form-label">
+                <span className="page3-label-text">Description (Optional)</span>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="form-textarea"
+                  className="page3-form-textarea"
                   placeholder="Key achievements, honors, or relevant coursework..."
                 />
               </label>
 
-              <div className="actions">
-                <button className="btn-outline" onClick={handleCancel}>
+              <div className="page3-actions">
+                <button className="page3-btn-outline" onClick={handleCancel}>
                   Cancel
                 </button>
-                <button className="btn-primary" onClick={handleAddEducation}>
+                <button className="page3-btn-primary" onClick={handleAddEducation}>
                   Add to Timeline
                 </button>
               </div>
             </div>
 
-        
-            <div className="card">
+            {/* Timeline Card */}
+            <div className="page3-card">
               <h3>Your Timeline</h3>
 
-              <div className="timeline">
+              <div className="page3-timeline">
                 {timeline.map((item, index) => (
-                  <div key={item.id} className="timeline-item">
-                    <div className={`timeline-dot ${index === 0 ? 'active' : ''}`} />
-                    <div className="timeline-content">
-                      <span className="timeline-year">
+                  <div key={item.id} className="page3-timeline-item">
+                    <div className={`page3-timeline-dot ${index === 0 ? 'page3-active' : ''}`} />
+                    <div className="page3-timeline-content">
+                      <span className="page3-timeline-year">
                         {item.startDate} - {item.endDate}
                       </span>
                       <h4>{item.school}</h4>
@@ -248,21 +248,21 @@ const Page3 = () => {
                         {item.degree} {item.field && item.field}
                       </p>
                       {item.description && (
-                        <p className="timeline-description">{item.description}</p>
+                        <p className="page3-timeline-description">{item.description}</p>
                       )}
                     </div>
                   </div>
                 ))}
 
-                <p className="empty-state">Add more education above…</p>
+                <p className="page3-empty-state">Add more education above…</p>
               </div>
             </div>
           </section>
 
           {/* Footer */}
-          <footer className="footer-nav">
-            <button onClick={handleBack} className="btn-back">Back to Phase 2</button>
-            <button onClick={handleContinue} className="btn-continue">Save & Continue →</button>
+          <footer className="page3-footer-nav">
+            <button onClick={handleBack} className="page4-btn-back">Back</button>
+            <button onClick={handleContinue} className="page4-btn-continue">Save & Continue →</button>
           </footer>
         </div>
       </main>
