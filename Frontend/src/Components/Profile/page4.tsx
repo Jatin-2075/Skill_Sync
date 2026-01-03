@@ -18,11 +18,14 @@ interface SkillVector {
 }
 
 const skillVectors: SkillVector[] = [
-  { id: 's1', number: 'S1', name: 'Algorithmic', description: 'Complexity & Logic' },
+  { id: 's1', number: 'S1', name: 'Algorithmic', description: 'Logic & Complexity' },
   { id: 's2', number: 'S2', name: 'System Design', description: 'Architecture & Scale' },
-  { id: 's3', number: 'S3', name: 'Data Eng', description: 'Pipelines & Storage' },
+  { id: 's3', number: 'S3', name: 'Data Engineering', description: 'Pipelines & Storage' },
   { id: 's4', number: 'S4', name: 'Security', description: 'Auth & Integrity' },
-  { id: 's5', number: 'S5', name: 'Optimization', description: 'Performance & Cost' },
+  { id: 's5', number: 'S5', name: 'Development', description: 'Web & Apps' },
+  { id: 's6', number: 'S6', name: 'Real-World Impact', description: 'Practical Outcomes' },
+  { id: 's7', number: 'S7', name: 'AI / ML', description: 'Models & Intelligence' },
+  { id: 's8', number: 'S8', name: 'Optimization', description: 'Performance & Cost' },
 ];
 
 const Page4 = () => {
@@ -174,7 +177,7 @@ const Page4 = () => {
                     </span>
                   ))}
                 </div>
-                <button className="page4-edit-btn">✏️</button>
+                <button className="page4-edit-btn" aria-label="Delete project">🗑️</button>
               </div>
             ))}
           </section>
@@ -233,32 +236,6 @@ const Page4 = () => {
                   className="page4-form-textarea"
                   placeholder="Describe what you built, why it matters, and the outcome..."
                 />
-              </div>
-
-              {/* Tech Stack */}
-              <div className="page4-form-group">
-                <label className="page4-form-label">Tech Stack</label>
-                <div className="page4-tech-stack">
-                  {formData.techStack.map((tech) => (
-                    <span key={tech} className="page4-tech-tag">
-                      {tech}
-                      <button
-                        className="page4-remove-tag"
-                        onClick={() => removeTechTag(tech)}
-                      >
-                        x
-                      </button>
-                    </span>
-                  ))}
-                  <input
-                    type="text"
-                    className="page4-tech-input"
-                    placeholder="Type and press Enter..."
-                    value={techInput}
-                    onChange={(e) => setTechInput(e.target.value)}
-                    onKeyDown={handleTechKeyDown}
-                  />
-                </div>
               </div>
 
               {/* Skill Vector Mapping */}
