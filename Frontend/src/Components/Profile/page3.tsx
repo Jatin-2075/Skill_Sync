@@ -152,6 +152,8 @@ const Page3 = () => {
   };
 
   const handleContinue = () => {
+    navigate("/pagefour");
+    console.log('Continuing to Phase 4');
   };
 
   const handleCancel = () => {
@@ -385,10 +387,8 @@ const Page3 = () => {
                 )}
               </div>
             </div>
-
           </section>
 
-          {/* Footer */}
           <footer className="page3-footer-nav">
             <button onClick={handleBack} className="page4-btn-back">Back</button>
             <button onClick={handleContinue} className="page4-btn-continue">Save & Continue →</button>

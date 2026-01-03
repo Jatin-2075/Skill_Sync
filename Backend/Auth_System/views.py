@@ -178,8 +178,15 @@ def FunctionSaveStudent(request):
         .order_by("-number")
         .first()
     )
-    number_wehave = last_entry.number + 1 if last_entry else 1
 
+    number_wehave = last_entry.number + 1 if last_entry else 1
+    print(number_wehave)
+
+    if number_wehave > 4:
+        return JsonResponse(
+            {"success": False, "msg": "limit reached"},
+            status=400
+        )
     try:
         StudentDetails.objects.create(
             details=details,
@@ -209,6 +216,24 @@ def FunctionSaveStudent(request):
             status=500
         )
 
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def FunctionDeleteStudent(request):
+    user = request.user
+    details = Details.objects.get(user=user)
+    data = request.data
+
+    try :
+        student = StudentDetails.objects.get(
+            details = details,
+            number = data.number,
+        )
+        student.delete()
+        return JsonResponse({"success" : True, "msg" : "Done"})
+
+    except :
+        return JsonResponse({"success" : False, "msg" : "not Done"})
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -315,3 +340,15 @@ def FunctionSaveColaboration(request):
             "mentorship" : obj.mentorship
         }
     })
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def FunctionColaboration(request):
+    user = request.user
+    details = Details.objects.get(user=user)
+
+    if not details:
+        return JsonResponse({"success" : False, "msg" : "user not found"})
+
+    
