@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./style/page3.css"
 import { useNavigate } from "react-router-dom";
 import { API } from '../../config/Api';
@@ -65,19 +65,19 @@ const Page3 = () => {
   console.log(formData);
 
   try {
-    const res = await API("POST", "/auth/studentsave/", formData); // ✅ FIXED
+    const res = await API("POST", "/auth/studentsave/", formData);
     const backendres = await res.json();
     setdatabackend(backendres);
 
     if (backendres.success) {
-      await FunctionFetch(); // refresh timeline
+      await FunctionFetch();
 
       setFormData({
         schoolname: "",
         degree: "",
         field: "",
-        startdate: "",
-        enddate: "",
+        startdate: "0-0-20202",
+        enddate: "0-0-2020",
         current: false,
         description: "",
       });
@@ -99,6 +99,7 @@ const Page3 = () => {
   };
 
   const handleContinue = () => {
+    navigate("/pagefour")
   };
 
   const handleCancel = () => {
