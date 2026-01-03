@@ -15,7 +15,7 @@ Skill_Sync maps developer signals across platforms (CodeForces, GitHub, StackOve
 | Skill | Description |
 |-------|-------------|
 | S1 | Problem Solving (Algorithms/CP) |
-| S2 | Software Engineering (Projects) |
+| S2 | Development (Projects) |
 | S3 | Knowledge Sharing (Q&A/Teaching) |
 | S4 | Consistency & Discipline |
 | S5 | Real-World Impact |
