@@ -273,45 +273,118 @@ def FunctionSendStudent(request):
     })
 
 
-@api_view(["POST"])
+@api_view(["POST", "GET", "DELETE"])
 @permission_classes([IsAuthenticated])
 def FunctionSaveProject(request):
     user = request.user
-    payload = request.data.get("projects", [])
-
-    if not payload:
+    
+    try:
+        details = Details.objects.get(user=user)
+    except Details.DoesNotExist:
         return JsonResponse(
-            {"success": False, "msg": "No project data received"},
-            status=400
+            {"success": False, "msg": "User details not found"},
+            status=404
         )
 
-    details = Details.objects.get(user=user)
+    if request.method == "GET":
+        projects = ProjectDetails.objects.filter(details=details)
+        project_list = [
+            {
+                "id": str(proj.id),
+                "title": proj.name,
+                "role": proj.role,
+                "description": proj.description,
+                "techStack": proj.techstack if hasattr(proj, 'techstack') else [],
+                "skills": proj.skills if hasattr(proj, 'skills') else [],
+                "repositoryUrl": proj.githublink,
+                "demoUrl": proj.livelink,
+            }
+            for proj in projects
+        ]
+        return JsonResponse(project_list, safe=False)
 
-    try:
-        for proj in payload:
-            project_obj = ProjectDetails.objects.create(
-                details=details,
-                name=proj.get("name"),
-                role=proj.get("role"),
-                description=proj.get("description"),
-                githublink=proj.get("githublink"),
-                livelink=proj.get("livelink"),
+    elif request.method == "POST":
+        payload = request.data.get("projects")
+
+        if not payload:
+            return JsonResponse(
+                {"success": False, "msg": "No project data received"},
+                status=400
             )
 
-            skills = proj.get("skills", [])
-            for skill_name in skills:
-                skill, _ = SkillList.objects.get_or_create(
-                    skill=skill_name.strip()
-                )
+        try:
+            project_obj = ProjectDetails.objects.create(
+                details=details,
+                name=payload.get("title"),
+                role=payload.get("role"),
+                description=payload.get("description"),
+                githublink=payload.get("repositoryUrl"),
+                livelink=payload.get("demoUrl"),
+            )
 
-                ProjectSkill.objects.get_or_create(
-                    project=project_obj,
-                    skill=skill
-                )
+            projects = ProjectDetails.objects.filter(details=details)
+            project_list = [
+                {
+                    "id": str(proj.id),
+                    "title": proj.name,
+                    "role": proj.role,
+                    "description": proj.description,
+                    "techStack": proj.techstack if hasattr(proj, 'techstack') else [],
+                    "skills": proj.skills if hasattr(proj, 'skills') else [],
+                    "repositoryUrl": proj.githublink,
+                    "demoUrl": proj.livelink,
+                }
+                for proj in projects
+            ]
+            return JsonResponse(project_list, safe=False)
 
-        return JsonResponse({"success": True, "msg": "Projects saved"})
-    except:
-        return JsonResponse({"success" : False, "msg" : "err occurred"})
+        except Exception as e:
+            return JsonResponse(
+                {"success": False, "msg": f"Error occurred: {str(e)}"},
+                status=500
+            )
+
+    elif request.method == "DELETE":
+        project_id = request.data.get("id")
+        
+        if not project_id:
+            return JsonResponse(
+                {"success": False, "msg": "Project ID not provided"},
+                status=400
+            )
+
+        try:
+            project = ProjectDetails.objects.get(id=project_id, details=details)
+            project.delete()
+
+            projects = ProjectDetails.objects.filter(details=details)
+            project_list = [
+                {
+                    "id": str(proj.id),
+                    "title": proj.name,
+                    "role": proj.role,
+                    "description": proj.description,
+                    "techStack": proj.techstack if hasattr(proj, 'techstack') else [],
+                    "skills": proj.skills if hasattr(proj, 'skills') else [],
+                    "repositoryUrl": proj.githublink,
+                    "demoUrl": proj.livelink,
+                }
+                for proj in projects
+            ]
+            return JsonResponse(project_list, safe=False)
+
+        except ProjectDetails.DoesNotExist:
+            return JsonResponse(
+                {"success": False, "msg": "Project not found"},
+                status=404
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"success": False, "msg": f"Error occurred: {str(e)}"},
+                status=500
+            )
+
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
