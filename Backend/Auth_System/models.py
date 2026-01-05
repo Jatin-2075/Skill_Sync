@@ -134,9 +134,6 @@ class ProjectDetails(models.Model):
     def __str__(self):
         return self.name
 
-# class ProjectSkills(models.Model):
-#     project = models.ForeignKey(ProjectDetails, )
-
 class Colaboration(models.Model):
     details = models.ForeignKey(
         Details,
