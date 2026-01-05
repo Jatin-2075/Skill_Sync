@@ -185,7 +185,6 @@ def FunctionSaveStudent(request):
     if number_wehave > 4:
         return JsonResponse(
             {"success": False, "msg": "limit reached"},
-            status=400
         )
     try:
         StudentDetails.objects.create(
@@ -213,7 +212,6 @@ def FunctionSaveStudent(request):
                 "msg": "A database error occurred",
                 "error": str(e)
             },
-            status=500
         )
 
 
@@ -235,6 +233,7 @@ def FunctionDeleteStudent(request):
     except :
         return JsonResponse({"success" : False, "msg" : "not Done"})
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def FunctionSendStudent(request):
@@ -246,7 +245,7 @@ def FunctionSendStudent(request):
             "success": False,
             "msg": "User details not found",
             "data": []
-        }, status=404)
+        })
 
     education = (
         StudentDetails.objects
@@ -288,28 +287,31 @@ def FunctionSaveProject(request):
 
     details = Details.objects.get(user=user)
 
-    for proj in payload:
-        project_obj = ProjectDetails.objects.create(
-            details=details,
-            name=proj.get("name"),
-            role=proj.get("role"),
-            description=proj.get("description"),
-            githublink=proj.get("githublink"),
-            livelink=proj.get("livelink"),
-        )
-
-        skills = proj.get("skills", [])
-        for skill_name in skills:
-            skill, _ = SkillList.objects.get_or_create(
-                skill=skill_name.strip()
+    try:
+        for proj in payload:
+            project_obj = ProjectDetails.objects.create(
+                details=details,
+                name=proj.get("name"),
+                role=proj.get("role"),
+                description=proj.get("description"),
+                githublink=proj.get("githublink"),
+                livelink=proj.get("livelink"),
             )
 
-            ProjectSkill.objects.get_or_create(
-                project=project_obj,
-                skill=skill
-            )
+            skills = proj.get("skills", [])
+            for skill_name in skills:
+                skill, _ = SkillList.objects.get_or_create(
+                    skill=skill_name.strip()
+                )
 
-    return JsonResponse({"success": True, "msg": "Projects saved"})
+                ProjectSkill.objects.get_or_create(
+                    project=project_obj,
+                    skill=skill
+                )
+
+        return JsonResponse({"success": True, "msg": "Projects saved"})
+    except:
+        return JsonResponse({"success" : False, "msg" : "err occurred"})
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

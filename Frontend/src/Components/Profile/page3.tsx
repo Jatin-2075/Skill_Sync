@@ -12,6 +12,7 @@ interface Education {
   current: boolean;
   description: string;
 }
+
 interface ValidationErrors {
   schoolname?: string;
   degree?: string;
@@ -19,18 +20,34 @@ interface ValidationErrors {
   startdate?: string;
   enddate?: string;
 }
+
 const Page3 = () => {
 
+  const navigate = useNavigate();
+
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [timeline, setTimeline] = useState<any[]>([]);
+  const [databackend, setdatabackend] = useState<any[]>([]);
+     
+
+  const [formData, setFormData] = useState<Education>({
+    schoolname: "",
+    degree: "",
+    field: "",
+    startdate: "",
+    enddate: "",
+    current: false,
+    description: "",
+  });
+
   useEffect(() => {
     FunctionFetch();
-  }, [])
+  }, []);
 
   const FunctionFetch = async () => {
     try {
       const res = await API("GET", "/auth/sendstudent/");
       const result = await res.json();
-
       if (result.success) {
         setTimeline(result.data);
       }
@@ -40,151 +57,78 @@ const Page3 = () => {
   };
 
 
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState<Education>({
-    schoolname: "",
-    degree: "",
-    field: "",
-    startdate: "0-0-2020",
-    enddate: "0-0-2020",
-    current: false,
-    description: "",
-  });
-
-  const [timeline, setTimeline] = useState<any[]>([])
-
-  const [databackend, setdatabackend] = useState<any[]>([])
-
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
 
-    // Add this part to clear errors
     if (errors[name as keyof ValidationErrors]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: undefined
-      }));
+      setErrors(prev => ({ ...prev, [name]: undefined }));
     }
   };
 
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
 
-    if (!formData.schoolname.trim()) {
+    if (!formData.schoolname.trim())
       newErrors.schoolname = "School name is required";
-    }
 
-    if (!formData.degree) {
+    if (!formData.degree)
       newErrors.degree = "Degree is required";
-    }
 
-    if (!formData.field.trim()) {
+    if (!formData.field.trim())
       newErrors.field = "Field of study is required";
-    }
 
-    if (!formData.startdate) {
+    if (!formData.startdate)
       newErrors.startdate = "Start date is required";
-    }
 
-    if (!formData.current && !formData.enddate) {
-      newErrors.enddate = "End date is required (or check 'currently studying')";
-    }
+    if (!formData.current && !formData.enddate)
+      newErrors.enddate = "End date is required (or check currently studying)";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleAddEducation = async () => {
-<<<<<<< HEAD
-  console.log(formData);
-
-  try {
-    const res = await API("POST", "/auth/studentsave/", formData);
-    const backendres = await res.json();
-    setdatabackend(backendres);
-
-    if (backendres.success) {
-      await FunctionFetch();
-
-      setFormData({
-        schoolname: "",
-        degree: "",
-        field: "",
-        startdate: "0-0-20202",
-        enddate: "0-0-2020",
-        current: false,
-        description: "",
-      });
-
-      alert("Education added to timeline!");
-    } else {
-      alert(backendres.msg || "Failed to save education");
-=======
-    if (!validateForm()) {
-      alert("Please fill in all required fields");
-      return;
->>>>>>> 026153202b0fe966ea6ad22db239411b7498d5e7
-    }
-
-    console.log(formData);
+    if (!validateForm()) return;
 
     try {
       const res = await API("POST", "/auth/studentsave/", formData);
       const backendres = await res.json();
       setdatabackend(backendres);
 
-      if (backendres.success) {
-        await FunctionFetch();
-
-        setFormData({
-          schoolname: "",
-          degree: "",
-          field: "",
-          startdate: "",
-          enddate: "",
-          current: false,
-          description: "",
-        });
-
-        console.log("ulalalaa")
-        console.log(formData)
-        console.log(databackend)
-
-        setErrors({});
-
-        alert("Education added to timeline!");
-      } else {
+      if (!backendres.success) {
         alert(backendres.msg || "Failed to save education");
+        return;
       }
 
+      await FunctionFetch();
+
+      setFormData({
+        schoolname: "",
+        degree: "",
+        field: "",
+        startdate: "",
+        enddate: "",
+        current: false,
+        description: "",
+      });
+
+      setErrors({});
+      alert("Education added to timeline!");
     } catch (err) {
       console.log("Save error", err);
     }
   };
 
-
-  const handleBack = () => {
-    navigate("/pagetwo");
-    console.log('Going back to Phase 2');
-  };
-
-  const handleContinue = () => {
-<<<<<<< HEAD
-    navigate("/pagefour")
-=======
-    navigate("/pagefour");
-    console.log('Continuing to Phase 4');
->>>>>>> 026153202b0fe966ea6ad22db239411b7498d5e7
-  };
+  const handleBack = () => navigate("/pagetwo");
+  const handleContinue = () => navigate("/pagefour");
 
   const handleCancel = () => {
     setFormData({
@@ -195,13 +139,12 @@ const Page3 = () => {
       enddate: "",
       current: false,
       description: "",
-    })
+    });
     setErrors({});
-  }
+  };
 
   return (
     <div className="page3-page-root">
-      {/* Header */}
       <header className="page3-header">
         <div className="page3-brand">
           <div className="page3-logo" />
@@ -229,17 +172,9 @@ const Page3 = () => {
             </div>
           </section>
 
-          {/* Heading */}
-          <section className="page3-heading-section">
-            <h1>Education History</h1>
-            <p>
-              Showcase your academic background, degrees, and certifications to
-              improve your ranking profile.
-            </p>
-          </section>
-
           <section className="page3-content-grid">
-            {/* Form Card */}
+
+            {/* FORM CARD */}
             <div className="page3-card">
               <h3>Add New Education</h3>
 
@@ -252,20 +187,13 @@ const Page3 = () => {
                   value={formData.schoolname}
                   onChange={handleInputChange}
                   className="page3-form-input"
-                  placeholder="Ex: Stanford University"
                 />
-                {errors.schoolname && (
-                  <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                    {errors.schoolname}
-                  </span>
-                )}
+                {errors.schoolname && <span style={{ color: 'red' }}>{errors.schoolname}</span>}
               </label>
 
               <div className="page3-grid-2">
                 <label className="page3-form-label">
-                  <span className="page3-label-text">
-                    Degree <span style={{ color: 'red' }}>*</span>
-                  </span>
+                  <span className="page3-label-text">Degree *</span>
                   <select
                     name="degree"
                     value={formData.degree}
@@ -279,74 +207,50 @@ const Page3 = () => {
                     <option value="Associate">Associate</option>
                     <option value="High School">High school</option>
                   </select>
-                  {errors.degree && (
-                    <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors.degree}
-                    </span>
-                  )}
+                  {errors.degree && <span style={{ color: 'red' }}>{errors.degree}</span>}
                 </label>
 
                 <label className="page3-form-label">
-                  <span className="page3-label-text">
-                    Field of Study <span style={{ color: 'red' }}>*</span>
-                  </span>
+                  <span className="page3-label-text">Field of Study *</span>
                   <input
                     name="field"
                     value={formData.field}
                     onChange={handleInputChange}
                     className="page3-form-input"
-                    placeholder="Ex: Computer Science"
                   />
-                  {errors.field && (
-                    <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors.field}
-                    </span>
-                  )}
+                  {errors.field && <span style={{ color: 'red' }}>{errors.field}</span>}
                 </label>
               </div>
 
               <div className="page3-grid-2">
                 <label className="page3-form-label">
-                  <span className="page3-label-text">
-                    Start Date <span style={{ color: 'red' }}>*</span>
-                  </span>
+                  <span className="page3-label-text">Start Date *</span>
                   <input
+                    type="date"
                     name="startdate"
                     value={formData.startdate}
                     onChange={handleInputChange}
-                    type="date"
                     className="page3-form-input"
                   />
-                  {errors.startdate && (
-                    <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors.startdate}
-                    </span>
-                  )}
+                  {errors.startdate && <span style={{ color: 'red' }}>{errors.startdate}</span>}
                 </label>
 
                 <label className="page3-form-label">
-                  <span className="page3-label-text">
-                    End Date <span style={{ color: 'red' }}>*</span>
-                  </span>
+                  <span className="page3-label-text">End Date *</span>
                   <input
+                    type="date"
                     name="enddate"
                     value={formData.enddate}
                     onChange={handleInputChange}
-                    type="date"
                     className="page3-form-input"
                     disabled={formData.current}
                   />
-                  {errors.enddate && (
-                    <span style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors.enddate}
-                    </span>
-                  )}
+                  {errors.enddate && <span style={{ color: 'red' }}>{errors.enddate}</span>}
                 </label>
               </div>
 
               <label className="page3-checkbox-label">
                 <input
-                  required
                   type="checkbox"
                   name="current"
                   checked={formData.current}
@@ -363,66 +267,46 @@ const Page3 = () => {
                   value={formData.description}
                   onChange={handleInputChange}
                   className="page3-form-textarea"
-                  placeholder="Key achievements, honors, or relevant coursework..."
                 />
               </label>
 
               <div className="page3-actions">
-                <button className="page3-btn-outline" onClick={handleCancel}>
-                  Cancel
-                </button>
-                <button className="page3-btn-primary" onClick={handleAddEducation}>
-                  Add to Timeline
-                </button>
+                <button className="page3-btn-outline" onClick={handleCancel}>Cancel</button>
+                <button className="page3-btn-primary" onClick={handleAddEducation}>Add to Timeline</button>
               </div>
             </div>
 
-            {/* Timeline Card */}
+            {/* TIMELINE CARD */}
             <div className="page3-card">
               <h3>Your Timeline</h3>
               <div className="page3-timeline">
                 {timeline.length === 0 ? (
-                  <p className="page3-empty-state">
-                    No Timeline to display
-                  </p>
+                  <p className="page3-empty-state">No Timeline to display</p>
                 ) : (
-                  <>
-                    {timeline.map((item, index) => (
-                      <div key={item.number} className="page3-timeline-item">
-                        <div
-                          className={`page3-timeline-dot ${index === 0 ? 'page3-active' : ''
-                            }`}
-                        />
-                        <div className="page3-timeline-content">
-                          <span className="page3-timeline-year">
-                            {item.startdate} - {item.current ? "Present" : item.enddate}
-                          </span>
-                          <h4>{item.schoolname}</h4>
-                          <p>
-                            {item.degree}
-                            {item.field && ` · ${item.field}`}
-                          </p>
-                          {item.description && (
-                            <p className="page3-timeline-description">
-                              {item.description}
-                            </p>
-                          )}
-                        </div>
+                  timeline.map((item, index) => (
+                    <div key={item.number} className="page3-timeline-item">
+                      <div className={`page3-timeline-dot ${index === 0 ? 'page3-active' : ''}`} />
+                      <div className="page3-timeline-content">
+                        <span className="page3-timeline-year">
+                          {item.startdate} - {item.current ? "Present" : item.enddate}
+                        </span>
+                        <h4>{item.schoolname}</h4>
+                        <p>{item.degree}{item.field && ` · ${item.field}`}</p>
+                        {item.description && <p>{item.description}</p>}
                       </div>
-                    ))}
-                    <p className="page3-empty-state">
-                      Add more education above…
-                    </p>
-                  </>
+                    </div>
+                  ))
                 )}
               </div>
             </div>
+
           </section>
 
           <footer className="page3-footer-nav">
             <button onClick={handleBack} className="page4-btn-back">Back</button>
             <button onClick={handleContinue} className="page4-btn-continue">Save & Continue →</button>
           </footer>
+
         </div>
       </main>
     </div>
