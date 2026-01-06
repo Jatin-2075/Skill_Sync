@@ -10,7 +10,8 @@ from .models import (
     PlatformUsernameDetails,
     StudentDetails,
     ProjectDetails,
-    Colaboration
+    Colaboration,
+    ProjectSkills,
 )
 import json
 from rest_framework.response import Response
@@ -304,7 +305,7 @@ def FunctionSaveProject(request):
                 skill=skill_name.strip()
             )
 
-            ProjectSkill.objects.get_or_create(
+            ProjectSkills.objects.get_or_create(
                 project=project_obj,
                 skill=skill
             )
@@ -341,14 +342,3 @@ def FunctionSaveColaboration(request):
         }
     })
 
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def FunctionColaboration(request):
-    user = request.user
-    details = Details.objects.get(user=user)
-
-    if not details:
-        return JsonResponse({"success" : False, "msg" : "user not found"})
-
-    
