@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import "./style/page4.css"
+import { API } from '../../config/Api';
 
 interface Project {
   id: string;
   title: string;
   role: string;
+  description: string;
   techStack: string[];
   skills: string[];
+  repositoryUrl: string;
+  demoUrl: string;
 }
   
 interface SkillVector {
@@ -29,27 +33,34 @@ const skillVectors: SkillVector[] = [
 ];
 
 const Page4 = () => {
-  const [projects] = useState<Project[]>([
-    {
-      id: '1',
-      title: 'Algorithmic Trading Bot',
-      role: 'Lead Developer',
-      techStack: ['Python', 'C++', 'Docker'],
-      skills: ['S1', 'S5'],
-    },
-  ]);
+  const [projects, setProjects] = useState<Project[]>([]);
 
   const [formData, setFormData] = useState({
     title: '',
     role: '',
     description: '',
-    techStack: ['React', 'TypeScript', 'Node.js'],
+    techStack: [] as string[],
     repositoryUrl: '',
     demoUrl: '',
   });
 
-  const [selectedSkills, setSelectedSkills] = useState<string[]>(['S1', 'S5']);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [techInput, setTechInput] = useState('');
+
+  // Fetch projects from backend on component mount
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await API("GET", "/auth/projectsave/", {});
+        const data = await res.json();
+        setProjects(data);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -102,9 +113,51 @@ const Page4 = () => {
     setTechInput('');
   };
 
-  const handleAddProject = () => {
-    console.log('Adding project:', { ...formData, skills: selectedSkills });
-    alert('Project added successfully!');
+  const handleAddProject = async () => {
+    // Validate required fields
+    if (!formData.title.trim() || !formData.role || selectedSkills.length === 0) {
+      alert('Please fill in Title, Role, and select at least one skill');
+      return;
+    }
+
+    const newProject = {
+      title: formData.title,
+      role: formData.role,
+      description: formData.description,
+      techStack: formData.techStack,
+      skills: selectedSkills,
+      repositoryUrl: formData.repositoryUrl,
+      demoUrl: formData.demoUrl,
+    };
+
+    try {
+      const res = await API("POST", "/auth/projectsave/", { "projects": newProject });
+      const data = await res.json();
+      
+      // Update projects with backend response
+      setProjects(data);
+      
+      // Clear the form after successful addition
+      handleClearForm();
+      
+      console.log(data);
+    } catch (error) {
+      console.error('Error saving project:', error);
+      alert('Failed to save project. Please try again.');
+    }
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      const res = await API("DELETE", `/auth/projectsave/${projectId}`, {});
+      const data = await res.json();
+      
+      // Update projects with backend response
+      setProjects(data);
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      alert('Failed to delete project. Please try again.');
+    }
   };
 
   const navigate = useNavigate();
@@ -177,7 +230,13 @@ const Page4 = () => {
                     </span>
                   ))}
                 </div>
-                <button className="page4-edit-btn" aria-label="Delete project">🗑️</button>
+                <button 
+                  className="page4-edit-btn" 
+                  aria-label="Delete project"
+                  onClick={() => handleDeleteProject(project.id)}
+                >
+                  🗑️
+                </button>
               </div>
             ))}
           </section>

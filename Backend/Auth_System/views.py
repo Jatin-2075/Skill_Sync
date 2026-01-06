@@ -186,7 +186,6 @@ def FunctionSaveStudent(request):
     if number_wehave > 4:
         return JsonResponse(
             {"success": False, "msg": "limit reached"},
-            status=400
         )
     try:
         StudentDetails.objects.create(
@@ -214,7 +213,6 @@ def FunctionSaveStudent(request):
                 "msg": "A database error occurred",
                 "error": str(e)
             },
-            status=500
         )
 
 
@@ -236,6 +234,7 @@ def FunctionDeleteStudent(request):
     except :
         return JsonResponse({"success" : False, "msg" : "not Done"})
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def FunctionSendStudent(request):
@@ -247,7 +246,7 @@ def FunctionSendStudent(request):
             "success": False,
             "msg": "User details not found",
             "data": []
-        }, status=404)
+        })
 
     education = (
         StudentDetails.objects
@@ -275,17 +274,44 @@ def FunctionSendStudent(request):
     })
 
 
-@api_view(["POST"])
+@api_view(["POST", "GET", "DELETE"])
 @permission_classes([IsAuthenticated])
 def FunctionSaveProject(request):
     user = request.user
-    payload = request.data.get("projects", [])
-
-    if not payload:
+    
+    try:
+        details = Details.objects.get(user=user)
+    except Details.DoesNotExist:
         return JsonResponse(
-            {"success": False, "msg": "No project data received"},
-            status=400
+            {"success": False, "msg": "User details not found"},
+            status=404
         )
+
+    if request.method == "GET":
+        projects = ProjectDetails.objects.filter(details=details)
+        project_list = [
+            {
+                "id": str(proj.id),
+                "title": proj.name,
+                "role": proj.role,
+                "description": proj.description,
+                "techStack": proj.techstack if hasattr(proj, 'techstack') else [],
+                "skills": proj.skills if hasattr(proj, 'skills') else [],
+                "repositoryUrl": proj.githublink,
+                "demoUrl": proj.livelink,
+            }
+            for proj in projects
+        ]
+        return JsonResponse(project_list, safe=False)
+
+    elif request.method == "POST":
+        payload = request.data.get("projects")
+
+        if not payload:
+            return JsonResponse(
+                {"success": False, "msg": "No project data received"},
+                status=400
+            )
 
     details = Details.objects.get(user=user)
 
@@ -305,7 +331,7 @@ def FunctionSaveProject(request):
                 skill=skill_name.strip()
             )
 
-            ProjectSkills.objects.get_or_create(
+            ProjectSkill.objects.get_or_create(
                 project=project_obj,
                 skill=skill
             )
