@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from Auth_System.models import (
     PersonalDetails,
     StudentDetails,
-    ProjectDetails,
+    UserProjectDetails,
     PlatformUsernameDetails,
     Colaboration,
     UserSkill,

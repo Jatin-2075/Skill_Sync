@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from Auth_System.models import (
     PersonalDetails,
     StudentDetails,
-    ProjectDetails,
+    UserProjectDetails,
     PlatformUsernameDetails,
     Colaboration,
     UserSkill,

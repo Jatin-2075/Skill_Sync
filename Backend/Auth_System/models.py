@@ -31,6 +31,7 @@ class PersonalDetails(models.Model):
 
 
 class SkillList(models.Model):
+    skillid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     skill = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -114,7 +115,7 @@ class StudentDetails(models.Model):
         return f"{self.schoolname} - {self.degree}"
 
 
-class ProjectDetails(models.Model):
+class UserProjectDetails(models.Model):
     details = models.ForeignKey(
         Details,
         on_delete=models.CASCADE,
@@ -130,6 +131,14 @@ class ProjectDetails(models.Model):
     def __str__(self):
         return self.name
 
+
+class ProjectSkills(models.Model):
+    project = models.ForeignKey(UserProjectDetails, on_delete=models.CASCADE, related_name="project_name")
+    skill = models.ForeignKey(SkillList, on_delete=models.CASCADE, related_name="project_skill")
+
+    def __str__(self):
+        return self.skill
+
 class Colaboration(models.Model):
     details = models.ForeignKey(
         Details,
@@ -140,6 +149,7 @@ class Colaboration(models.Model):
     paidprojects = models.BooleanField(default=False),
     startup = models.BooleanField(default=False),
     mentorship = models.BooleanField(default=False),
+    weeklyhour = models.PositiveIntegerField(default=0),
 
     def __str__(self):
         return self.opensource

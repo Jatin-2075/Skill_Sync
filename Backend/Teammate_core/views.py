@@ -8,13 +8,23 @@ from rest_framework.response import Response
 from Auth_System.models import (
     PersonalDetails,
     StudentDetails,
-    ProjectDetails,
+    UserProjectDetails,
     PlatformUsernameDetails,
     Colaboration,
     UserSkill,
+    Details,
+)
+
+from .models import (
+    PostProject,
+    TechStack,
+    Roadmap,
+    TeamMember,
 )
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def FunctionShowProject(request):
+def FunctionAddProject(request):
+    user = request.user
+    details = Details.objects.get(user=request.user)
     return None
