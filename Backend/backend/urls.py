@@ -13,4 +13,8 @@ urlpatterns = [
 
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh_pair"),
+
+    path("/engine", include("Trust_Engine.urls")),
+
+    path("/project", include("Teammate_core.urls")),
 ]
