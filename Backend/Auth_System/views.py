@@ -10,8 +10,8 @@ from .models import (
     PlatformUsernameDetails,
     StudentDetails,
     ProjectDetails,
-    Colaboration,
     ProjectSkills,
+    Colaboration,
 )
 import json
 from rest_framework.response import Response
@@ -59,7 +59,7 @@ def FunctionSaveSkills(request):
     details = Details.objects.get(user=request.user)
 
     for skill_name in skills:
-        skill, _ = Skill.objects.get_or_create(skill=skill_name)
+        skill, _ = SkillList.objects.get_or_create(skill=skill_name.strip())
 
         UserSkill.objects.get_or_create(
             details=details,
@@ -72,11 +72,11 @@ def FunctionSaveSkills(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def FunctionSendSkill(request):
-    skill = SkillList.objects.all().order_by("skill")
+    skills = SkillList.objects.all().order_by("skill")
 
     return JsonResponse({
-        "success" : True,
-        "skills" : [s.skills for s in skills]
+        "success": True,
+        "skills": [s.skill for s in skills]
     })
 
 @api_view(["POST"])
@@ -119,6 +119,23 @@ def FunctionSavePersonal(request):
             "bio": obj.bio,
             "visibility": obj.visibility,
         }})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def Functionprofilesend(request):
+    user = request.user
+    details = Details.objects.get(user=user)
+
+    try :
+        obj = PersonalDetails.objects.get(details=details)
+
+        return JsonResponse({"success" : True, "msg" : "done" , "data" : {
+            "visibility" : obj.visibility,
+        }})
+    except:
+        return JsonResponse({"success" : False, "msg" : "profile not don"})
+
 
 
 @api_view(["POST"])
@@ -195,7 +212,7 @@ def FunctionSaveStudent(request):
             degree=item.get("degree"),
             field=item.get("field"),
             startdate=item.get("startdate") or None,
-            enddate=None if item.get("startdate") else item.get("enddate"),
+            enddate=item.get("enddate") or None,
             current=item.get("current", False),
             description=item.get("description", ""),
         )
@@ -222,17 +239,21 @@ def FunctionDeleteStudent(request):
     user = request.user
     details = Details.objects.get(user=user)
     data = request.data
+    number = data.get("number")
 
-    try :
-        student = StudentDetails.objects.get(
-            details = details,
-            number = data.number,
-        )
+    if number is None:
+        return JsonResponse({"success": False, "msg": "No number provided"}, status=400)
+
+    try:
+        student = StudentDetails.objects.get(details=details, number=number)
         student.delete()
-        return JsonResponse({"success" : True, "msg" : "Done"})
+        return JsonResponse({"success": True, "msg": "Done"})
 
-    except :
-        return JsonResponse({"success" : False, "msg" : "not Done"})
+    except StudentDetails.DoesNotExist:
+        return JsonResponse({"success": False, "msg": "Not found"}, status=404)
+
+    except Exception:
+        return JsonResponse({"success": False, "msg": "not Done"}, status=500)
 
 
 @api_view(["GET"])
@@ -246,7 +267,7 @@ def FunctionSendStudent(request):
             "success": False,
             "msg": "User details not found",
             "data": []
-        })
+        }, status=404)
 
     education = (
         StudentDetails.objects
@@ -278,65 +299,61 @@ def FunctionSendStudent(request):
 @permission_classes([IsAuthenticated])
 def FunctionSaveProject(request):
     user = request.user
-    
+
     try:
         details = Details.objects.get(user=user)
     except Details.DoesNotExist:
-        return JsonResponse(
-            {"success": False, "msg": "User details not found"},
-            status=404
-        )
+        return JsonResponse({"success": False, "msg": "User details not found"}, status=404)
 
     if request.method == "GET":
         projects = ProjectDetails.objects.filter(details=details)
-        project_list = [
-            {
+        project_list = []
+        for proj in projects:
+            skills = [ps.skill.skill for ps in proj.project_skills.all()]
+            project_list.append({
                 "id": str(proj.id),
                 "title": proj.name,
                 "role": proj.role,
                 "description": proj.description,
-                "techStack": proj.techstack if hasattr(proj, 'techstack') else [],
-                "skills": proj.skills if hasattr(proj, 'skills') else [],
+                "skills": skills,
                 "repositoryUrl": proj.githublink,
                 "demoUrl": proj.livelink,
-            }
-            for proj in projects
-        ]
-        return JsonResponse(project_list, safe=False)
+            })
+        return JsonResponse({"success": True, "data": project_list})
 
     elif request.method == "POST":
-        payload = request.data.get("projects")
+        payload = request.data.get("projects", [])
 
         if not payload:
-            return JsonResponse(
-                {"success": False, "msg": "No project data received"},
-                status=400
+            return JsonResponse({"success": False, "msg": "No project data received"}, status=400)
+
+        for proj in payload:
+            project_obj = ProjectDetails.objects.create(
+                details=details,
+                name=proj.get("name"),
+                role=proj.get("role"),
+                description=proj.get("description"),
+                githublink=proj.get("githublink"),
+                livelink=proj.get("livelink"),
             )
 
-    details = Details.objects.get(user=user)
+            skills = proj.get("skills", [])
+            for skill_name in skills:
+                skill, _ = SkillList.objects.get_or_create(skill=skill_name.strip())
+                ProjectSkill.objects.get_or_create(project=project_obj, skill=skill)
 
-    for proj in payload:
-        project_obj = ProjectDetails.objects.create(
-            details=details,
-            name=proj.get("name"),
-            role=proj.get("role"),
-            description=proj.get("description"),
-            githublink=proj.get("githublink"),
-            livelink=proj.get("livelink"),
-        )
+        return JsonResponse({"success": True, "msg": "Projects saved"})
 
-        skills = proj.get("skills", [])
-        for skill_name in skills:
-            skill, _ = SkillList.objects.get_or_create(
-                skill=skill_name.strip()
-            )
-
-            ProjectSkill.objects.get_or_create(
-                project=project_obj,
-                skill=skill
-            )
-
-    return JsonResponse({"success": True, "msg": "Projects saved"})
+    elif request.method == "DELETE":
+        project_id = request.data.get("id")
+        if not project_id:
+            return JsonResponse({"success": False, "msg": "No project id provided"}, status=400)
+        try:
+            proj = ProjectDetails.objects.get(id=project_id, details=details)
+            proj.delete()
+            return JsonResponse({"success": True, "msg": "Project deleted"})
+        except ProjectDetails.DoesNotExist:
+            return JsonResponse({"success": False, "msg": "Project not found"}, status=404)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -345,26 +362,55 @@ def FunctionSaveColaboration(request):
     data = request.data.get("colab")
 
     if not data:
-        return JsonResponse({"success" : False, "msg" : "no data recieved"})
+        return JsonResponse({"success": False, "msg": "no data recieved"}, status=400)
 
-    obj,_= Colaboration.objects.get_or_create(
-        details,
+    details = Details.objects.get(user=user)
+
+    obj, _ = Colaboration.objects.get_or_create(
+        details=details,
         defaults={
-            "opensource" : data.get("opensource"),
-            "paidprojects" : data.get("paidprojects"),
-            "startup" : data.get("startup"),
-            "mentorship" : data.get("mentorship")
+            "opensource": bool(data.get("opensource", False)),
+            "paidprojects": bool(data.get("paidprojects", False)),
+            "startup": bool(data.get("startup", False)),
+            "mentorship": bool(data.get("mentorship", False)),
         }
     )
 
     return JsonResponse({
-        "success" : True,
-        "msg" : "done",
-        data : {
-            "opensource" : obj.opensource,
-            "paidproject" : obj.paidprojects,
-            "startup" : obj.startup,
-            "mentorship" : obj.mentorship
+        "success": True,
+        "msg": "done",
+        "data": {
+            "opensource": obj.opensource,
+            "paidprojects": obj.paidprojects,
+            "startup": obj.startup,
+            "mentorship": obj.mentorship,
         }
     })
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def FunctionColaboration(request):
+    user = request.user
+    details = Details.objects.filter(user=user).first()
+    if not details:
+        return JsonResponse({"success": False, "msg": "User details not found"}, status=404)
+
+    obj = Colaboration.objects.filter(details=details).first()
+    data = {
+        "opensource": False,
+        "paidprojects": False,
+        "startup": False,
+        "mentorship": False,
+    }
+
+    if obj:
+        data = {
+            "opensource": obj.opensource,
+            "paidprojects": obj.paidprojects,
+            "startup": obj.startup,
+            "mentorship": obj.mentorship,
+        }
+
+    return JsonResponse({"success": True, "data": data})
 

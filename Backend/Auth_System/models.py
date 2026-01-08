@@ -134,8 +134,13 @@ class ProjectDetails(models.Model):
     def __str__(self):
         return self.name
 
-# class ProjectSkills(models.Model):
-#     project = models.ForeignKey(ProjectDetails, )
+
+class ProjectSkills(models.Model):
+    project = models.ForeignKey(ProjectDetails, on_delete=models.CASCADE, related_name="project_name")
+    skill = models.ForeignKey(SkillList, on_delete=models.CASCADE, related_name="project_skill")
+
+    def __str__(self):
+        return self.skill
 
 class Colaboration(models.Model):
     details = models.ForeignKey(
@@ -147,6 +152,7 @@ class Colaboration(models.Model):
     paidprojects = models.BooleanField(default=False),
     startup = models.BooleanField(default=False),
     mentorship = models.BooleanField(default=False),
+    weeklyhour = models.PositiveIntegerField(default=0),
 
     def __str__(self):
         return self.opensource

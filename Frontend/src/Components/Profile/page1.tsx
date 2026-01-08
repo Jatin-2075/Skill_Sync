@@ -193,7 +193,6 @@ const Page1 = ({ }) => {
               </button>
             </div>
 
-            {/* Identity Grid */}
             <div className="page1-form-grid-2">
               <label className="page1-input-group">
                 <span>Full Name</span>
@@ -254,7 +253,7 @@ const Page1 = ({ }) => {
                   value={formData.gender}
                   onChange={handleInputChange}
                 >
-                  <option value=""></option>
+                  <option value="" disabled>Select your gender</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">other</option>
@@ -262,7 +261,6 @@ const Page1 = ({ }) => {
               </label>
             </div>
 
-            {/* Verification Info Box */}
             <div className="page1-info-alert">
               <span className="material-symbols-outlined">info</span>
               <div>
@@ -274,7 +272,6 @@ const Page1 = ({ }) => {
               </div>
             </div>
 
-            {/* Professional Details */}
             <div className="page1-form-stack">
               <label className="page1-input-group">
                 <span>Professional Headline</span>
@@ -301,7 +298,6 @@ const Page1 = ({ }) => {
               </label>
             </div>
 
-            {/* Visibility Options */}
             <div className="page1-visibility-section">
               <span className="page1-section-label">Profile Visibility</span>
               <div className="page1-visibility-grid">

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { API } from '../../config/Api';
 
 interface Education {
+  number : number;
   schoolname: string;
   degree: string;
   field: string;
@@ -31,6 +32,7 @@ const Page3 = () => {
      
 
   const [formData, setFormData] = useState<Education>({
+    number : 1,
     schoolname: "",
     degree: "",
     field: "",
@@ -111,6 +113,7 @@ const Page3 = () => {
       await FunctionFetch();
 
       setFormData({
+        number : 1,
         schoolname: "",
         degree: "",
         field: "",
@@ -127,11 +130,24 @@ const Page3 = () => {
     }
   };
 
+  const handleDeleteTimeline = async (number : number) => {
+    try {
+      const res = await API("DELETE", "/auth/deletestudent/",{ number });
+      const result = await res.json();
+      console.log(result);
+      FunctionFetch()
+    }
+    catch (err) {
+      alert("error")
+    }
+  }
+
   const handleBack = () => navigate("/pagetwo");
   const handleContinue = () => navigate("/pagefour");
 
   const handleCancel = () => {
     setFormData({
+      number : 0,
       schoolname: "",
       degree: "",
       field: "",
@@ -288,12 +304,15 @@ const Page3 = () => {
                       <div className={`page3-timeline-dot ${index === 0 ? 'page3-active' : ''}`} />
                       <div className="page3-timeline-content">
                         <span className="page3-timeline-year">
-                          {item.startdate} - {item.current ? "Present" : item.enddate}
+                          {item.startdate} - {item.enddate}
                         </span>
                         <h4>{item.schoolname}</h4>
                         <p>{item.degree}{item.field && ` · ${item.field}`}</p>
                         {item.description && <p>{item.description}</p>}
                       </div>
+                      <div className="page3-delete-timeline" 
+                      onClick={() => handleDeleteTimeline(item.number)}
+                      >delete</div>
                     </div>
                   ))
                 )}
