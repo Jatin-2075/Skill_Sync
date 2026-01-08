@@ -31,6 +31,7 @@ class PersonalDetails(models.Model):
 
 
 class SkillList(models.Model):
+    skillid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     skill = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
