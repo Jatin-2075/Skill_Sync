@@ -9,7 +9,7 @@ from .models import (
     UserSkill,
     PlatformUsernameDetails,
     StudentDetails,
-    ProjectDetails,
+    UserProjectDetails,
     ProjectSkills,
     Colaboration,
 )
@@ -306,7 +306,7 @@ def FunctionSaveProject(request):
         return JsonResponse({"success": False, "msg": "User details not found"}, status=404)
 
     if request.method == "GET":
-        projects = ProjectDetails.objects.filter(details=details)
+        projects = UserProjectDetails.objects.filter(details=details)
         project_list = []
         for proj in projects:
             skills = [ps.skill.skill for ps in proj.project_skills.all()]
@@ -328,7 +328,7 @@ def FunctionSaveProject(request):
             return JsonResponse({"success": False, "msg": "No project data received"}, status=400)
 
         for proj in payload:
-            project_obj = ProjectDetails.objects.create(
+            project_obj = UserProjectDetails.objects.create(
                 details=details,
                 name=proj.get("name"),
                 role=proj.get("role"),
@@ -349,10 +349,10 @@ def FunctionSaveProject(request):
         if not project_id:
             return JsonResponse({"success": False, "msg": "No project id provided"}, status=400)
         try:
-            proj = ProjectDetails.objects.get(id=project_id, details=details)
+            proj = UserProjectDetails.objects.get(id=project_id, details=details)
             proj.delete()
             return JsonResponse({"success": True, "msg": "Project deleted"})
-        except ProjectDetails.DoesNotExist:
+        except UserProjectDetails.DoesNotExist:
             return JsonResponse({"success": False, "msg": "Project not found"}, status=404)
 
 @api_view(["POST"])

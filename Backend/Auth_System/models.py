@@ -115,7 +115,7 @@ class StudentDetails(models.Model):
         return f"{self.schoolname} - {self.degree}"
 
 
-class ProjectDetails(models.Model):
+class UserProjectDetails(models.Model):
     details = models.ForeignKey(
         Details,
         on_delete=models.CASCADE,
@@ -133,7 +133,7 @@ class ProjectDetails(models.Model):
 
 
 class ProjectSkills(models.Model):
-    project = models.ForeignKey(ProjectDetails, on_delete=models.CASCADE, related_name="project_name")
+    project = models.ForeignKey(UserProjectDetails, on_delete=models.CASCADE, related_name="project_name")
     skill = models.ForeignKey(SkillList, on_delete=models.CASCADE, related_name="project_skill")
 
     def __str__(self):
