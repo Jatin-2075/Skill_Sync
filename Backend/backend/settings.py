@@ -23,6 +23,8 @@ INSTALLED_APPS = [
 
     # Local apps
     "Auth_System",
+    "Trust_Engine",
+    "Teammate_core",
 ]
 
 MIDDLEWARE = [

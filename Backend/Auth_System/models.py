@@ -42,11 +42,7 @@ class UserSkill(models.Model):
         on_delete=models.CASCADE,
         related_name="user_skills"
     )
-    skill = models.ForeignKey(
-        SkillList,
-        on_delete=models.CASCADE,
-        related_name="users"
-    )
+    skill = models.ForeignKey( SkillList, on_delete=models.CASCADE, related_name="users")
 
     class Meta:
         unique_together = ("details", "skill")
