@@ -22,15 +22,12 @@ interface SkillVector {
 }
 
 const skillVectors: SkillVector[] = [
-  { id: 's1', number: 'S1', name: 'Algorithmic', description: 'Logic & Complexity' },
-  { id: 's2', number: 'S2', name: 'System Design', description: 'Architecture & Scale' },
-  { id: 's3', number: 'S3', name: 'Data Engineering', description: 'Pipelines & Storage' },
-  { id: 's4', number: 'S4', name: 'Security', description: 'Auth & Integrity' },
-  { id: 's5', number: 'S5', name: 'Development', description: 'Web & Apps' },
-  { id: 's6', number: 'S6', name: 'Real-World Impact', description: 'Practical Outcomes' },
-  { id: 's7', number: 'S7', name: 'AI / ML', description: 'Models & Intelligence' },
-  { id: 's8', number: 'S8', name: 'Optimization', description: 'Performance & Cost' },
+  { id: 's1', number: 'S1', name: 'Core Logic', description: 'Algorithms & Problem Solving' },
+  { id: 's2', number: 'S2', name: 'System Power', description: 'Design, Scale & Security' },
+  { id: 's3', number: 'S3', name: 'Build Mode', description: 'Web, Apps & Real-World Dev' },
+  { id: 's4', number: 'S4', name: 'AI Edge', description: 'ML, Intelligence & Optimization' },
 ];
+
 
 const Page4 = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -73,25 +70,6 @@ const Page4 = () => {
     }));
   };
 
-  const handleTechKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && techInput.trim()) {
-      e.preventDefault();
-      if (!formData.techStack.includes(techInput.trim())) {
-        setFormData((prev) => ({
-          ...prev,
-          techStack: [...prev.techStack, techInput.trim()],
-        }));
-      }
-      setTechInput('');
-    }
-  };
-
-  const removeTechTag = (tag: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      techStack: prev.techStack.filter((t) => t !== tag),
-    }));
-  };
 
   const toggleSkill = (skillId: string) => {
     setSelectedSkills((prev) =>
