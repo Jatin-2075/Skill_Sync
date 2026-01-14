@@ -14,6 +14,7 @@ import Page2 from "./Components/Profile/page2";
 import Page3 from "./Components/Profile/page3";
 import Page4 from "./Components/Profile/page4";
 import Page5 from "./Components/Profile/page5";
+import PostProject from "./Pages/Recruitment/postproject";
 
 const App:React.FC = () =>{
     return (
@@ -29,6 +30,7 @@ const App:React.FC = () =>{
             <Route path="/pagethree" element={<Page3/>}/>
             <Route path="/pagefour" element={<Page4/>}/>
             <Route path="/pagefive" element={<Page5/>}/>
+            <Route path="/postproject" element={<PostProject/>}/>
             {/* Intro and other not useable */}
             <Route path="/" element={<Intro/>}/>
 

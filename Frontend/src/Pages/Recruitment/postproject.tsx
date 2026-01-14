@@ -1,482 +1,795 @@
-import { X, Info, Bold, Italic, List, Link, Image, Check, Plus, Minus, Clock, Users, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import './postproject.css';
+import { X, Info, Plus, Minus, Zap } from 'lucide-react';
 
-type postprojecttype = {
-    projecttitle: string;
-    projectsummary: string;
-    projectcategory: string;
-    projectvisibility: string;
-    desiredteammember: number;
-    projectdescription: string;
-    ratingrequired: number;
-    currentteammember: number;
-    
-
+// Define the type for project data
+type PostProjectType = {
+  projectTitle: string;
+  projectSummary: string;
+  projectCategory: string;
+  projectVisibility: string;
+  desiredTeamMember: number;
+  // Replaced projectDescription with two separate fields:
+  problemStatement: string;
+  technicalApproach: string;
+  ratingRequired: number;
+  currentTeamMember: number;
+  repositoryLink: string;
+  expectedCommitment: string;
+  projectDuration: string;
+  startTimeline: string; // 'immediate' | 'scheduled'
+  startDate: string; // ISO date string (yyyy-mm-dd) or empty
+  timezonePreference: string;
+  collaborationStyle: string;
+  communicationNorms: string;
+  roleLabel: string;
 };
 
+// Define the type for deliverable items
+type DeliverableItem = {
+  id: number;
+  text: string;
+  completed: boolean;
+};
 
-const PostProjectPage = () => {
+const ProjectPostPage = () => {
+  const [skills, setSkills] = useState<string[]>(['React Native', 'TypeScript']);
+
+  const [skillInput, setSkillInput] = useState<string>('');
+
+  const [deliverables, setDeliverables] = useState<DeliverableItem[]>([
+    { id: 1, text: 'MVP with core authentication flow', completed: true }
+  ]);
+
+  // State for managing new deliverable input
+  const [newDeliverableInput, setNewDeliverableInput] = useState<string>('');
+
+  // State for managing team size
+  const [teamSize, setTeamSize] = useState<number>(3);
+
+  // State for managing rating slider value
+  const [ratingValue, setRatingValue] = useState<number>(40);
+
+  // State for managing active timeline tab
+  const [activeTimeline, setActiveTimeline] = useState<'immediate' | 'scheduled'>('immediate');
+
+  // State for managing collaboration style
+  const [collaborationStyle, setCollaborationStyle] = useState<'async' | 'sync'>('async');
+
+  // State for managing character count in summary
+  const [summaryCharCount, setSummaryCharCount] = useState<number>(0);
+
+  // State for managing auto-save status
+  const [lastSaved, setLastSaved] = useState<string>('2m ago');
+
+  // State for all form data
+  const [formData, setFormData] = useState<PostProjectType>({
+    projectTitle: '',
+    projectSummary: '',
+    projectCategory: 'Web Development',
+    projectVisibility: 'Public (Recommended)',
+    desiredTeamMember: 3,
+    problemStatement: '',
+    technicalApproach: '',
+    ratingRequired: 40,
+    currentTeamMember: 0,
+    repositoryLink: '',
+    expectedCommitment: 'Part-time (10-20 hrs/week)',
+    projectDuration: '1-3 Months',
+    startTimeline: 'immediate',
+    startDate: '',
+    timezonePreference: 'Global (Any Timezone)',
+    collaborationStyle: 'async',
+    communicationNorms: '',
+    roleLabel: 'Full Stack Developer'
+  });
+
+  // Handle skill input when user types
+  const handleSkillInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSkillInput(e.target.value);
+  };
+
+  // Handle adding skill when user presses Enter
+  const handleSkillInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && skillInput.trim() !== '') {
+      e.preventDefault();
+      if (!skills.includes(skillInput.trim())) {
+        setSkills([...skills, skillInput.trim()]);
+      }
+      setSkillInput('');
+    }
+  };
+
+  // Handle removing a skill from the list
+  const handleRemoveSkill = (indexToRemove: number) => {
+    setSkills(skills.filter((_, index) => index !== indexToRemove));
+  };
+
+  // Handle team size increment
+  const handleIncrementTeam = () => {
+    if (teamSize < 10) {
+      setTeamSize(teamSize + 1);
+      setFormData({ ...formData, desiredTeamMember: teamSize + 1 });
+    }
+  };
+
+  // Handle team size decrement
+  const handleDecrementTeam = () => {
+    if (teamSize > 1) {
+      setTeamSize(teamSize - 1);
+      setFormData({ ...formData, desiredTeamMember: teamSize - 1 });
+    }
+  };
+
+  // Handle rating slider change
+  const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    setRatingValue(value);
+    setFormData({ ...formData, ratingRequired: value });
+  };
+
+  // Calculate rating display value based on slider position (0-100 maps to 0-2000+)
+  const getRatingDisplay = () => {
+    if (ratingValue < 25) return `${ratingValue * 10}`;
+    if (ratingValue < 50) return `${500 + (ratingValue - 25) * 20}`;
+    if (ratingValue < 75) return `${1000 + (ratingValue - 50) * 20}`;
+    return `${1500 + (ratingValue - 75) * 20}+`;
+  };
+
+  // Handle deliverable checkbox toggle
+  const handleDeliverableToggle = (id: number) => {
+    setDeliverables(deliverables.map(item =>
+      item.id === id ? { ...item, completed: !item.completed } : item
+    ));
+  };
+
+  // Handle adding a new deliverable
+  const handleAddDeliverable = () => {
+    if (newDeliverableInput.trim() !== '') {
+      const newDeliverable: DeliverableItem = {
+        id: Date.now(),
+        text: newDeliverableInput.trim(),
+        completed: false
+      };
+      setDeliverables([...deliverables, newDeliverable]);
+      setNewDeliverableInput('');
+    }
+  };
+
+  // Handle new deliverable input change
+  const handleNewDeliverableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewDeliverableInput(e.target.value);
+  };
+
+  // Handle new deliverable Enter key press
+  const handleNewDeliverableKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddDeliverable();
+    }
+  };
+
+  // Handle timeline tab change
+  const handleTimelineChange = (timeline: 'immediate' | 'scheduled') => {
+    setActiveTimeline(timeline);
+    setFormData({ ...formData, startTimeline: timeline, startDate: timeline === 'immediate' ? '' : formData.startDate });
+  };
+
+  // Handle collaboration style change via radio button
+  const handleCollaborationChange = (style: 'async' | 'sync') => {
+    setCollaborationStyle(style);
+    setFormData({ ...formData, collaborationStyle: style });
+  };
+
+  // Handle radio button click on the text/description area
+  const handleRadioInput = (e: React.MouseEvent<HTMLDivElement>, style: 'async' | 'sync') => {
+    handleCollaborationChange(style);
+  };
+
+  // Handle summary textarea change and update character count
+  const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value;
+    if (text.length <= 140) {
+      setSummaryCharCount(text.length);
+      setFormData({ ...formData, projectSummary: text });
+    }
+  };
+
+  // Handle general form input changes (works for inputs/selects/textareas which have name attribute)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value } as any);
+  };
+
+  // Auto-save functionality - simulates saving draft every 2 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      setLastSaved('just now');
+
+      setTimeout(() => setLastSaved('1m ago'), 1000);
+      setTimeout(() => setLastSaved('2m ago'), 120000);
+    }, 120000);
+
+    return () => clearInterval(interval);
+  }, [formData]);
+
+  // Handle preview button click
+  const handlePreview = () => {
+    console.log('Preview clicked - Form Data:', formData, 'Skills:', skills, 'Deliverables:', deliverables);
+    alert('Preview functionality - Check console for form data');
+  };
+
+  // Handle save draft button click
+  const handleSaveDraft = () => {
+    console.log('Draft saved:', { formData, skills, deliverables, teamSize });
+    setLastSaved('just now');
+    alert('Draft saved successfully!');
+  };
+
+  // Handle post project button click
+  const handlePostProject = () => {
+    if (!formData.projectTitle.trim()) {
+      alert('Please enter a project title');
+      return;
+    }
+    if (!formData.projectSummary.trim()) {
+      alert('Please enter a project summary');
+      return;
+    }
+    if (skills.length === 0) {
+      alert('Please add at least one skill');
+      return;
+    }
+
+    // Prepare the final data object
+    const projectData = {
+      ...formData,
+      skills,
+      deliverables,
+      desiredTeamMember: teamSize,
+      ratingRequired: ratingValue
+    };
+
+    console.log('Project posted:', projectData);
+    alert('Project posted successfully!');
+    // send to backend here
+  };
+
+  // Handle close button
+  const handleClose = () => {
+    const hasUnsavedData = formData.projectTitle || formData.projectSummary || skills.length > 2;
+
+    if (hasUnsavedData) {
+      const confirmClose = window.confirm('You have unsaved changes. Are you sure you want to close?');
+      if (confirmClose) {
+        console.log('Closing form');
+      }
+    } else {
+      console.log('Closing form');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="pp-project-post-container">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-            <span className="text-white font-bold text-lg">P</span>
-          </div>
+      <header className="pp-header">
+        <div className="pp-header-left">
+          <div className="pp-logo-icon">📱</div>
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">Post a Project</h1>
-            <p className="text-sm text-gray-500">Define Your Vision. Build your team.</p>
+            <h1 className="pp-header-title">Post a Project</h1>
+            <p className="pp-header-subtitle">Define Your Vision. Build Your Team.</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 text-sm text-green-600">
-            <Check className="w-4 h-4" />
-            Auto-saved
+        <div className="pp-header-right">
+          <span className="pp-auto-saved">
+            <span className="pp-saved-dot">●</span> Auto-saved {lastSaved}
           </span>
-          <button className="p-1 hover:bg-gray-100 rounded">
-            <X className="w-5 h-5 text-gray-500" />
+          <button className="pp-close-btn" onClick={handleClose}>
+            <X size={20} />
           </button>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-7xl mx-auto p-6 flex gap-6">
-        {/* Main Content */}
-        <div className="flex-1 space-y-6">
+      {/* Main Content */}
+      <div className="pp-main-content">
+        {/* Left Column */}
+        <div className="pp-left-column">
           {/* Basic Project Details */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-semibold">1</span>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900">Basic Project Details</h2>
+          <section className="pp-form-section">
+            <div className="pp-section-header">
+              <div className="pp-section-icon pp-blue">1</div>
+              <h2 className="pp-section-title">Basic Project Details</h2>
             </div>
 
-            <div className="space-y-5">
-              {/* Project Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Project Title <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Decentralized Voting System for DAOs"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                />
-              </div>
-
-              {/* Short Summary */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Short Summary <span className="text-red-500">*</span>
-                  </label>
-                  <span className="text-xs text-gray-400">Card-level pitch (140 chars max)</span>
-                </div>
-                <textarea
-                  placeholder="Briefly describe what you're building to attract clicks..."
-                  rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
-                />
-              </div>
-
-              {/* Category and Visibility */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category / Domain
-                  </label>
-                  <select className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white">
-                    <option>Web Development</option>
-                    <option>Mobile Development</option>
-                    <option>Blockchain</option>
-                    <option>AI/ML</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
-                    Visibility
-                    <Info className="w-4 h-4 text-gray-400" />
-                  </label>
-                  <div className="relative">
-                    <select className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white appearance-none">
-                      <option>Public (Recommended)</option>
-                      <option>Private</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      🔓
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Project Narrative */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                <span className="text-purple-600 font-semibold">2</span>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900">Project Narrative</h2>
-            </div>
-
-            {/* Toolbar */}
-            <div className="flex items-center gap-1 mb-4 pb-3 border-b border-gray-200">
-              <button className="p-2 hover:bg-gray-100 rounded">
-                <Bold className="w-4 h-4 text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded">
-                <Italic className="w-4 h-4 text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded">
-                <List className="w-4 h-4 text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded">
-                <List className="w-4 h-4 text-gray-600 rotate-180" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded">
-                <Link className="w-4 h-4 text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded">
-                <Image className="w-4 h-4 text-gray-600" />
-              </button>
-              <span className="ml-auto text-xs text-gray-400">Markdown supported</span>
-            </div>
-
-            {/* Editor */}
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">Problem Statement & Vision</h3>
-                <p className="text-xs text-gray-500 mb-2">🎯 The Why</p>
-                <textarea
-                  placeholder="Explain the problem you are solving..."
-                  rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none bg-gray-50"
-                />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 mb-2">🔧 The How</p>
-                <textarea
-                  placeholder="Describe your technical approach..."
-                  rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none bg-gray-50"
-                />
-              </div>
-            </div>
-
-            {/* Footer Actions */}
-            <div className="mt-6 pt-4 border-t border-gray-200 flex items-center justify-between">
-              <span className="text-xs text-gray-500">Draft saved 2m ago</span>
-              <div className="flex gap-2">
-                <button className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg">
-                  Preview
-                </button>
-                <button className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg">
-                  Save Draft
-                </button>
-              </div>
-            </div>
-
-            {/* Repository Link */}
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Repository / Demo Link <span className="text-gray-400 text-xs">(Optional)</span>
+            {/* Project Title Input */}
+            <div className="pp-form-group">
+              <label className="pp-form-label">
+                Project Title <span className="pp-required">*</span>
               </label>
               <input
                 type="text"
-                placeholder="🔗 https://github.com/username/repo"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                name="projectTitle"
+                className="pp-form-input"
+                placeholder="e.g. Decentralized Voting System for DAOs"
+                value={formData.projectTitle}
+                onChange={handleInputChange}
               />
             </div>
 
-            {/* Key Deliverables */}
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
-                🎯 Key Deliverables & Goals
+            {/* Project Summary with character counter */}
+            <div className="pp-form-group">
+              <label className="pp-form-label">
+                Short Summary <span className="pp-required">*</span>
               </label>
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <input type="checkbox" checked className="w-4 h-4 text-green-600" readOnly />
-                  <span className="flex-1 text-sm text-gray-700">MVP with core authentication flow</span>
-                  <span className="px-2 py-0.5 bg-green-600 text-white text-xs rounded">DONE</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                  <input type="checkbox" className="w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Add a milestone or goal..."
-                    className="flex-1 text-sm bg-transparent border-none outline-none"
-                  />
-                </div>
-                <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
-                  <Plus className="w-4 h-4" />
-                  Add Item
-                </button>
+              <div className="pp-char-count">
+                Card/Live-pitch ({summaryCharCount}/140 chars)
               </div>
-            </div>
-          </div>
-
-          {/* Skills & Requirements */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                <span className="text-indigo-600 font-semibold">3</span>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900">Skills & Requirements</h2>
+              <textarea
+                name="projectSummary"
+                className="pp-form-textarea"
+                placeholder="Briefly describe what you're building to attract clicks..."
+                rows={3}
+                value={formData.projectSummary}
+                onChange={handleSummaryChange}
+                maxLength={140}
+              />
             </div>
 
-            <div className="space-y-5">
-              {/* Tech Stack */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Required Skills / Tech Stack
-                </label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full flex items-center gap-1">
-                    React Native
-                    <X className="w-3 h-3 cursor-pointer" />
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full flex items-center gap-1">
-                    TypeScript
-                    <X className="w-3 h-3 cursor-pointer" />
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Type and press Enter..."
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                />
-              </div>
-
-              {/* Platform Rating & Team Size */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Min. Platform Rating
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="range"
-                      min="0"
-                      max="1000"
-                      defaultValue="500"
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>New User</span>
-                      <span className="font-medium text-gray-900">1000+</span>
-                      <span>Expert</span>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Desired Team Size <span className="text-gray-400 text-xs">(Including you)</span>
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <button className="w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center">
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="text-2xl font-semibold text-gray-900 w-24 text-center">3 Members</span>
-                    <button className="w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center">
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Role Label */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Role Label
-                </label>
-                <select className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none bg-white">
-                  <option>Full Stack Developer</option>
-                  <option>Frontend Developer</option>
-                  <option>Backend Developer</option>
-                  <option>Designer</option>
+            {/* Category and Visibility selects */}
+            <div className="pp-form-row">
+              <div className="pp-form-group">
+                <label className="pp-form-label">Category / Domain</label>
+                <select
+                  name="projectCategory"
+                  className="pp-form-select"
+                  value={formData.projectCategory}
+                  onChange={handleInputChange}
+                >
+                  <option>Web Development</option>
+                  <option>AI/ML Development</option>
+                  <option>Data Structure & Algorithm</option>
+                  <option>Cyber Security</option>
                 </select>
               </div>
-
-              {/* Alert */}
-              <div className="flex gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <div className="text-yellow-600 mt-0.5">⚠️</div>
-                <div className="flex-1">
-                  <h4 className="text-sm font-semibold text-yellow-800 mb-1">Strict Requirements Alert</h4>
-                  <p className="text-xs text-yellow-700">
-                    Setting the minimum rating above 200+ reduces your candidate pool by ~65%. Consider lowering it for a broader reach.
-                  </p>
+              <div className="pp-form-group">
+                <label className="pp-form-label">
+                  Visibility <Info size={14} className="pp-info-icon" />
+                </label>
+                <div className="pp-visibility-select">
+                  <select
+                    name="projectVisibility"
+                    className="pp-form-select"
+                    value={formData.projectVisibility}
+                    onChange={handleInputChange}
+                  >
+                    <option>Public (Recommended)</option>
+                    <option>Private</option>
+                    <option>Unlisted</option>
+                  </select>
+                  <span className="pp-copy-icon">📋</span>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Availability & Collaboration */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                <span className="text-teal-600 font-semibold">4</span>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900">Availability & Collaboration</h2>
+          {/* Project Narrative */}
+          <section className="pp-form-section">
+            <div className="pp-section-header">
+              <div className="pp-section-icon pp-purple">2</div>
+              <h2 className="pp-section-title">Project Narrative</h2>
+              <p className="pp-section-subtitle">
+                Help collaborators quickly understand <strong>why</strong> this matters and <strong>how</strong> you’ll build it.
+              </p>
             </div>
 
-            <div className="space-y-5">
-              {/* Commitment & Duration */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Expected Commitment
-                  </label>
-                  <select className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none bg-white">
-                    <option>Part-time (10-20 hrs/week)</option>
-                    <option>Full-time (40+ hrs/week)</option>
-                    <option>Flexible</option>
-                  </select>
+            <div className="pp-narrative-card">
+              {/* WHY */}
+              <div className="pp-narrative-block">
+                <div className="pp-narrative-head">
+                  🔥 <h3>The Problem (Why)</h3>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Project Duration
-                  </label>
-                  <select className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none bg-white">
-                    <option>1-3 Months</option>
-                    <option>3-6 Months</option>
-                    <option>6+ Months</option>
-                  </select>
-                </div>
-              </div>
 
-              {/* Start Timeline & Timezone */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Start Timeline
-                  </label>
-                  <div className="flex gap-2">
-                    <button className="flex-1 px-4 py-2.5 bg-teal-600 text-white rounded-lg font-medium">
-                      Immediate
-                    </button>
-                    <button className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-                      Scheduled
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Timezone Preference
-                  </label>
-                  <select className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none bg-white">
-                    <option>Global (Any Timezone)</option>
-                    <option>EST</option>
-                    <option>PST</option>
-                    <option>GMT</option>
-                  </select>
-                </div>
-              </div>
+                <p className="pp-narrative-helper">
+                  Explain the core problem you’re solving. Focus on pain points, users affected, and why existing solutions fall short.
+                </p>
 
-              {/* Collaboration Style */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Collaboration Style
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-start gap-3 p-4 border-2 border-teal-600 bg-teal-50 rounded-lg cursor-pointer">
-                    <input type="radio" name="collab" defaultChecked className="mt-1" />
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900">Async First</div>
-                      <div className="text-sm text-gray-600">Written comms, minimal meetings.</div>
-                    </div>
-                  </label>
-                  <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-gray-300">
-                    <input type="radio" name="collab" className="mt-1" />
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900">Synchronous</div>
-                      <div className="text-sm text-gray-600">Regular meetings, real-time collab.</div>
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-              {/* Communication Norms */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Communication Norms
-                </label>
                 <textarea
-                  placeholder="e.g. We use Discord for daily chat and Notion for tasks. Weekly stand-up on Mondays."
-                  rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none resize-none"
+                  name="problemStatement"
+                  className="pp-narrative-textarea"
+                  placeholder={`Example:
+Current DAO voting systems are slow, opaque, and vulnerable to manipulation.
+Small token holders lack meaningful participation, leading to low governance engagement...`}
+                  rows={6}
+                  value={formData.problemStatement}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              {/* HOW */}
+              <div className="pp-narrative-block">
+                <div className="pp-narrative-head">
+                  🎯 <h3>The Solution (How)</h3>
+                </div>
+
+                <p className="pp-narrative-helper">
+                  Describe your technical approach: architecture, stack, workflows, and key constraints.
+                </p>
+
+                <textarea
+                  name="technicalApproach"
+                  className="pp-narrative-textarea"
+                  placeholder={`Example:
+• Frontend: Next.js + Tailwind
+• Backend: Node.js + PostgreSQL
+• Smart Contracts: Solidity (ERC-20 voting)
+• Data flow: Wallet → API → Smart Contract
+• Constraints: gas optimization, security audits`}
+                  rows={7}
+                  value={formData.technicalApproach}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
-          </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-end gap-3 pb-8">
-            <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
-              Save Draft
-            </button>
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2">
-              <span>🚀</span>
-              Post Project
-            </button>
-          </div>
+            {/* Repository/Demo link input */}
+            <div className="pp-form-group" style={{ marginTop: '20px' }}>
+              <label className="pp-form-label">
+                Repository / Demo Link <span className="pp-optional">Optional</span>
+              </label>
+              <input
+                type="text"
+                name="repositoryLink"
+                className="pp-form-input"
+                placeholder="🔗 https://github.com/username/repo"
+                value={formData.repositoryLink}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {/* Deliverables section with dynamic list */}
+            <div className="pp-deliverables-section">
+              <h3 className="pp-deliverables-title">🎯 Key Deliverables & Goals</h3>
+
+              {deliverables.map((deliverable) => (
+                <div key={deliverable.id} className="pp-deliverable-item">
+                  <input
+                    type="checkbox"
+                    checked={deliverable.completed}
+                    onChange={() => handleDeliverableToggle(deliverable.id)}
+                    className="pp-checkbox"
+                  />
+                  <span className="pp-deliverable-text">{deliverable.text}</span>
+                  {deliverable.completed && (
+                    <span className="pp-status-badge pp-done">DONE</span>
+                  )}
+                </div>
+              ))}
+
+              <div className="pp-deliverable-item">
+                <input type="checkbox" className="pp-checkbox" disabled />
+                <input
+                  type="text"
+                  className="pp-deliverable-input"
+                  placeholder="Add a milestone or goal..."
+                  value={newDeliverableInput}
+                  onChange={handleNewDeliverableChange}
+                  onKeyDown={handleNewDeliverableKeyDown}
+                />
+              </div>
+
+              <button className="pp-add-item-btn" onClick={handleAddDeliverable}>
+                + Add Item
+              </button>
+            </div>
+          </section>
+
+          {/* Skills & Requirements */}
+          <section className="pp-form-section">
+            <div className="pp-section-header">
+              <div className="pp-section-icon pp-purple-circle">3</div>
+              <h2 className="pp-section-title">Skills & Requirements</h2>
+            </div>
+
+            {/* Skills input with tag management */}
+            <div className="pp-form-group">
+              <label className="pp-form-label">Required Skills / Tech Stack</label>
+              <div className="pp-skills-input">
+                {skills.map((skill, index) => (
+                  <span key={index} className="pp-skill-tag">
+                    {skill}
+                    <X
+                      size={12}
+                      className="pp-skill-remove"
+                      onClick={() => handleRemoveSkill(index)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </span>
+                ))}
+                <input
+                  type="text"
+                  className="pp-skill-input-field"
+                  placeholder="Type and press Enter..."
+                  value={skillInput}
+                  onChange={handleSkillInputChange}
+                  onKeyDown={handleSkillInputKeyDown}
+                />
+              </div>
+            </div>
+
+            {/* Rating slider and team size controls */}
+            <div className="pp-form-row">
+              <div className="pp-form-group">
+                <label className="pp-form-label">Min. Platform Rating</label>
+                <div className="pp-rating-slider">
+                  <span className="pp-rating-label">Newbie</span>
+                  <input
+                    type="range"
+                    className="pp-slider"
+                    min="0"
+                    max="100"
+                    value={ratingValue}
+                    onChange={handleRatingChange}
+                  />
+                  <span className="pp-rating-label">Expert</span>
+                </div>
+                <div className="pp-rating-value">{getRatingDisplay()}</div>
+              </div>
+
+              {/* Team size increment/decrement controls */}
+              <div className="pp-form-group">
+                <label className="pp-form-label">
+                  Desired Team Size <span className="pp-hint">(excluding you)</span>
+                </label>
+                <div className="pp-team-size-control">
+                  <button
+                    className="pp-team-btn"
+                    onClick={handleDecrementTeam}
+                    disabled={teamSize <= 1}
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <span className="pp-team-size">{teamSize} Members</span>
+                  <button
+                    className="pp-team-btn"
+                    onClick={handleIncrementTeam}
+                    disabled={teamSize >= 10}
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Role label select */}
+            <div className="pp-form-group">
+              <label className="pp-form-label">Role Label</label>
+              <select
+                name="roleLabel"
+                className="pp-form-select"
+                value={formData.roleLabel}
+                onChange={handleInputChange}
+              >
+                <option>Full Stack Developer</option>
+                <option>Frontend Developer</option>
+                <option>Backend Developer</option>
+                <option>Mobile Developer</option>
+                <option>DevOps Engineer</option>
+                <option>UI/UX Designer</option>
+              </select>
+            </div>
+
+            <div className="pp-alert-box">
+              <span className="pp-alert-icon">⚠️</span>
+              <div className="pp-alert-text">
+                <strong>Strict Requirements Alert</strong>
+                <p>Setting the minimum rating above 2000 reduces your candidate pool by ~65%. Consider lowering it for a fresher reach.</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Availability & Collaboration */}
+          <section className="pp-form-section">
+            <div className="pp-section-header">
+              <div className="pp-section-icon pp-cyan">4</div>
+              <h2 className="pp-section-title">Availability & Collaboration</h2>
+            </div>
+
+            {/* Commitment and duration selects */}
+            <div className="pp-form-row">
+              <div className="pp-form-group">
+                <label className="pp-form-label">Expected Commitment</label>
+                <select
+                  name="expectedCommitment"
+                  className="pp-form-select"
+                  value={formData.expectedCommitment}
+                  onChange={handleInputChange}
+                >
+                  <option>Part-time (10-20 hrs/week)</option>
+                  <option>Full-time (40+ hrs/week)</option>
+                  <option>Flexible</option>
+                </select>
+              </div>
+              <div className="pp-form-group">
+                <label className="pp-form-label">Project Duration</label>
+                <select
+                  name="projectDuration"
+                  className="pp-form-select"
+                  value={formData.projectDuration}
+                  onChange={handleInputChange}
+                >
+                  <option>1-3 Months</option>
+                  <option>3-6 Months</option>
+                  <option>6-12 Months</option>
+                  <option>12+ Months</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Timeline tabs and timezone select */}
+            <div className="pp-form-row">
+              <div className="pp-form-group">
+                <label className="pp-form-label">Start Timeline</label>
+                <div className="pp-timeline-tabs">
+                  <button
+                    className={`pp-timeline-tab ${activeTimeline === 'immediate' ? 'pp-active' : ''}`}
+                    onClick={() => handleTimelineChange('immediate')}
+                  >
+                    Immediate
+                  </button>
+                  <button
+                    className={`pp-timeline-tab ${activeTimeline === 'scheduled' ? 'pp-active' : ''}`}
+                    onClick={() => handleTimelineChange('scheduled')}
+                  >
+                    Scheduled
+                  </button>
+                </div>
+
+                {/* If scheduled selected, show a date input (calendar + typing) */}
+                {activeTimeline === 'scheduled' && (
+                  <div className="pp-start-date-block" style={{ marginTop: '20px' }}>
+                    <label className="pp-form-label">Start Date</label>
+                    {/* use input type="date" for calendar + typing; you can switch to datetime-local if you want time */}
+                    <input
+                      type="date"
+                      name="startDate"
+                      className="pp-form-input"
+                      value={formData.startDate}
+                      onChange={handleInputChange}
+                    />
+                    <small className="pp-hint">Select a start date or type it directly (YYYY-MM-DD).</small>
+                  </div>
+                )}
+              </div>
+
+              <div className="pp-form-group">
+                <label className="pp-form-label">Timezone Preference</label>
+                <select
+                  name="timezonePreference"
+                  className="pp-form-select"
+                  value={formData.timezonePreference}
+                  onChange={handleInputChange}
+                >
+                  <option>Global (Any Timezone)</option>
+                  <option>Americas (UTC-8 to UTC-4)</option>
+                  <option>Europe (UTC+0 to UTC+3)</option>
+                  <option>Asia (UTC+5 to UTC+9)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Collaboration style radio buttons and communication norms */}
+            <div className="pp-form-row">
+              <div className="pp-form-group">
+                <label className="pp-form-label">Collaboration Style</label>
+                <div className="pp-radio-group">
+                  <label className="pp-radio-option">
+                    <input
+                      type="radio"
+                      name="collab"
+                      checked={collaborationStyle === 'async'}
+                      onChange={() => handleCollaborationChange('async')}
+                    />
+                    <div onClick={(e) => handleRadioInput(e, 'async')}>
+                      <strong>Async First</strong>
+                      <p className="pp-radio-desc">Written comms, minimal meetings.</p>
+                    </div>
+                  </label>
+                  <label className="pp-radio-option">
+                    <input
+                      type="radio"
+                      name="collab"
+                      checked={collaborationStyle === 'sync'}
+                      onChange={() => handleCollaborationChange('sync')}
+                    />
+                    <div onClick={(e) => handleRadioInput(e, 'sync')}>
+                      <strong>Synchronous</strong>
+                      <p className="pp-radio-desc">Regular meetings, real-time collab.</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div className="pp-form-group">
+                <label className="pp-form-label">Communication Norms</label>
+                <textarea
+                  name="communicationNorms"
+                  className="pp-form-textarea"
+                  placeholder="e.g. We use Discord for daily chat and Notion for tasks. Weekly stand-up on Mondays."
+                  rows={3}
+                  value={formData.communicationNorms}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+          </section>
         </div>
 
-        {/* Sidebar - Smart Match */}
-        <div className="w-80">
-          <div className="sticky top-6">
-            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-5 text-white shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-yellow-400">⚡</span>
-                  <h3 className="font-semibold">Smart Match</h3>
+        {/* Right Column - Smart Match (Display Only) */}
+        <div className="pp-right-column">
+          <div className="pp-smart-match-card">
+            <div className="pp-smart-match-header">
+              <Zap size={16} fill="#FFD700" color="#FFD700" />
+              <span>Smart Match</span>
+              <span className="pp-live-badge">LIVE</span>
+            </div>
+
+            {/* Display match statistics based on current form data */}
+            <div className="pp-match-stats">
+              <div className="pp-stat">
+                <div className="pp-stat-number">
+                  {ratingValue < 50 ? 14 + Math.floor((50 - ratingValue) / 5) : Math.max(5, 14 - Math.floor((ratingValue - 50) / 5))}
                 </div>
-                <span className="px-2 py-0.5 bg-green-500 text-white text-xs font-semibold rounded">LIVE</span>
+                <div className="pp-stat-label">Candidates</div>
               </div>
-
-              <div className="mb-4">
-                <div className="text-3xl font-bold mb-1">14</div>
-                <div className="text-sm text-gray-400">Candidates</div>
-              </div>
-
-              <div className="mb-4">
-                <div className="text-3xl font-bold text-green-400 mb-1">92%</div>
-                <div className="text-sm text-gray-400">Avg Match</div>
-              </div>
-
-              <div className="border-t border-slate-700 pt-4 mt-4">
-                <div className="text-xs text-gray-400 mb-3">TOP MATCHES PREVIEW</div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3 p-2 bg-slate-800/50 rounded-lg">
-                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center font-semibold">
-                      ER
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm">Elena R.</div>
-                      <div className="text-xs text-gray-400 truncate">React Native • TypeScript • SEO rating</div>
-                    </div>
-                    <div className="text-green-400 font-semibold text-sm">98%</div>
-                  </div>
-                  <div className="flex items-center gap-3 p-2 bg-slate-800/50 rounded-lg">
-                    <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center font-semibold">
-                      MJ
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm">Marcus J.</div>
-                      <div className="text-xs text-gray-400 truncate">Full Stack • System Design • 200 rating</div>
-                    </div>
-                    <div className="text-green-400 font-semibold text-sm">94%</div>
-                  </div>
+              <div className="pp-stat">
+                <div className="pp-stat-number pp-green">
+                  {skills.length > 0 ? Math.min(95, 70 + skills.length * 5) : 50}%
                 </div>
-                <button className="w-full mt-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors">
-                  +12 more candidates match your current criteria.
-                </button>
+                <div className="pp-stat-label">Avg Match</div>
+              </div>
+            </div>
+
+            {/* Preview of top matching candidates */}
+            <div className="pp-matches-preview">
+              <h4 className="pp-preview-title">TOP MATCHES PREVIEW</h4>
+
+              <div className="pp-match-item">
+                <div className="pp-match-avatar">E</div>
+                <div className="pp-match-info">
+                  <div className="pp-match-name">Elena R.</div>
+                  <div className="pp-match-skills">React Native • TypeScript • SEO rating</div>
+                </div>
+                <div className="pp-match-score pp-green">98%</div>
+              </div>
+
+              <div className="pp-match-item">
+                <div className="pp-match-avatar pp-gray">M</div>
+                <div className="pp-match-info">
+                  <div className="pp-match-name">Marcus J.</div>
+                  <div className="pp-match-skills">Full Stack • System Design • 700 rating</div>
+                </div>
+                <div className="pp-match-score pp-green">94%</div>
+              </div>
+
+              <div className="pp-more-matches">
+                {/* basic extra count display */}
+                +{Math.max(0, (ratingValue < 50 ? 14 + Math.floor((50 - ratingValue) / 5) : Math.max(5, 14 - Math.floor((ratingValue - 50) / 5))) - 2)} more matches
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Fixed Footer */}
+      <footer className="pp-footer">
+        <button className="pp-footer-btn pp-secondary" onClick={handlePreview}>Preview</button>
+        <button className="pp-footer-btn pp-secondary" onClick={handleSaveDraft}>Save Draft</button>
+        <button className="pp-footer-btn pp-primary" onClick={handlePostProject}>
+          🚀 Post Project
+        </button>
+      </footer>
     </div>
   );
 };
-export default PostProjectPage;
+
+export default ProjectPostPage;
