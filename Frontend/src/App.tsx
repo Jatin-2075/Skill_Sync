@@ -24,15 +24,16 @@ const App: React.FC = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/" element={<Intro />} />
+      <Route path="/pageone" element={<Page1 />} />
+      <Route path="/pagetwo" element={<Page2 />} />
+      <Route path="/pagethree" element={<Page3 />} />
+      <Route path="/pagefour" element={<Page4 />} />
+      <Route path="/pagefive" element={<Page5 />} />
 
       {/* Pages WITH Navbar */}
       <Route element={<MainLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/pageone" element={<Page1 />} />
-        <Route path="/pagetwo" element={<Page2 />} />
-        <Route path="/pagethree" element={<Page3 />} />
-        <Route path="/pagefour" element={<Page4 />} />
-        <Route path="/pagefive" element={<Page5 />} />
+        
         <Route path="/postproject" element={<PostProject />} />
         <Route path="/findcollaborators" element={<FindCollaborators/>}></Route>
       </Route>
