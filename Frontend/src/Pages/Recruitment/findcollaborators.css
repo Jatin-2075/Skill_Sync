@@ -27,6 +27,7 @@
   flex-wrap: wrap;
   align-items: flex-end;
 }
+
 .fc-header-text {
   display: flex;
   flex-direction: column;
@@ -146,17 +147,15 @@
   width: 100%;
 }
 
-/* Sidebar */
 .fc-sidebar {
   width: 100%;
-  max-width: 320px;   /* increased from 280 to feel more balanced */
+  max-width: 320px;  
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* keep sidebar visible on tablet sizes too (better use of space) */
 @media (max-width: 1024px) {
   .fc-sidebar {
     display: none;   /* still hide on smaller screens; you can change to block at 900px if you prefer */

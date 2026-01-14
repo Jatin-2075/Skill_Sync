@@ -20,17 +20,34 @@ const FindCollaborators = () => {
         {/* Tabs */}
         <div className="fc-tabs-border">
           <nav className="fc-tabs-nav">
-            <a className="fc-tab fc-tab-active" href="#">
+            <NavLink
+              to="/findcollaborators"
+              className={({ isActive }) =>
+                isActive ? "fc-tab fc-tab-active" : "pp-tab"
+              }
+            >
               Find Collaborators
-            </a>
-            <a className="fc-tab" href="/postproject">
+            </NavLink>
+
+            <NavLink
+              to="/postproject"
+              className={({ isActive }) =>
+                isActive ? "fc-tab fc-tab-active" : "pp-tab"
+              }
+            >
               Post a Project
               <span className="fc-tab-badge fc-badge-new">NEW</span>
-            </a>
-            <a className="fc-tab" href="#">
+            </NavLink>
+
+            <NavLink
+              to="/myproposals"
+              className={({ isActive }) =>
+                isActive ? "fc-tab fc-tab-active" : "pp-tab"
+              }
+            >
               My Proposals
               <span className="fc-tab-badge fc-badge-count">2</span>
-            </a>
+            </NavLink>
           </nav>
         </div>
       </div>
