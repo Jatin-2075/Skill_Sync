@@ -6,7 +6,7 @@ from Auth_System.models import (
     Details,
 )
 
-class PostProject(models.Model):
+class PostProject(models.Model) :
     details = models.ForeignKey(
         Details,
         on_delete=models.CASCADE,
@@ -20,8 +20,8 @@ class PostProject(models.Model):
     projectdescription = models.CharField(max_length=500)
     projectvisibility = models.CharField(max_length=20)
     projectcategory = models.CharField(max_length=30)
-    desiredteammember = models.PositiveIntegerField()
     ratingrequired = models.PositiveIntegerField()
+    desiredteammember = models.PositiveIntegerField()
     currentteammember = models.PositiveIntegerField()
 
     def __str__(self):
