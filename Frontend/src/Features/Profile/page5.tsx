@@ -4,14 +4,14 @@ import "./style/page5.css";
 import { API } from '../../config/Api';
 
 type Collaboration = {
-  paidproject: boolean;
+  opensource: boolean;
+  paidprojects: boolean;
   startup: boolean;
   mentorship: boolean;
-  opensource: boolean;
   weeklyhour: number;
 };
 
-type ToggleKeys = "opensource" | "paidproject" | "startup" | "mentorship";
+type ToggleKeys = "opensource" | "paidprojects" | "startup" | "mentorship";
 
 export default function Page5() {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function Page5() {
   const [collaborationInterests, setCollaborationInterests] =
     useState<Collaboration>({
       opensource: true,
-      paidproject: false,
+      paidprojects: false,
       startup: true,
       mentorship: false,
       weeklyhour: 10,
@@ -41,11 +41,16 @@ export default function Page5() {
   const handleBack = () => navigate("/pagefour");
 
   const handlesubmit = async () => {
-    const res = await API("POST", "/auth/savecollaboration/", { data : collaborationInterests })
-    const data = await res.json()
-
+    const res = await API("POST", "/auth/savecollaboration/", {
+      colab: collaborationInterests,
+    });
+    const data = await res.json();
     console.log(data);
-  }
+    if(data.success){
+      navigate("/dashboard")
+    }
+  };
+
 
   return (
     <div className="page5-container">
@@ -66,11 +71,11 @@ export default function Page5() {
       <main className="page5-main-content">
         <section className="page5-progress-section">
             <div className="page5-progress-info">
-              <span className="page5-phase-text">Phase 5: Availibility and Collaboration</span>
-              <span className="page5-completion-text">100%</span>
+              <span className="page5-phase-text">Phase 4: Projects & Contributions</span>
+              <span className="page5-completion-text">80% Completed</span>
             </div>
             <div className="page5-progress-bar">
-              <div className="page5-progress-fill" style={{ width: "100%" }} />
+              <div className="page5-progress-fill" style={{ width: "80%" }} />
             </div>
           </section>
         <section className="page5-title-section">
@@ -109,10 +114,11 @@ export default function Page5() {
           <div className="page5-collaboration-grid">
             {([
               ["opensource", "📂", "Open Source", "contribute to public repos"],
-              ["paidproject", "💰", "Paid Projects", "freelance & contract"],
+              ["paidprojects", "💰", "Paid Projects", "freelance & contract"],
               ["startup", "🚀", "Startups", "co-founding or equity"],
               ["mentorship", "🎓", "Mentorship", "teaching others"],
             ] as const).map(([key, icon, title, sub]) => (
+
               <div
                 key={key}
                 className={`page5-collab-card ${collaborationInterests[key] ? 'page5-selected' : ''
