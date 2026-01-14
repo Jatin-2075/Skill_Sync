@@ -10,10 +10,10 @@ interface Project {
   description: string;
   techStack: string[];
   skills: string[];
-  repositoryUrl: string;
-  demoUrl: string;
+  githublink: string;
+  livelink: string;
 }
-  
+
 interface SkillVector {
   id: string;
   number: string;
@@ -40,20 +40,21 @@ const Page4 = () => {
     role: '',
     description: '',
     techStack: [] as string[],
-    repositoryUrl: '',
-    demoUrl: '',
+    githublink: '',
+    livelink: '',
   });
+  const normalizeProjects = (data: any): Project[] =>
+    Array.isArray(data) ? data : data?.projects ?? [];
 
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [techInput, setTechInput] = useState('');
 
-  // Fetch projects from backend on component mount
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await API("GET", "/auth/projectsave/", {});
+        const res = await API("GET", "/auth/projectsave/");
         const data = await res.json();
-        setProjects(data);
+        setProjects(normalizeProjects(data));
       } catch (error) {
         console.error('Error fetching projects:', error);
       }
@@ -106,15 +107,14 @@ const Page4 = () => {
       role: '',
       description: '',
       techStack: [],
-      repositoryUrl: '',
-      demoUrl: '',
+      githublink: '',
+      livelink: '',
     });
     setSelectedSkills([]);
     setTechInput('');
   };
 
   const handleAddProject = async () => {
-    // Validate required fields
     if (!formData.title.trim() || !formData.role || selectedSkills.length === 0) {
       alert('Please fill in Title, Role, and select at least one skill');
       return;
@@ -126,20 +126,18 @@ const Page4 = () => {
       description: formData.description,
       techStack: formData.techStack,
       skills: selectedSkills,
-      repositoryUrl: formData.repositoryUrl,
-      demoUrl: formData.demoUrl,
+      githublink: formData.githublink,
+      livelink: formData.livelink,
     };
 
     try {
       const res = await API("POST", "/auth/projectsave/", { "projects": newProject });
       const data = await res.json();
-      
-      // Update projects with backend response
-      setProjects(data);
-      
-      // Clear the form after successful addition
+
+      setProjects(normalizeProjects(data));
+
       handleClearForm();
-      
+      console.log("we have")
       console.log(data);
     } catch (error) {
       console.error('Error saving project:', error);
@@ -149,16 +147,15 @@ const Page4 = () => {
 
   const handleDeleteProject = async (projectId: string) => {
     try {
-      const res = await API("DELETE", `/auth/projectsave/${projectId}`, {});
+      const res = await API("DELETE", "/auth/projectsave/", { id: projectId });
       const data = await res.json();
-      
-      // Update projects with backend response
-      setProjects(data);
+      setProjects(normalizeProjects(data));
     } catch (error) {
       console.error('Error deleting project:', error);
       alert('Failed to delete project. Please try again.');
     }
   };
+
 
   const navigate = useNavigate();
   const handleBack = () => {
@@ -230,8 +227,8 @@ const Page4 = () => {
                     </span>
                   ))}
                 </div>
-                <button 
-                  className="page4-edit-btn" 
+                <button
+                  className="page4-edit-btn"
                   aria-label="Delete project"
                   onClick={() => handleDeleteProject(project.id)}
                 >
@@ -313,9 +310,8 @@ const Page4 = () => {
                   {skillVectors.map((skill) => (
                     <div
                       key={skill.id}
-                      className={`page4-skill-card ${
-                        selectedSkills.includes(skill.number) ? 'page4-selected' : ''
-                      }`}
+                      className={`page4-skill-card ${selectedSkills.includes(skill.number) ? 'page4-selected' : ''
+                        }`}
                       onClick={() => toggleSkill(skill.number)}
                     >
                       <span className="page4-skill-number">{skill.number}</span>
@@ -334,8 +330,8 @@ const Page4 = () => {
                   <div className="page4-url-input-wrapper">
                     <span className="page4-url-icon">🔗</span>
                     <input
-                      name="repositoryUrl"
-                      value={formData.repositoryUrl}
+                      name="githublink"
+                      value={formData.githublink}
                       onChange={handleInputChange}
                       className="page4-form-input page4-url-input"
                       placeholder="github.com/username/project"
@@ -348,8 +344,8 @@ const Page4 = () => {
                   <div className="page4-url-input-wrapper">
                     <span className="page4-url-icon">🚀</span>
                     <input
-                      name="demoUrl"
-                      value={formData.demoUrl}
+                      name="livelink"
+                      value={formData.livelink}
                       onChange={handleInputChange}
                       className="page4-form-input page4-url-input"
                       placeholder="https://..."

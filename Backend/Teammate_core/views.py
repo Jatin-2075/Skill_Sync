@@ -22,6 +22,18 @@ from .models import (
     TeamMember,
 )
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def FunctionSendProfile(request):
+    user = request.user
+
+    try:
+        details = Details.objects.get(user=user)
+    except:
+        return JsonResponse({'success' : False, 'msg' : 'you are not authenticated'})
+    
+    
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def FunctionAddProject(request):

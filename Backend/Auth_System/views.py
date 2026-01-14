@@ -305,55 +305,61 @@ def FunctionSaveProject(request):
     except Details.DoesNotExist:
         return JsonResponse({"success": False, "msg": "User details not found"}, status=404)
 
-    if request.method == "GET":
+    def serialize_projects():
         projects = UserProjectDetails.objects.filter(details=details)
         project_list = []
+
         for proj in projects:
-            skills = [ps.skill.skill for ps in proj.project_skills.all()]
+            skills = [ps.skill.skill for ps in proj.projectskills.all()]
             project_list.append({
                 "id": str(proj.id),
                 "title": proj.name,
                 "role": proj.role,
                 "description": proj.description,
+                "techStack": [],
                 "skills": skills,
-                "repositoryUrl": proj.githublink,
-                "demoUrl": proj.livelink,
+                "githublink": proj.githublink,
+                "livelink": proj.livelink,
             })
-        return JsonResponse({"success": True, "data": project_list})
+
+        return project_list
+
+    if request.method == "GET":
+        return JsonResponse(serialize_projects(), safe=False)
 
     elif request.method == "POST":
-        payload = request.data.get("projects", [])
-
-        if not payload:
+        proj = request.data.get("projects")
+        if not proj:
             return JsonResponse({"success": False, "msg": "No project data received"}, status=400)
 
-        for proj in payload:
-            project_obj = UserProjectDetails.objects.create(
-                details=details,
-                name=proj.get("name"),
-                role=proj.get("role"),
-                description=proj.get("description"),
-                githublink=proj.get("githublink"),
-                livelink=proj.get("livelink"),
-            )
+        project_obj = UserProjectDetails.objects.create(
+            details=details,
+            name=proj.get("title"),
+            role=proj.get("role"),
+            description=proj.get("description"),
+            githublink=proj.get("githublink"),
+            livelink=proj.get("livelink"),
+        )
 
-            skills = proj.get("skills", [])
-            for skill_name in skills:
-                skill, _ = SkillList.objects.get_or_create(skill=skill_name.strip())
-                ProjectSkill.objects.get_or_create(project=project_obj, skill=skill)
+        for skill_name in proj.get("skills", []):
+            skill, _ = SkillList.objects.get_or_create(skill=skill_name.strip())
+            ProjectSkills.objects.get_or_create(project=project_obj, skill=skill)
 
-        return JsonResponse({"success": True, "msg": "Projects saved"})
+        return JsonResponse(serialize_projects(), safe=False, status=201)
 
     elif request.method == "DELETE":
         project_id = request.data.get("id")
         if not project_id:
             return JsonResponse({"success": False, "msg": "No project id provided"}, status=400)
+
         try:
             proj = UserProjectDetails.objects.get(id=project_id, details=details)
             proj.delete()
-            return JsonResponse({"success": True, "msg": "Project deleted"})
         except UserProjectDetails.DoesNotExist:
             return JsonResponse({"success": False, "msg": "Project not found"}, status=404)
+
+        return JsonResponse(serialize_projects(), safe=False)
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -386,31 +392,4 @@ def FunctionSaveColaboration(request):
             "mentorship": obj.mentorship,
         }
     })
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def FunctionColaboration(request):
-    user = request.user
-    details = Details.objects.filter(user=user).first()
-    if not details:
-        return JsonResponse({"success": False, "msg": "User details not found"}, status=404)
-
-    obj = Colaboration.objects.filter(details=details).first()
-    data = {
-        "opensource": False,
-        "paidprojects": False,
-        "startup": False,
-        "mentorship": False,
-    }
-
-    if obj:
-        data = {
-            "opensource": obj.opensource,
-            "paidprojects": obj.paidprojects,
-            "startup": obj.startup,
-            "mentorship": obj.mentorship,
-        }
-
-    return JsonResponse({"success": True, "data": data})
 

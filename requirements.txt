@@ -1,0 +1,4 @@
+Django>=5.0
+djangorestframework
+django-cors-headers
+djangorestframework-simplejwt
