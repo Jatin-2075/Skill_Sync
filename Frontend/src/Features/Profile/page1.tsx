@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import "./style/page1.css";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../config/Api";
-import { uploadProfileImage } from "../ImageService";
-import { supabase } from "../ImageService";
+import { uploadProfileImage } from "../../Components/ImageService";
+import { supabase } from "../../Components/ImageService";
 
 type Country = {
   cca2: string;
