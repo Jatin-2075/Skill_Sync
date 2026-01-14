@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './postproject.css';
 import { X, Info, Plus, Minus, Zap } from 'lucide-react';
+import {NavLink} from 'react-router-dom'
 
 // Define the type for project data
 type PostProjectType = {
@@ -253,10 +254,9 @@ const ProjectPostPage = () => {
 
     console.log('Project posted:', projectData);
     alert('Project posted successfully!');
-    // send to backend here
   };
 
-  // Handle close button
+
   const handleClose = () => {
     const hasUnsavedData = formData.projectTitle || formData.projectSummary || skills.length > 2;
 
@@ -272,25 +272,52 @@ const ProjectPostPage = () => {
 
   return (
     <div className="pp-project-post-container">
-      {/* Header */}
-      <header className="pp-header">
-        <div className="pp-header-left">
-          <div className="pp-logo-icon">📱</div>
-          <div>
-            <h1 className="pp-header-title">Post a Project</h1>
-            <p className="pp-header-subtitle">Define Your Vision. Build Your Team.</p>
+      <div className="pp-header-section">
+        <div className="pp-header-content">
+          <div className="pp-header-text">
+            <h1 className="pp-page-title">Team Recruitment</h1>
+            <p className="pp-page-description">
+              Find the perfect teammate. Filter by skill vectors, rating, and availability to build your dream team.
+            </p>
           </div>
         </div>
-        <div className="pp-header-right">
-          <span className="pp-auto-saved">
-            <span className="pp-saved-dot">●</span> Auto-saved {lastSaved}
-          </span>
-          <button className="pp-close-btn" onClick={handleClose}>
-            <X size={20} />
-          </button>
-        </div>
-      </header>
 
+        {/* Tabs */}
+        <div className="pp-tabs-border">
+          <nav className="pp-tabs-nav">
+            <NavLink
+              to="/findcollaborators"
+              className={({ isActive }) =>
+                isActive ? "pp-tab pp-tab-active" : "pp-tab"
+              }
+            >
+              Find Collaborators
+            </NavLink>
+
+            <NavLink
+              to="/postproject"
+              className={({ isActive }) =>
+                isActive ? "pp-tab pp-tab-active" : "pp-tab"
+              }
+            >
+              Post a Project
+              <span className="pp-tab-badge pp-badge-new">NEW</span>
+            </NavLink>
+
+            <NavLink
+              to="/myproposals"
+              className={({ isActive }) =>
+                isActive ? "pp-tab pp-tab-active" : "pp-tab"
+              }
+            >
+              My Proposals
+              <span className="pp-tab-badge pp-badge-count">2</span>
+            </NavLink>
+          </nav>
+
+        </div>
+      </div>
+    
       {/* Main Content */}
       <div className="pp-main-content">
         {/* Left Column */}
@@ -781,13 +808,11 @@ Small token holders lack meaningful participation, leading to low governance eng
       </div>
 
       {/* Fixed Footer */}
-      <footer className="pp-footer">
-        <button className="pp-footer-btn pp-secondary" onClick={handlePreview}>Preview</button>
-        <button className="pp-footer-btn pp-secondary" onClick={handleSaveDraft}>Save Draft</button>
-        <button className="pp-footer-btn pp-primary" onClick={handlePostProject}>
-          🚀 Post Project
-        </button>
-      </footer>
+      <div className="pp-inline-actions">
+        <button className="pp-footer-btn pp-secondary">Preview</button>
+        <button className="pp-footer-btn pp-secondary">Save Draft</button>
+        <button className="pp-footer-btn pp-primary">🚀 Post Project</button>
+      </div>
     </div>
   );
 };
