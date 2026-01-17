@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Book, BookHeart, Bell, UserSquare2Icon } from "lucide-react";
+import { LayoutDashboard, UserSquare2Icon ,Upload} from "lucide-react";
 import "../Style/navbar.css";
 
 const Navbar = () => {
@@ -14,9 +14,7 @@ const Navbar = () => {
 
     const mainNav = [
         { path: "/dashboard", name: "Dashboard", icon: LayoutDashboard },
-        { path: "/community", name: "Community", icon: Book },
-        { path: "/Peopleall", name: "Knows", icon: BookHeart },
-        { path: "/notification", name: "Notification", icon: Bell },
+        { path: "/postproject", name: "PostProject", icon: Upload },
         { path: "/profile", name: "Profile", icon: UserSquare2Icon },
     ];
 

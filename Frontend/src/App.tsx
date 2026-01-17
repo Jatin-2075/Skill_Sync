@@ -19,6 +19,8 @@ import PostProjectPage from "./Features/Recruitment/postproject";
 const App:React.FC = () =>{
     return (
         <Routes>
+            {/* Intro and other not useable */}
+            <Route path="/" element={<Intro/>}/>
 
             {/* Auth system files  */}
             <Route path="/login" element={<Login/>}/>
@@ -31,12 +33,9 @@ const App:React.FC = () =>{
             <Route path="/pagefour" element={<Page4/>}/>
             <Route path="/pagefive" element={<Page5/>}/>
 
-            <Route path="/postproject" element={<PostProjectPage/>}/>
-            {/* Intro and other not useable */}
-            <Route path="/" element={<Intro/>}/>
-
             {/* Main Files Connection profile and other */}
             <Route element={<MainLayout/>} >
+                <Route path="/postproject" element={<PostProjectPage/>}/>
                 <Route path="/dashboard" element={<Dashboard/>}/>
             </Route>
         </Routes>
