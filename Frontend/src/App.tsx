@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 
-
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 
@@ -9,16 +8,15 @@ import Intro from "./Pages/Intro";
 import Dashboard from "./Pages/Dashboard";
 import MainLayout from "./Components/Mainlayout";
 
-import Page1 from "./Features/Profile/page1";
-import Page2 from "./Features/Profile/page2";
-import Page3 from "./Features/Profile/page3";
-import Page4 from "./Features/Profile/page4";
-import Page5 from "./Features/Profile/page5";
-import PostProjectPage from "./Features/Recruitment/postproject";
+import Page1 from "./Components/Profile/page1";
+import Page2 from "./Components/Profile/page2";
+import Page3 from "./Components/Profile/page3";
+import Page4 from "./Components/Profile/page4";
+import Page5 from "./Components/Profile/page5";
 
-const App:React.FC = () =>{
-    return (
-        <Routes>
+const App: React.FC = () => {
+  return (
+    <Routes>
 
             {/* Auth system files  */}
             <Route path="/login" element={<Login/>}/>
@@ -30,8 +28,6 @@ const App:React.FC = () =>{
             <Route path="/pagethree" element={<Page3/>}/>
             <Route path="/pagefour" element={<Page4/>}/>
             <Route path="/pagefive" element={<Page5/>}/>
-
-            <Route path="/postproject" element={<PostProjectPage/>}/>
             {/* Intro and other not useable */}
             <Route path="/" element={<Intro/>}/>
 
@@ -43,4 +39,4 @@ const App:React.FC = () =>{
     )
 }
 
-export default App;  
+export default App;
