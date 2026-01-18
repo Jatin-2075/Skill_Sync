@@ -46,7 +46,7 @@ export default function Page5() {
     });
     const data = await res.json();
     console.log(data);
-    if(data.success){
+    if (data.success) {
       navigate("/dashboard")
     }
   };

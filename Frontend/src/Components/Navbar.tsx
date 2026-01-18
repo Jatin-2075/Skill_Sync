@@ -1,6 +1,8 @@
 import React from 'react';
 import { Search, Bell } from 'lucide-react';
 import '../Style/navbar.css';
+import { NavLink } from 'react-router-dom'
+
 
 const Navbar = () => {
   return (
@@ -19,22 +21,54 @@ const Navbar = () => {
             <div className="navbar-search-icon">
               <Search size={20} />
             </div>
-            <input 
-              className="navbar-search-input" 
-              placeholder="Search" 
+            <input
+              className="navbar-search-input"
+              placeholder="Search"
             />
           </div>
         </label>
       </div>
-      
+
       <div className="navbar-right">
         <div className="navbar-links">
-          <a className="navbar-link" href="#">Dashboard</a>
-          <a className="navbar-link" href="#">Challenges</a>
-          <a className="navbar-link navbar-link-active" href="#">Recruitment</a>
-          <a className="navbar-link" href="#">Community</a>
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              isActive ? "navbar-link navbar-link-active" : "navbar-link"
+            }
+          >
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            to="/challenges"
+            className={({ isActive }) =>
+              isActive ? "navbar-link navbar-link-active" : "navbar-link"
+            }
+          >
+            Challenges
+          </NavLink>
+
+          <NavLink
+            to="/findcollaborators"
+            className={({ isActive }) =>
+              isActive ? "navbar-link navbar-link-active" : "navbar-link"
+            }
+          >
+            Recruitment
+          </NavLink>
+
+          <NavLink
+            to="/community"
+            className={({ isActive }) =>
+              isActive ? "navbar-link navbar-link-active" : "navbar-link"
+            }
+          >
+            Community
+          </NavLink>
         </div>
-        
+
+
         <div className="navbar-actions">
           <button className="navbar-notification-btn">
             <Bell size={20} />

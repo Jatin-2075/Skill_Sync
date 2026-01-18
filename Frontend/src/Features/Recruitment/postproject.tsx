@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './postproject.css';
-import { X, Info, Plus, Minus, Zap } from 'lucide-react';
-import {NavLink} from 'react-router-dom'
+import { X, Info, Plus, Minus, Zap, Trash2, Edit2 } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 
-// Define the type for project data
 type PostProjectType = {
   projectTitle: string;
   projectSummary: string;
   projectCategory: string;
   projectVisibility: string;
   desiredTeamMember: number;
-  // Replaced projectDescription with two separate fields:
   problemStatement: string;
   technicalApproach: string;
   ratingRequired: number;
@@ -18,15 +16,14 @@ type PostProjectType = {
   repositoryLink: string;
   expectedCommitment: string;
   projectDuration: string;
-  startTimeline: string; // 'immediate' | 'scheduled'
-  startDate: string; // ISO date string (yyyy-mm-dd) or empty
+  startTimeline: string;
+  startDate: string;
   timezonePreference: string;
   collaborationStyle: string;
   communicationNorms: string;
   roleLabel: string;
 };
 
-// Define the type for deliverable items
 type DeliverableItem = {
   id: number;
   text: string;
@@ -34,45 +31,33 @@ type DeliverableItem = {
 };
 
 const ProjectPostPage = () => {
-  const [skills, setSkills] = useState<string[]>(['React Native', 'TypeScript']);
-
+  const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState<string>('');
-
   const [deliverables, setDeliverables] = useState<DeliverableItem[]>([
-    { id: 1, text: 'MVP with core authentication flow', completed: true }
+    { id: 1, text: 'Complete MVP with core voting features', completed: true },
+    { id: 2, text: 'Smart contract deployment on testnet', completed: false },
+    { id: 3, text: 'Security audit and gas optimization', completed: false }
   ]);
-
-  // State for managing new deliverable input
   const [newDeliverableInput, setNewDeliverableInput] = useState<string>('');
-
-  // State for managing team size
-  const [teamSize, setTeamSize] = useState<number>(3);
-
-  // State for managing rating slider value
-  const [ratingValue, setRatingValue] = useState<number>(40);
-
-  // State for managing active timeline tab
+  const [teamSize, setTeamSize] = useState<number>(1);
+  const [ratingValue, setRatingValue] = useState<number>(30);
   const [activeTimeline, setActiveTimeline] = useState<'immediate' | 'scheduled'>('immediate');
-
-  // State for managing collaboration style
   const [collaborationStyle, setCollaborationStyle] = useState<'async' | 'sync'>('async');
-
-  // State for managing character count in summary
   const [summaryCharCount, setSummaryCharCount] = useState<number>(0);
+  const [lastSaved, setLastSaved] = useState<string>('');
+  const [done, setDone] = useState<boolean>(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editText, setEditText] = useState<string>('');
 
-  // State for managing auto-save status
-  const [lastSaved, setLastSaved] = useState<string>('2m ago');
-
-  // State for all form data
   const [formData, setFormData] = useState<PostProjectType>({
     projectTitle: '',
     projectSummary: '',
     projectCategory: 'Web Development',
     projectVisibility: 'Public (Recommended)',
-    desiredTeamMember: 3,
+    desiredTeamMember: 0,
     problemStatement: '',
     technicalApproach: '',
-    ratingRequired: 40,
+    ratingRequired: 0,
     currentTeamMember: 0,
     repositoryLink: '',
     expectedCommitment: 'Part-time (10-20 hrs/week)',
@@ -85,190 +70,199 @@ const ProjectPostPage = () => {
     roleLabel: 'Full Stack Developer'
   });
 
-  // Handle skill input when user types
   const handleSkillInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSkillInput(e.target.value);
   };
 
-  // Handle adding skill when user presses Enter
   const handleSkillInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && skillInput.trim() !== '') {
+    if (e.key === "Enter") {
       e.preventDefault();
-      if (!skills.includes(skillInput.trim())) {
-        setSkills([...skills, skillInput.trim()]);
-      }
-      setSkillInput('');
+      const trimmedskill = skillInput.trim();
+      if (!trimmedskill) return;
+      if (skills.includes(trimmedskill)) return;
+      setSkills(prev => [...prev, trimmedskill]);
+      setSkillInput("");
     }
   };
 
-  // Handle removing a skill from the list
-  const handleRemoveSkill = (indexToRemove: number) => {
-    setSkills(skills.filter((_, index) => index !== indexToRemove));
+  const handleRemoveSkill = (index: number) => {
+    setSkills(prev => prev.filter((_, i) => i !== index));
   };
 
-  // Handle team size increment
   const handleIncrementTeam = () => {
-    if (teamSize < 10) {
-      setTeamSize(teamSize + 1);
-      setFormData({ ...formData, desiredTeamMember: teamSize + 1 });
-    }
+    setTeamSize(val => Math.min(val + 1, 10));
   };
 
-  // Handle team size decrement
   const handleDecrementTeam = () => {
-    if (teamSize > 1) {
-      setTeamSize(teamSize - 1);
-      setFormData({ ...formData, desiredTeamMember: teamSize - 1 });
-    }
+    setTeamSize(val => Math.max(val - 1, 1));
   };
 
-  // Handle rating slider change
   const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    setRatingValue(value);
-    setFormData({ ...formData, ratingRequired: value });
+    setRatingValue(Number(e.target.value));
   };
 
-  // Calculate rating display value based on slider position (0-100 maps to 0-2000+)
-  const getRatingDisplay = () => {
-    if (ratingValue < 25) return `${ratingValue * 10}`;
-    if (ratingValue < 50) return `${500 + (ratingValue - 25) * 20}`;
-    if (ratingValue < 75) return `${1000 + (ratingValue - 50) * 20}`;
-    return `${1500 + (ratingValue - 75) * 20}+`;
+  const getRatingDisplay = (): string => {
+    return `${ratingValue * 20}`;
   };
 
-  // Handle deliverable checkbox toggle
   const handleDeliverableToggle = (id: number) => {
-    setDeliverables(deliverables.map(item =>
-      item.id === id ? { ...item, completed: !item.completed } : item
-    ));
+    setDeliverables(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, completed: !item.completed } : item
+      )
+    );
   };
 
-  // Handle adding a new deliverable
-  const handleAddDeliverable = () => {
-    if (newDeliverableInput.trim() !== '') {
-      const newDeliverable: DeliverableItem = {
-        id: Date.now(),
-        text: newDeliverableInput.trim(),
-        completed: false
-      };
-      setDeliverables([...deliverables, newDeliverable]);
-      setNewDeliverableInput('');
+  const handleDeleteDeliverable = (id: number) => {
+    setDeliverables(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleEditDeliverable = (id: number, text: string) => {
+    setEditingId(id);
+    setEditText(text);
+  };
+
+  const handleSaveEdit = (id: number) => {
+    if (!editText.trim()) return;
+    setDeliverables(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, text: editText.trim() } : item
+      )
+    );
+    setEditingId(null);
+    setEditText('');
+  };
+
+  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, id: number) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveEdit(id);
+    } else if (e.key === 'Escape') {
+      setEditingId(null);
+      setEditText('');
     }
   };
 
-  // Handle new deliverable input change
+  const handleAddDeliverable = () => {
+    if (!newDeliverableInput.trim()) return;
+
+    const newDeliverable: DeliverableItem = {
+      id: Date.now(),
+      text: newDeliverableInput.trim(),
+      completed: done
+    };
+
+    setDeliverables(prev => [...prev, newDeliverable]);
+    setNewDeliverableInput('');
+    setDone(false);
+  };
+
   const handleNewDeliverableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewDeliverableInput(e.target.value);
   };
 
-  // Handle new deliverable Enter key press
   const handleNewDeliverableKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
+      if (!newDeliverableInput.trim()) return;
       handleAddDeliverable();
     }
   };
 
-  // Handle timeline tab change
+  const handleCheckboxKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      setDone(prev => !prev);
+    }
+  };
+
   const handleTimelineChange = (timeline: 'immediate' | 'scheduled') => {
     setActiveTimeline(timeline);
-    setFormData({ ...formData, startTimeline: timeline, startDate: timeline === 'immediate' ? '' : formData.startDate });
+    setFormData(prev => ({
+      ...prev,
+      startTimeline: timeline
+    }));
   };
 
-  // Handle collaboration style change via radio button
   const handleCollaborationChange = (style: 'async' | 'sync') => {
     setCollaborationStyle(style);
-    setFormData({ ...formData, collaborationStyle: style });
+    setFormData(prev => ({
+      ...prev,
+      collaborationStyle: style
+    }));
   };
 
-  // Handle radio button click on the text/description area
   const handleRadioInput = (e: React.MouseEvent<HTMLDivElement>, style: 'async' | 'sync') => {
     handleCollaborationChange(style);
   };
 
-  // Handle summary textarea change and update character count
   const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value;
-    if (text.length <= 140) {
-      setSummaryCharCount(text.length);
-      setFormData({ ...formData, projectSummary: text });
-    }
-  };
-
-  // Handle general form input changes (works for inputs/selects/textareas which have name attribute)
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value } as any);
+    setSummaryCharCount(value.length);
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  // Auto-save functionality - simulates saving draft every 2 minutes
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      setLastSaved('just now');
-
-      setTimeout(() => setLastSaved('1m ago'), 1000);
-      setTimeout(() => setLastSaved('2m ago'), 120000);
-    }, 120000);
-
-    return () => clearInterval(interval);
-  }, [formData]);
-
-  // Handle preview button click
-  const handlePreview = () => {
-    console.log('Preview clicked - Form Data:', formData, 'Skills:', skills, 'Deliverables:', deliverables);
-    alert('Preview functionality - Check console for form data');
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  // Handle save draft button click
   const handleSaveDraft = () => {
-    console.log('Draft saved:', { formData, skills, deliverables, teamSize });
-    setLastSaved('just now');
-    alert('Draft saved successfully!');
+    const now = new Date();
+    setLastSaved(now.toLocaleTimeString());
+    const draftData = {
+      ...formData,
+      skills,
+      deliverables,
+      desiredTeamMember: teamSize,
+      ratingRequired: ratingValue * 20
+    };
+    console.log('Draft saved:', draftData);
+    alert('✅ Draft saved successfully!');
   };
 
-  // Handle post project button click
   const handlePostProject = () => {
+    // Basic validation
     if (!formData.projectTitle.trim()) {
-      alert('Please enter a project title');
+      alert('⚠️ Please enter a project title');
       return;
     }
     if (!formData.projectSummary.trim()) {
-      alert('Please enter a project summary');
-      return;
-    }
-    if (skills.length === 0) {
-      alert('Please add at least one skill');
+      alert('⚠️ Please enter a project summary');
       return;
     }
 
-    // Prepare the final data object
     const projectData = {
       ...formData,
       skills,
       deliverables,
       desiredTeamMember: teamSize,
-      ratingRequired: ratingValue
+      ratingRequired: ratingValue * 20
     };
 
-    console.log('Project posted:', projectData);
-    alert('Project posted successfully!');
+    console.log('Posting project:', projectData);
+    alert('🚀 Project posted successfully!');
   };
-
 
   const handleClose = () => {
-    const hasUnsavedData = formData.projectTitle || formData.projectSummary || skills.length > 2;
-
-    if (hasUnsavedData) {
-      const confirmClose = window.confirm('You have unsaved changes. Are you sure you want to close?');
-      if (confirmClose) {
-        console.log('Closing form');
-      }
-    } else {
-      console.log('Closing form');
+    if (window.confirm('Are you sure you want to close? Unsaved changes will be lost.')) {
+      console.log('Closing project post');
     }
   };
+
+  useEffect(() => {
+    setSummaryCharCount(formData.projectSummary.length);
+  }, [formData.projectSummary]);
+
+  const percent = ratingValue;
 
   return (
     <div className="pp-project-post-container">
@@ -314,10 +308,9 @@ const ProjectPostPage = () => {
               <span className="pp-tab-badge pp-badge-count">2</span>
             </NavLink>
           </nav>
-
         </div>
       </div>
-    
+
       {/* Main Content */}
       <div className="pp-main-content">
         {/* Left Column */}
@@ -406,7 +399,7 @@ const ProjectPostPage = () => {
               <div className="pp-section-icon pp-purple">2</div>
               <h2 className="pp-section-title">Project Narrative</h2>
               <p className="pp-section-subtitle">
-                Help collaborators quickly understand <strong>why</strong> this matters and <strong>how</strong> you’ll build it.
+                Help collaborators quickly understand <strong>why</strong> this matters and <strong>how</strong> you'll build it.
               </p>
             </div>
 
@@ -418,7 +411,7 @@ const ProjectPostPage = () => {
                 </div>
 
                 <p className="pp-narrative-helper">
-                  Explain the core problem you’re solving. Focus on pain points, users affected, and why existing solutions fall short.
+                  Explain the core problem you're solving. Focus on pain points, users affected, and why existing solutions fall short.
                 </p>
 
                 <textarea
@@ -479,22 +472,115 @@ Small token holders lack meaningful participation, leading to low governance eng
               <h3 className="pp-deliverables-title">🎯 Key Deliverables & Goals</h3>
 
               {deliverables.map((deliverable) => (
-                <div key={deliverable.id} className="pp-deliverable-item">
+                <div 
+                  key={deliverable.id} 
+                  className="pp-deliverable-item"
+                  style={{
+                    backgroundColor: deliverable.completed ? 'rgba(34, 197, 94, 0.08)' : 'transparent',
+                    transition: 'all 0.2s ease',
+                    padding: '10px 12px',
+                    borderRadius: '6px',
+                    marginBottom: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={deliverable.completed}
                     onChange={() => handleDeliverableToggle(deliverable.id)}
                     className="pp-checkbox"
+                    style={{ flexShrink: 0 }}
                   />
-                  <span className="pp-deliverable-text">{deliverable.text}</span>
-                  {deliverable.completed && (
-                    <span className="pp-status-badge pp-done">DONE</span>
+                  
+                  {editingId === deliverable.id ? (
+                    <input
+                      type="text"
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                      onKeyDown={(e) => handleEditKeyDown(e, deliverable.id)}
+                      onBlur={() => handleSaveEdit(deliverable.id)}
+                      autoFocus
+                      className="pp-deliverable-input"
+                      style={{ flex: 1 }}
+                    />
+                  ) : (
+                    <span 
+                      className="pp-deliverable-text"
+                      style={{ flex: 1, cursor: 'pointer' }}
+                      onClick={() => handleEditDeliverable(deliverable.id, deliverable.text)}
+                    >
+                      {deliverable.text}
+                    </span>
                   )}
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
+                    {deliverable.completed && (
+                      <span className="pp-status-badge pp-done">DONE</span>
+                    )}
+                    <button
+                      onClick={() => handleEditDeliverable(deliverable.id, deliverable.text)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: '#64748b',
+                        transition: 'color 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#3b82f6'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+                      title="Edit"
+                    >
+                      <Edit2 size={14} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteDeliverable(deliverable.id)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: '#64748b',
+                        transition: 'color 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#ef4444'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+                      title="Delete"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
 
-              <div className="pp-deliverable-item">
-                <input type="checkbox" className="pp-checkbox" disabled />
+              <div 
+                className="pp-deliverable-item"
+                style={{
+                  backgroundColor: done ? 'rgba(34, 197, 94, 0.08)' : 'transparent',
+                  transition: 'all 0.2s ease',
+                  padding: '10px 12px',
+                  borderRadius: '6px',
+                  marginBottom: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px'
+                }}
+              >
+                <input
+                  type="checkbox"
+                  className="pp-checkbox"
+                  checked={done}
+                  onChange={(e) => setDone(e.target.checked)}
+                  onKeyDown={handleCheckboxKeyDown}
+                  disabled={!newDeliverableInput.trim()}
+                  style={{ flexShrink: 0 }}
+                />
                 <input
                   type="text"
                   className="pp-deliverable-input"
@@ -502,7 +588,11 @@ Small token holders lack meaningful participation, leading to low governance eng
                   value={newDeliverableInput}
                   onChange={handleNewDeliverableChange}
                   onKeyDown={handleNewDeliverableKeyDown}
+                  style={{ flex: 1 }}
                 />
+                {done && newDeliverableInput.trim() && (
+                  <span className="pp-status-badge pp-done" style={{ marginLeft: 'auto' }}>DONE</span>
+                )}
               </div>
 
               <button className="pp-add-item-btn" onClick={handleAddDeliverable}>
@@ -557,6 +647,15 @@ Small token holders lack meaningful participation, leading to low governance eng
                     max="100"
                     value={ratingValue}
                     onChange={handleRatingChange}
+                    style={{
+                      background: `linear-gradient(
+                            to right,
+                            #2563eb 0%,
+                            #2563eb ${percent}%,
+                            #e2e8f0 ${percent}%,
+                            #e2e8f0 100%
+                          )`
+                    }}
                   />
                   <span className="pp-rating-label">Expert</span>
                 </div>
@@ -676,7 +775,6 @@ Small token holders lack meaningful participation, leading to low governance eng
                 {activeTimeline === 'scheduled' && (
                   <div className="pp-start-date-block" style={{ marginTop: '20px' }}>
                     <label className="pp-form-label">Start Date</label>
-                    {/* use input type="date" for calendar + typing; you can switch to datetime-local if you want time */}
                     <input
                       type="date"
                       name="startDate"
@@ -809,9 +907,8 @@ Small token holders lack meaningful participation, leading to low governance eng
 
       {/* Fixed Footer */}
       <div className="pp-inline-actions">
-        <button className="pp-footer-btn pp-secondary">Preview</button>
-        <button className="pp-footer-btn pp-secondary">Save Draft</button>
-        <button className="pp-footer-btn pp-primary">🚀 Post Project</button>
+        <button className="pp-footer-btn pp-secondary" onClick={handleSaveDraft}>Save Draft</button>
+        <button className="pp-footer-btn pp-primary" onClick={handlePostProject}>🚀 Post Project</button>
       </div>
     </div>
   );

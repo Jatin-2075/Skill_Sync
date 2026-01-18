@@ -3,7 +3,11 @@ import { Info, Grid, List, ChevronLeft, ChevronRight } from 'lucide-react';
 import './findcollaborators.css';
 import { NavLink } from "react-router-dom";
 
+
 const FindCollaborators = () => {
+
+
+
   return (
     <main className="fc-main-container">
       {/* Header Section */}
@@ -23,7 +27,7 @@ const FindCollaborators = () => {
             <NavLink
               to="/findcollaborators"
               className={({ isActive }) =>
-                isActive ? "fc-tab fc-tab-active" : "pp-tab"
+                isActive ? "fc-tab fc-tab-active" : "fc-tab"
               }
             >
               Find Collaborators
@@ -32,7 +36,7 @@ const FindCollaborators = () => {
             <NavLink
               to="/postproject"
               className={({ isActive }) =>
-                isActive ? "fc-tab fc-tab-active" : "pp-tab"
+                isActive ? "fc-tab fc-tab-active" : "fc-tab"
               }
             >
               Post a Project
@@ -42,7 +46,7 @@ const FindCollaborators = () => {
             <NavLink
               to="/myproposals"
               className={({ isActive }) =>
-                isActive ? "fc-tab fc-tab-active" : "pp-tab"
+                isActive ? "fc-tab fc-tab-active" : "fc-tab"
               }
             >
               My Proposals
@@ -53,7 +57,7 @@ const FindCollaborators = () => {
       </div>
 
       <div className="fc-content-wrapper">
-        {/* Sidebar Filters */}
+
         <aside className="fc-sidebar">
           {/* Smart Search Card */}
           <div className="fc-filter-card">
@@ -166,6 +170,8 @@ const FindCollaborators = () => {
                   <option>Highest Rating</option>
                   <option>Recently Active</option>
                 </select>
+                
+
                 <span className="fc-select-arrow">▼</span>
               </div>
 
