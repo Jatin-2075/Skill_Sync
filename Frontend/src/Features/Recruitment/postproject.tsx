@@ -1,120 +1,153 @@
-import React, { useState, useEffect } from 'react';
-import './postproject.css';
+import React, { useState } from 'react';
+import './style/postproject.css';
 import { X, Info, Plus, Minus, Zap, Trash2, Edit2 } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-type PostProjectType = {
-  projectTitle: string;
-  projectSummary: string;
-  projectCategory: string;
-  projectVisibility: string;
-  desiredTeamMember: number;
-  problemStatement: string;
-  technicalApproach: string;
-  ratingRequired: number;
-  currentTeamMember: number;
-  repositoryLink: string;
-  expectedCommitment: string;
-  projectDuration: string;
-  startTimeline: string;
-  startDate: string;
-  timezonePreference: string;
-  collaborationStyle: string;
-  communicationNorms: string;
-  roleLabel: string;
+// Core project table
+type PostProject = {
+  projecttitle: string;
+  projectsummary: string;
+  projectvisibility: string;
+  projectcategory: string;
 };
 
-type DeliverableItem = {
+// Narrative table
+type ProjectNarrative = {
+  problemstatement: string;
+  problemsolution: string;
+  repolink: string;
+};
+
+// Team table
+type Team = {
+  desired_member_number: number;
+  min_rating: number;
+  roles_required: string[];
+};
+
+// Collaboration table
+type CollaborationSettings = {
+  expected_commitment: string;
+  project_duration: string;
+  start_timeline: "immediate" | "scheduled";
+  timezone_preference: string;
+  collaboration_style: "async" | "sync";
+  communication_norms: string;
+};
+
+// UI-only
+type DeliverableItemType = {
   id: number;
   text: string;
   completed: boolean;
 };
 
-const ProjectPostPage = () => {
-  const [skills, setSkills] = useState<string[]>([]);
-  const [skillInput, setSkillInput] = useState<string>('');
-  const [deliverables, setDeliverables] = useState<DeliverableItem[]>([
-    { id: 1, text: 'Complete MVP with core voting features', completed: true },
-    { id: 2, text: 'Smart contract deployment on testnet', completed: false },
-    { id: 3, text: 'Security audit and gas optimization', completed: false }
-  ]);
-  const [newDeliverableInput, setNewDeliverableInput] = useState<string>('');
-  const [teamSize, setTeamSize] = useState<number>(1);
-  const [ratingValue, setRatingValue] = useState<number>(30);
-  const [activeTimeline, setActiveTimeline] = useState<'immediate' | 'scheduled'>('immediate');
-  const [collaborationStyle, setCollaborationStyle] = useState<'async' | 'sync'>('async');
-  const [summaryCharCount, setSummaryCharCount] = useState<number>(0);
-  const [lastSaved, setLastSaved] = useState<string>('');
-  const [done, setDone] = useState<boolean>(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editText, setEditText] = useState<string>('');
 
-  const [formData, setFormData] = useState<PostProjectType>({
-    projectTitle: '',
-    projectSummary: '',
-    projectCategory: 'Web Development',
-    projectVisibility: 'Public (Recommended)',
-    desiredTeamMember: 0,
-    problemStatement: '',
-    technicalApproach: '',
-    ratingRequired: 0,
-    currentTeamMember: 0,
-    repositoryLink: '',
-    expectedCommitment: 'Part-time (10-20 hrs/week)',
-    projectDuration: '1-3 Months',
-    startTimeline: 'immediate',
-    startDate: '',
-    timezonePreference: 'Global (Any Timezone)',
-    collaborationStyle: 'async',
-    communicationNorms: '',
-    roleLabel: 'Full Stack Developer'
+const ProjectPostPage = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const [postProject, setPostProject] = useState<PostProject>({
+    projecttitle: "",
+    projectsummary: "",
+    projectvisibility: "Public",
+    projectcategory: "",
   });
+
+  const [narrative, setNarrative] = useState<ProjectNarrative>({
+    problemstatement: "",
+    problemsolution: "",
+    repolink: "",
+  });
+
+  const [team, setTeam] = useState<Team>({
+    desired_member_number: 1,
+    min_rating: 0,
+    roles_required: ["Full Stack Developer"],
+  });
+
+  const [collaboration, setCollaboration] = useState<CollaborationSettings>({
+    expected_commitment: "Part-time",
+    project_duration: "1-3 Months",
+    start_timeline: "immediate",
+    timezone_preference: "Global",
+    collaboration_style: "async",
+    communication_norms: "",
+  });
+
+  const [skills, setSkills] = useState<string[]>([]);
+  const [skillInput, setSkillInput] = useState("");
+  const [deliverables, setDeliverables] = useState<DeliverableItemType[]>([]);
+  const [newDeliverableInput, setNewDeliverableInput] = useState("");
+  const [done, setDone] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
+  const [activeTimeline, setActiveTimeline] = useState<"immediate" | "scheduled">("immediate");
+  const [ratingValue, setRatingValue] = useState(0);
+  const [teamSize, setTeamSize] = useState(1);
+
+
+  // --- Handlers (Logic) ---
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setPostProject(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSummaryChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setPostProject(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCollaborationChange = (
+    style: "async" | "sync"
+  ) => {
+    setCollaboration(prev => ({ ...prev, collaboration_style: style }));
+  };
+
+  const handleTimelineChange = (timeline: "immediate" | "scheduled") => {
+    setActiveTimeline(timeline);
+    setCollaboration(prev => ({ ...prev, start_timeline: timeline }));
+  };
+
+  const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Number(e.target.value);
+    setRatingValue(val);
+    setTeam(prev => ({ ...prev, min_rating: val * 20 }));
+  };
+
+  const handleIncrementTeam = () => {
+    const n = Math.min(teamSize + 1, 10);
+    setTeamSize(n);
+    setTeam(t => ({ ...t, desired_member_number: n }));
+  };
+
+  const handleDecrementTeam = () => {
+    const n = Math.max(teamSize - 1, 1);
+    setTeamSize(n);
+    setTeam(t => ({ ...t, desired_member_number: n }));
+  };
 
   const handleSkillInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSkillInput(e.target.value);
   };
 
   const handleSkillInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const trimmedskill = skillInput.trim();
-      if (!trimmedskill) return;
-      if (skills.includes(trimmedskill)) return;
-      setSkills(prev => [...prev, trimmedskill]);
+    if (e.key === "Enter" && skillInput.trim()) {
+      setSkills([...skills, skillInput.trim()]);
       setSkillInput("");
     }
   };
 
   const handleRemoveSkill = (index: number) => {
-    setSkills(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleIncrementTeam = () => {
-    setTeamSize(val => Math.min(val + 1, 10));
-  };
-
-  const handleDecrementTeam = () => {
-    setTeamSize(val => Math.max(val - 1, 1));
-  };
-
-  const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRatingValue(Number(e.target.value));
-  };
-
-  const getRatingDisplay = (): string => {
-    return `${ratingValue * 20}`;
+    setSkills(skills.filter((_, i) => i !== index));
   };
 
   const handleDeliverableToggle = (id: number) => {
-    setDeliverables(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, completed: !item.completed } : item
-      )
-    );
-  };
-
-  const handleDeleteDeliverable = (id: number) => {
-    setDeliverables(prev => prev.filter(item => item.id !== id));
+    setDeliverables(deliverables.map(d => d.id === id ? { ...d, completed: !d.completed } : d));
   };
 
   const handleEditDeliverable = (id: number, text: string) => {
@@ -123,38 +156,18 @@ const ProjectPostPage = () => {
   };
 
   const handleSaveEdit = (id: number) => {
-    if (!editText.trim()) return;
-    setDeliverables(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, text: editText.trim() } : item
-      )
-    );
+    setDeliverables(deliverables.map(d => d.id === id ? { ...d, text: editText } : d));
     setEditingId(null);
-    setEditText('');
+    setEditText("");
   };
 
   const handleEditKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, id: number) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSaveEdit(id);
-    } else if (e.key === 'Escape') {
-      setEditingId(null);
-      setEditText('');
-    }
+    if (e.key === "Enter") handleSaveEdit(id);
+    if (e.key === "Escape") setEditingId(null);
   };
 
-  const handleAddDeliverable = () => {
-    if (!newDeliverableInput.trim()) return;
-
-    const newDeliverable: DeliverableItem = {
-      id: Date.now(),
-      text: newDeliverableInput.trim(),
-      completed: done
-    };
-
-    setDeliverables(prev => [...prev, newDeliverable]);
-    setNewDeliverableInput('');
-    setDone(false);
+  const handleDeleteDeliverable = (id: number) => {
+    setDeliverables(deliverables.filter(d => d.id !== id));
   };
 
   const handleNewDeliverableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,154 +175,85 @@ const ProjectPostPage = () => {
   };
 
   const handleNewDeliverableKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (!newDeliverableInput.trim()) return;
+    if (e.key === "Enter" && newDeliverableInput.trim()) {
       handleAddDeliverable();
     }
   };
 
   const handleCheckboxKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      setDone(prev => !prev);
+    if (e.key === "Enter") setDone(!done);
+  };
+
+  const handleAddDeliverable = () => {
+    if (newDeliverableInput.trim()) {
+      const newId = Math.max(0, ...deliverables.map(d => d.id)) + 1;
+      setDeliverables([...deliverables, { id: newId, text: newDeliverableInput, completed: done }]);
+      setNewDeliverableInput("");
+      setDone(false);
     }
   };
 
-  const handleTimelineChange = (timeline: 'immediate' | 'scheduled') => {
-    setActiveTimeline(timeline);
-    setFormData(prev => ({
-      ...prev,
-      startTimeline: timeline
-    }));
-  };
-
-  const handleCollaborationChange = (style: 'async' | 'sync') => {
-    setCollaborationStyle(style);
-    setFormData(prev => ({
-      ...prev,
-      collaborationStyle: style
-    }));
-  };
-
-  const handleRadioInput = (e: React.MouseEvent<HTMLDivElement>, style: 'async' | 'sync') => {
+  const handleRadioInput = (e: React.MouseEvent<HTMLDivElement>, style: "async" | "sync") => {
     handleCollaborationChange(style);
   };
 
-  const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setSummaryCharCount(value.length);
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   const handleSaveDraft = () => {
-    const now = new Date();
-    setLastSaved(now.toLocaleTimeString());
-    const draftData = {
-      ...formData,
-      skills,
-      deliverables,
-      desiredTeamMember: teamSize,
-      ratingRequired: ratingValue * 20
-    };
-    console.log('Draft saved:', draftData);
-    alert('✅ Draft saved successfully!');
+    alert("Draft saved!");
   };
 
-  const handlePostProject = () => {
-    // Basic validation
-    if (!formData.projectTitle.trim()) {
-      alert('⚠️ Please enter a project title');
-      return;
-    }
-    if (!formData.projectSummary.trim()) {
-      alert('⚠️ Please enter a project summary');
-      return;
-    }
-
-    const projectData = {
-      ...formData,
-      skills,
-      deliverables,
-      desiredTeamMember: teamSize,
-      ratingRequired: ratingValue * 20
-    };
-
-    console.log('Posting project:', projectData);
-    alert('🚀 Project posted successfully!');
-  };
-
-  const handleClose = () => {
-    if (window.confirm('Are you sure you want to close? Unsaved changes will be lost.')) {
-      console.log('Closing project post');
-    }
-  };
-
-  useEffect(() => {
-    setSummaryCharCount(formData.projectSummary.length);
-  }, [formData.projectSummary]);
-
+  const summaryCharCount = postProject.projectsummary.length;
   const percent = ratingValue;
+
+  const getRatingDisplay = () => {
+    const ratings = ["Newbie", "Beginner", "Intermediate", "Advanced", "Expert"];
+    const index = Math.floor(ratingValue / 20);
+    return ratings[Math.min(index, 4)];
+  };
+
+
+  const handlePostProject = async () => {
+    if (!postProject.projecttitle.trim() || !postProject.projectsummary.trim()) {
+      alert("⚠️ Please enter a project title and summary.");
+      return;
+    }
+
+    setLoading(true);
+
+    const payload = {
+      post_project: postProject,
+      narrative: narrative,
+      team: team,
+      collaboration: collaboration,
+      techstack: skills.map((s: string) => ({ skill: s })),
+      deliverables: deliverables.map((d: DeliverableItemType) => ({
+        deliverablename: d.text,
+      })),
+    };
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/projects/create/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error("Network error");
+
+      console.log("Success:", payload);
+      alert("🚀 Project posted successfully!");
+      navigate("/myproposals");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to post project.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className="pp-project-post-container">
-      <div className="pp-header-section">
-        <div className="pp-header-content">
-          <div className="pp-header-text">
-            <h1 className="pp-page-title">Team Recruitment</h1>
-            <p className="pp-page-description">
-              Find the perfect teammate. Filter by skill vectors, rating, and availability to build your dream team.
-            </p>
-          </div>
-        </div>
 
-        {/* Tabs */}
-        <div className="pp-tabs-border">
-          <nav className="pp-tabs-nav">
-            <NavLink
-              to="/findcollaborators"
-              className={({ isActive }) =>
-                isActive ? "pp-tab pp-tab-active" : "pp-tab"
-              }
-            >
-              Find Collaborators
-            </NavLink>
-
-            <NavLink
-              to="/postproject"
-              className={({ isActive }) =>
-                isActive ? "pp-tab pp-tab-active" : "pp-tab"
-              }
-            >
-              Post a Project
-              <span className="pp-tab-badge pp-badge-new">NEW</span>
-            </NavLink>
-
-            <NavLink
-              to="/myproposals"
-              className={({ isActive }) =>
-                isActive ? "pp-tab pp-tab-active" : "pp-tab"
-              }
-            >
-              My Proposals
-              <span className="pp-tab-badge pp-badge-count">2</span>
-            </NavLink>
-          </nav>
-        </div>
-      </div>
 
       {/* Main Content */}
       <div className="pp-main-content">
@@ -329,47 +273,48 @@ const ProjectPostPage = () => {
               </label>
               <input
                 type="text"
-                name="projectTitle"
+                name="projecttitle"
                 className="pp-form-input"
                 placeholder="e.g. Decentralized Voting System for DAOs"
-                value={formData.projectTitle}
+                value={postProject.projecttitle}
                 onChange={handleInputChange}
               />
             </div>
 
-            {/* Project Summary with character counter */}
+            {/* Project Summary */}
             <div className="pp-form-group">
               <label className="pp-form-label">
                 Short Summary <span className="pp-required">*</span>
               </label>
               <div className="pp-char-count">
-                Card/Live-pitch ({summaryCharCount}/140 chars)
+                Card/Live-pitch ({postProject.projectsummary.length}/140 chars)
               </div>
               <textarea
-                name="projectSummary"
+                name="projectsummary"
                 className="pp-form-textarea"
                 placeholder="Briefly describe what you're building to attract clicks..."
                 rows={3}
-                value={formData.projectSummary}
-                onChange={handleSummaryChange}
+                value={postProject.projectsummary}
+                onChange={handleInputChange}
                 maxLength={140}
               />
             </div>
 
-            {/* Category and Visibility selects */}
+            {/* Category and Visibility */}
             <div className="pp-form-row">
               <div className="pp-form-group">
                 <label className="pp-form-label">Category / Domain</label>
                 <select
-                  name="projectCategory"
+                  name="projectcategory"
                   className="pp-form-select"
-                  value={formData.projectCategory}
+                  value={postProject.projectcategory}
                   onChange={handleInputChange}
                 >
-                  <option>Web Development</option>
-                  <option>AI/ML Development</option>
-                  <option>Data Structure & Algorithm</option>
-                  <option>Cyber Security</option>
+                  <option value="" >Select Project Category</option>
+                  <option value="webdev" >Web Development</option>
+                  <option value="aimldev">AI/ML Development</option>
+                  <option value="dsa">Data Structure & Algorithm</option>
+                  <option value="cybersecurity">Cyber Security</option>
                 </select>
               </div>
               <div className="pp-form-group">
@@ -378,9 +323,9 @@ const ProjectPostPage = () => {
                 </label>
                 <div className="pp-visibility-select">
                   <select
-                    name="projectVisibility"
+                    name="projectvisibility"
                     className="pp-form-select"
-                    value={formData.projectVisibility}
+                    value={postProject.projectvisibility}
                     onChange={handleInputChange}
                   >
                     <option>Public (Recommended)</option>
@@ -415,14 +360,12 @@ const ProjectPostPage = () => {
                 </p>
 
                 <textarea
-                  name="problemStatement"
+                  name="problemstatement"
                   className="pp-narrative-textarea"
-                  placeholder={`Example:
-Current DAO voting systems are slow, opaque, and vulnerable to manipulation.
-Small token holders lack meaningful participation, leading to low governance engagement...`}
+                  placeholder={`Example:\nCurrent DAO voting systems are slow...`}
                   rows={6}
-                  value={formData.problemStatement}
-                  onChange={handleInputChange}
+                  value={narrative.problemstatement}
+                  onChange={(e) => setNarrative(prev => ({ ...prev, problemstatement: e.target.value }))}
                 />
               </div>
 
@@ -437,43 +380,35 @@ Small token holders lack meaningful participation, leading to low governance eng
                 </p>
 
                 <textarea
-                  name="technicalApproach"
+                  name="problemsolution"
                   className="pp-narrative-textarea"
-                  placeholder={`Example:
-• Frontend: Next.js + Tailwind
-• Backend: Node.js + PostgreSQL
-• Smart Contracts: Solidity (ERC-20 voting)
-• Data flow: Wallet → API → Smart Contract
-• Constraints: gas optimization, security audits`}
+                  placeholder={`Example:\n• Frontend: Next.js + Tailwind...`}
                   rows={7}
-                  value={formData.technicalApproach}
-                  onChange={handleInputChange}
+                  value={narrative.problemsolution}
+                  onChange={(e) => setNarrative(prev => ({ ...prev, problemsolution: e.target.value }))}
                 />
               </div>
             </div>
 
-            {/* Repository/Demo link input */}
             <div className="pp-form-group" style={{ marginTop: '20px' }}>
               <label className="pp-form-label">
                 Repository / Demo Link <span className="pp-optional">Optional</span>
               </label>
               <input
                 type="text"
-                name="repositoryLink"
+                name="repolink"
                 className="pp-form-input"
                 placeholder="🔗 https://github.com/username/repo"
-                value={formData.repositoryLink}
-                onChange={handleInputChange}
+                value={narrative.repolink}
+                onChange={(e) => setNarrative(prev => ({ ...prev, repolink: e.target.value }))}
               />
             </div>
 
-            {/* Deliverables section with dynamic list */}
             <div className="pp-deliverables-section">
               <h3 className="pp-deliverables-title">🎯 Key Deliverables & Goals</h3>
-
-              {deliverables.map((deliverable) => (
-                <div 
-                  key={deliverable.id} 
+              {deliverables.map((deliverable: DeliverableItemType) => (
+                <div
+                  key={deliverable.id}
                   className="pp-deliverable-item"
                   style={{
                     backgroundColor: deliverable.completed ? 'rgba(34, 197, 94, 0.08)' : 'transparent',
@@ -493,7 +428,7 @@ Small token holders lack meaningful participation, leading to low governance eng
                     className="pp-checkbox"
                     style={{ flexShrink: 0 }}
                   />
-                  
+
                   {editingId === deliverable.id ? (
                     <input
                       type="text"
@@ -506,7 +441,7 @@ Small token holders lack meaningful participation, leading to low governance eng
                       style={{ flex: 1 }}
                     />
                   ) : (
-                    <span 
+                    <span
                       className="pp-deliverable-text"
                       style={{ flex: 1, cursor: 'pointer' }}
                       onClick={() => handleEditDeliverable(deliverable.id, deliverable.text)}
@@ -521,36 +456,14 @@ Small token holders lack meaningful participation, leading to low governance eng
                     )}
                     <button
                       onClick={() => handleEditDeliverable(deliverable.id, deliverable.text)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        color: '#64748b',
-                        transition: 'color 0.2s'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#3b82f6'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: '#64748b' }}
                       title="Edit"
                     >
                       <Edit2 size={14} />
                     </button>
                     <button
                       onClick={() => handleDeleteDeliverable(deliverable.id)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        color: '#64748b',
-                        transition: 'color 0.2s'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#ef4444'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: '#64748b' }}
                       title="Delete"
                     >
                       <Trash2 size={14} />
@@ -559,11 +472,10 @@ Small token holders lack meaningful participation, leading to low governance eng
                 </div>
               ))}
 
-              <div 
+              <div
                 className="pp-deliverable-item"
                 style={{
                   backgroundColor: done ? 'rgba(34, 197, 94, 0.08)' : 'transparent',
-                  transition: 'all 0.2s ease',
                   padding: '10px 12px',
                   borderRadius: '6px',
                   marginBottom: '8px',
@@ -590,9 +502,6 @@ Small token holders lack meaningful participation, leading to low governance eng
                   onKeyDown={handleNewDeliverableKeyDown}
                   style={{ flex: 1 }}
                 />
-                {done && newDeliverableInput.trim() && (
-                  <span className="pp-status-badge pp-done" style={{ marginLeft: 'auto' }}>DONE</span>
-                )}
               </div>
 
               <button className="pp-add-item-btn" onClick={handleAddDeliverable}>
@@ -608,11 +517,10 @@ Small token holders lack meaningful participation, leading to low governance eng
               <h2 className="pp-section-title">Skills & Requirements</h2>
             </div>
 
-            {/* Skills input with tag management */}
             <div className="pp-form-group">
               <label className="pp-form-label">Required Skills / Tech Stack</label>
               <div className="pp-skills-input">
-                {skills.map((skill, index) => (
+                {skills.map((skill: string, index: number) => (
                   <span key={index} className="pp-skill-tag">
                     {skill}
                     <X
@@ -634,7 +542,6 @@ Small token holders lack meaningful participation, leading to low governance eng
               </div>
             </div>
 
-            {/* Rating slider and team size controls */}
             <div className="pp-form-row">
               <div className="pp-form-group">
                 <label className="pp-form-label">Min. Platform Rating</label>
@@ -648,13 +555,7 @@ Small token holders lack meaningful participation, leading to low governance eng
                     value={ratingValue}
                     onChange={handleRatingChange}
                     style={{
-                      background: `linear-gradient(
-                            to right,
-                            #2563eb 0%,
-                            #2563eb ${percent}%,
-                            #e2e8f0 ${percent}%,
-                            #e2e8f0 100%
-                          )`
+                      background: `linear-gradient(to right, #2563eb 0%, #2563eb ${ratingValue}%, #e2e8f0 ${ratingValue}%, #e2e8f0 100%)`
                     }}
                   />
                   <span className="pp-rating-label">Expert</span>
@@ -662,7 +563,6 @@ Small token holders lack meaningful participation, leading to low governance eng
                 <div className="pp-rating-value">{getRatingDisplay()}</div>
               </div>
 
-              {/* Team size increment/decrement controls */}
               <div className="pp-form-group">
                 <label className="pp-form-label">
                   Desired Team Size <span className="pp-hint">(excluding you)</span>
@@ -687,24 +587,6 @@ Small token holders lack meaningful participation, leading to low governance eng
               </div>
             </div>
 
-            {/* Role label select */}
-            <div className="pp-form-group">
-              <label className="pp-form-label">Role Label</label>
-              <select
-                name="roleLabel"
-                className="pp-form-select"
-                value={formData.roleLabel}
-                onChange={handleInputChange}
-              >
-                <option>Full Stack Developer</option>
-                <option>Frontend Developer</option>
-                <option>Backend Developer</option>
-                <option>Mobile Developer</option>
-                <option>DevOps Engineer</option>
-                <option>UI/UX Designer</option>
-              </select>
-            </div>
-
             <div className="pp-alert-box">
               <span className="pp-alert-icon">⚠️</span>
               <div className="pp-alert-text">
@@ -721,15 +603,14 @@ Small token holders lack meaningful participation, leading to low governance eng
               <h2 className="pp-section-title">Availability & Collaboration</h2>
             </div>
 
-            {/* Commitment and duration selects */}
             <div className="pp-form-row">
               <div className="pp-form-group">
                 <label className="pp-form-label">Expected Commitment</label>
                 <select
-                  name="expectedCommitment"
+                  name="expected_commitment"
                   className="pp-form-select"
-                  value={formData.expectedCommitment}
-                  onChange={handleInputChange}
+                  value={collaboration.expected_commitment}
+                  onChange={(e) => setCollaboration(prev => ({ ...prev, expected_commitment: e.target.value }))}
                 >
                   <option>Part-time (10-20 hrs/week)</option>
                   <option>Full-time (40+ hrs/week)</option>
@@ -739,10 +620,10 @@ Small token holders lack meaningful participation, leading to low governance eng
               <div className="pp-form-group">
                 <label className="pp-form-label">Project Duration</label>
                 <select
-                  name="projectDuration"
+                  name="project_duration"
                   className="pp-form-select"
-                  value={formData.projectDuration}
-                  onChange={handleInputChange}
+                  value={collaboration.project_duration}
+                  onChange={(e) => setCollaboration(prev => ({ ...prev, project_duration: e.target.value }))}
                 >
                   <option>1-3 Months</option>
                   <option>3-6 Months</option>
@@ -752,7 +633,6 @@ Small token holders lack meaningful participation, leading to low governance eng
               </div>
             </div>
 
-            {/* Timeline tabs and timezone select */}
             <div className="pp-form-row">
               <div className="pp-form-group">
                 <label className="pp-form-label">Start Timeline</label>
@@ -771,7 +651,6 @@ Small token holders lack meaningful participation, leading to low governance eng
                   </button>
                 </div>
 
-                {/* If scheduled selected, show a date input (calendar + typing) */}
                 {activeTimeline === 'scheduled' && (
                   <div className="pp-start-date-block" style={{ marginTop: '20px' }}>
                     <label className="pp-form-label">Start Date</label>
@@ -779,8 +658,8 @@ Small token holders lack meaningful participation, leading to low governance eng
                       type="date"
                       name="startDate"
                       className="pp-form-input"
-                      value={formData.startDate}
-                      onChange={handleInputChange}
+                      value=""
+                      onChange={() => { }}
                     />
                     <small className="pp-hint">Select a start date or type it directly (YYYY-MM-DD).</small>
                   </div>
@@ -790,10 +669,10 @@ Small token holders lack meaningful participation, leading to low governance eng
               <div className="pp-form-group">
                 <label className="pp-form-label">Timezone Preference</label>
                 <select
-                  name="timezonePreference"
+                  name="timezone_preference"
                   className="pp-form-select"
-                  value={formData.timezonePreference}
-                  onChange={handleInputChange}
+                  value={collaboration.timezone_preference}
+                  onChange={(e) => setCollaboration(prev => ({ ...prev, timezone_preference: e.target.value }))}
                 >
                   <option>Global (Any Timezone)</option>
                   <option>Americas (UTC-8 to UTC-4)</option>
@@ -803,7 +682,6 @@ Small token holders lack meaningful participation, leading to low governance eng
               </div>
             </div>
 
-            {/* Collaboration style radio buttons and communication norms */}
             <div className="pp-form-row">
               <div className="pp-form-group">
                 <label className="pp-form-label">Collaboration Style</label>
@@ -812,7 +690,7 @@ Small token holders lack meaningful participation, leading to low governance eng
                     <input
                       type="radio"
                       name="collab"
-                      checked={collaborationStyle === 'async'}
+                      checked={collaboration.collaboration_style === 'async'}
                       onChange={() => handleCollaborationChange('async')}
                     />
                     <div onClick={(e) => handleRadioInput(e, 'async')}>
@@ -824,7 +702,7 @@ Small token holders lack meaningful participation, leading to low governance eng
                     <input
                       type="radio"
                       name="collab"
-                      checked={collaborationStyle === 'sync'}
+                      checked={collaboration.collaboration_style === 'sync'}
                       onChange={() => handleCollaborationChange('sync')}
                     />
                     <div onClick={(e) => handleRadioInput(e, 'sync')}>
@@ -837,19 +715,19 @@ Small token holders lack meaningful participation, leading to low governance eng
               <div className="pp-form-group">
                 <label className="pp-form-label">Communication Norms</label>
                 <textarea
-                  name="communicationNorms"
+                  name="communication_norms"
                   className="pp-form-textarea"
                   placeholder="e.g. We use Discord for daily chat and Notion for tasks. Weekly stand-up on Mondays."
                   rows={3}
-                  value={formData.communicationNorms}
-                  onChange={handleInputChange}
+                  value={collaboration.communication_norms}
+                  onChange={(e) => setCollaboration(prev => ({ ...prev, communication_norms: e.target.value }))}
                 />
               </div>
             </div>
           </section>
         </div>
 
-        {/* Right Column - Smart Match (Display Only) */}
+        {/* Right Column - Smart Match */}
         <div className="pp-right-column">
           <div className="pp-smart-match-card">
             <div className="pp-smart-match-header">
@@ -857,58 +735,26 @@ Small token holders lack meaningful participation, leading to low governance eng
               <span>Smart Match</span>
               <span className="pp-live-badge">LIVE</span>
             </div>
-
-            {/* Display match statistics based on current form data */}
+            {/* Reconstructed based on context since prompt cut off here */}
             <div className="pp-match-stats">
               <div className="pp-stat">
-                <div className="pp-stat-number">
-                  {ratingValue < 50 ? 14 + Math.floor((50 - ratingValue) / 5) : Math.max(5, 14 - Math.floor((ratingValue - 50) / 5))}
-                </div>
+                <div className="pp-stat-number">{15 - Math.floor(ratingValue / 10)}</div>
                 <div className="pp-stat-label">Candidates</div>
               </div>
               <div className="pp-stat">
-                <div className="pp-stat-number pp-green">
-                  {skills.length > 0 ? Math.min(95, 70 + skills.length * 5) : 50}%
-                </div>
+                <div className="pp-stat-number pp-green">{70 + (skills.length * 5)}%</div>
                 <div className="pp-stat-label">Avg Match</div>
-              </div>
-            </div>
-
-            {/* Preview of top matching candidates */}
-            <div className="pp-matches-preview">
-              <h4 className="pp-preview-title">TOP MATCHES PREVIEW</h4>
-
-              <div className="pp-match-item">
-                <div className="pp-match-avatar">E</div>
-                <div className="pp-match-info">
-                  <div className="pp-match-name">Elena R.</div>
-                  <div className="pp-match-skills">React Native • TypeScript • SEO rating</div>
-                </div>
-                <div className="pp-match-score pp-green">98%</div>
-              </div>
-
-              <div className="pp-match-item">
-                <div className="pp-match-avatar pp-gray">M</div>
-                <div className="pp-match-info">
-                  <div className="pp-match-name">Marcus J.</div>
-                  <div className="pp-match-skills">Full Stack • System Design • 700 rating</div>
-                </div>
-                <div className="pp-match-score pp-green">94%</div>
-              </div>
-
-              <div className="pp-more-matches">
-                {/* basic extra count display */}
-                +{Math.max(0, (ratingValue < 50 ? 14 + Math.floor((50 - ratingValue) / 5) : Math.max(5, 14 - Math.floor((ratingValue - 50) / 5))) - 2)} more matches
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Fixed Footer */}
       <div className="pp-inline-actions">
         <button className="pp-footer-btn pp-secondary" onClick={handleSaveDraft}>Save Draft</button>
-        <button className="pp-footer-btn pp-primary" onClick={handlePostProject}>🚀 Post Project</button>
+        <button className="pp-footer-btn pp-primary" onClick={handlePostProject} disabled={loading}>
+          {loading ? 'Posting...' : '🚀 Post Project'}
+        </button>
       </div>
     </div>
   );

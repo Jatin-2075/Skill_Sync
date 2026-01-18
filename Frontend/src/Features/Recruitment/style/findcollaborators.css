@@ -229,6 +229,9 @@
   align-items: center;
   gap: 12px;
 }
+.fc-rating-slider-container input{
+  width: 100%;
+}
 
 .fc-slider-track {
   position: relative;

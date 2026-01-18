@@ -71,11 +71,11 @@ export default function Page5() {
       <main className="page5-main-content">
         <section className="page5-progress-section">
           <div className="page5-progress-info">
-            <span className="page5-phase-text">Phase 4: Projects & Contributions</span>
-            <span className="page5-completion-text">80% Completed</span>
+            <span className="page5-phase-text">Phase 5: Availibility and Collaboration</span>
+            <span className="page5-completion-text">100% Completed</span>
           </div>
           <div className="page5-progress-bar">
-            <div className="page5-progress-fill" style={{ width: "80%" }} />
+            <div className="page5-progress-fill" style={{ width: "100%" }} />
           </div>
         </section>
         <section className="page5-title-section">

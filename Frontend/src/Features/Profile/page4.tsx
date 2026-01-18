@@ -24,7 +24,7 @@ interface SkillVector {
 const skillVectors: SkillVector[] = [
   { id: 's1', number: 'S1', name: 'Core Logic', description: 'Algorithms & Problem Solving' },
   { id: 's2', number: 'S2', name: 'System Power', description: 'Design, Scale & Security' },
-  { id: 's3', number: 'S3', name: 'Build Mode', description: 'Web, Apps & Real-World Dev' },
+  { id: 's3', number: 'S3', name: 'Build Ability', description: 'Web, Apps & Real-World Dev' },
   { id: 's4', number: 'S4', name: 'AI Edge', description: 'ML, Intelligence & Optimization' },
 ];
 
