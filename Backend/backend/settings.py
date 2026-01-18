@@ -7,7 +7,7 @@ SECRET_KEY = "django-insecure-change-this-later"
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -23,6 +23,8 @@ INSTALLED_APPS = [
 
     # Local apps
     "Auth_System",
+    "Trust_Engine",
+    "Teammate_core",
 ]
 
 MIDDLEWARE = [
@@ -39,6 +41,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

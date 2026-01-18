@@ -1,0 +1,431 @@
+/* =====================
+   PAGE 2 ROOT
+   ===================== */
+.page2-root {
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: "Inter", sans-serif;
+  color: #0f172a;
+}
+
+/* =====================
+   HEADER
+   ===================== */
+.page2-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.page2-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page2-logo {
+  width: 32px;
+  height: 32px;
+  background-color: #137fec;
+  border-radius: 8px;
+}
+
+.page2-brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+}
+
+.page2-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.page2-help-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.page2-help-link:hover {
+  color: #137fec;
+}
+
+.page2-help-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
+/* =====================
+   MAIN LAYOUT
+   ===================== */
+.page2-main-content {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.page2-form-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* =====================
+   PROGRESS BAR
+   ===================== */
+.page2-progress-section {
+  margin-bottom: 2.5rem;
+}
+
+.page2-progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.page2-phase-text {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #137fec;
+}
+
+.page2-completion-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.page2-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.page2-progress-fill {
+  height: 100%;
+  background: #137fec;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+/* =====================
+   HEADING
+   ===================== */
+.page2-heading-section {
+  max-width: 720px;
+  margin: 0 auto 2rem auto;
+}
+
+.page2-main-title {
+  font-size: 2.1rem;
+  font-weight: 850;
+  margin-bottom: 12px;
+}
+
+.page2-description {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.page2-secure-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ecfdf5;
+  color: #065f46;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* =====================
+   CARDS STACK
+   ===================== */
+.page2-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =====================
+   PLATFORM CARD
+   ===================== */
+.page2-platform-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+}
+
+.page2-platform-card.page2-verifying {
+  border-color: #3b82f6;
+}
+
+.page2-loading-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6);
+  background-size: 200% 100%;
+  animation: page2-loading 1.5s linear infinite;
+}
+
+@keyframes page2-loading {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.page2-platform-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.page2-dark-bg { background: #0f172a; }
+.page2-orange-bg { background: #f97316; }
+
+/* =====================
+   CARD BODY
+   ===================== */
+.page2-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.page2-platform-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.page2-sub-text {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* =====================
+   INPUTS
+   ===================== */
+.page2-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.page2-input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.page2-input-prefix {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.page2-text-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  outline: none;
+}
+
+/* Base button */
+.page2-btn-connect-solid {
+  padding: 10px 18px;
+  background: linear-gradient(180deg, #137fec, #0d6fd8);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 110px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  transition: 
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Hover (only when not disabled) */
+.page2-btn-connect-solid:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(19, 127, 236, 0.3);
+}
+
+/* Active click */
+.page2-btn-connect-solid:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Disabled */
+.page2-btn-connect-solid:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ✅ CONNECTED STATE */
+.page2-btn-connect-solid.connected {
+  background: linear-gradient(180deg, #10b981, #059669);
+  cursor: default;
+}
+
+/* Connected hover (optional – usually subtle) */
+.page2-btn-connect-solid.connected:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.page2-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: page2-spin 0.8s linear infinite;
+}
+
+@keyframes page2-spin {
+  to { transform: rotate(360deg); }
+}
+
+.page2-input-hint {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* =====================
+   FOOTER
+   ===================== */
+.page2-footer-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+}
+
+.page2-btn-back {
+  background: transparent;
+  border: none;
+  font-weight: 700;
+  color: #6e6e73;
+  cursor: pointer;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: color 0.2s ease,
+              background-color 0.2s ease,
+              transform 0.15s ease;
+}
+
+.page2-btn-back:hover {
+  color: #1d1d1f;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.page2-btn-back:active {
+  transform: translateY(1px);
+}
+.page2-btn-back:focus-visible {
+  outline: none;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+
+.page2-btn-continue {
+  background: #137fec;
+  color: white;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* Hover */
+.page2-btn-continue:hover {
+  background: #0d6fd8; /* slightly darker */
+  box-shadow: 0 8px 24px rgba(19, 127, 236, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Active (click) */
+.page2-btn-continue:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(19, 127, 236, 0.25);
+}
+
+/* Disabled (optional but recommended) */
+.page2-btn-continue:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+
+
+
+/* =====================
+   MOBILE
+   ===================== */
+@media (max-width: 640px) {
+  .page2-input-row {
+    flex-direction: column;
+  }
+
+  .page2-btn-connect,
+  .page2-btn-continue,
+  .page2-btn-back {
+    width: 100%;
+  }
+
+  .page2-footer-nav {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+}

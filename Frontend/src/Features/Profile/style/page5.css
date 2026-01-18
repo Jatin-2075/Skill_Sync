@@ -1,0 +1,280 @@
+.page5-container {
+  background-color: #f8faff;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Header */
+.page5-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.page5-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page5-logo {
+  width: 32px;
+  height: 32px;
+  background-color: #137fec;
+  border-radius: 8px;
+}
+
+.page5-brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+}
+
+.page5-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.page5-help-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.page5-help-link:hover {
+  color: #137fec;
+}
+
+.page5-help-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
+
+/* Layout */
+.page5-main-content {
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+  margin-top: 20px;
+}
+
+/* Progress Section */
+.page5-progress-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: #64748b; }
+.page5-progress-bar { height: 6px; background: #e2e8f0; border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
+.page5-progress-fill { height: 100%; background: #2563eb; border-radius: 10px; transition: width 0.4s ease; }
+
+.page5-page-title { font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px; letter-spacing: -0.02em; }
+.page5-page-subtitle { color: #64748b; font-size: 14px; margin-bottom: 25px; }
+
+/* Main White Card */
+.page5-form-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.page5-input-group { margin-bottom: 32px; }
+.page5-section-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: #1f2937; }
+
+/* Status Toggle */
+.page5-status-container {
+  display: flex;
+  background: #f3f4f6;
+  padding: 4px;
+  border-radius: 8px;
+}
+.page5-status-btn {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.page5-status-btn.page5-active {
+  background: white;
+  color: #2563eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Collaboration Grid */
+.page5-collaboration-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.page5-collab-card {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.page5-collab-card.page5-selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+.page5-card-icon { 
+  width: 36px; height: 36px; 
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; font-size: 18px; 
+}
+.page5-card-icon.blue { background: #dbeafe; }
+.page5-card-icon.green { background: #dcfce7; }
+.page5-card-icon.purple { background: #f3e8ff; }
+.page5-card-icon.orange { background: #ffedd5; }
+
+.page5-card-info { display: flex; flex-direction: column; flex: 1; }
+.page5-card-title { font-weight: 700; font-size: 14px; color: #111827; }
+.page5-card-sub { font-size: 12px; color: #6b7280; }
+
+.page5-custom-checkbox {
+  width: 18px; height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 12px; font-weight: bold;
+}
+.page5-custom-checkbox.checked {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Slider Customization */
+.page5-availability-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.page5-hours-text { color: #2563eb; font-weight: 700; font-size: 15px; }
+.page5-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 5px;
+  outline: none;
+}
+.page5-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  background: #2563eb;
+  border: 3px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.page5-slider-labels { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-top: 10px; }
+
+/* Public Toggle Section */
+.page5-public-toggle { 
+  display: flex; gap: 14px; align-items: flex-start; 
+  padding-top: 20px; border-top: 1px solid #f3f4f6; cursor: pointer;
+  
+}
+
+.page5-public-toggle label strong{
+  margin-bottom: 15px ;
+}
+
+.page5-toggle-label-title { font-weight: 700; font-size: 14px; color: #111827; }
+.page5-toggle-label-sub { font-size: 13px; color: #6b7280; line-height: 1.4; margin-top: 2px; }
+
+/* Footer */
+.page5-footer { display: flex; justify-content: space-between; margin-top: 35px; align-items: center; }
+.page5-btn-back { background: none; border: none; color: #64748b; cursor: pointer; font-weight: 600; font-size: 14px; }
+.page5-footer-right { display: flex; gap: 12px; }
+.page5-btn-refine { padding: 10px 22px; border-radius: 8px; border: 1px solid #d1d5db; background: white; cursor: pointer; font-weight: 600; color: #374151; font-size: 14px; }
+.page5-btn-create { padding: 10px 24px; border-radius: 8px; background: #2563eb; color: white; border: none; cursor: pointer; font-weight: 600; font-size: 14px; }
+
+/* Mobile Support */
+@media (max-width: 640px) {
+  .page5-collaboration-grid { grid-template-columns: 1fr; }
+  .page5-footer { flex-direction: column; gap: 20px; }
+  .page5-footer-right { width: 100%; }
+  .page5-btn-refine, .page5-btn-create { flex: 1; }
+}
+
+/* Container for the slider and labels */
+/* Container spacing */
+.page5-input-group {
+  margin-bottom: 35px;
+}
+
+/* Header with Title and Blue Hours */
+.page5-availability-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page5-hours-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2563eb; /* SkillRank Blue */
+}
+
+/* Slider Wrapper */
+.page5-slider-wrapper {
+  padding: 10px 0;
+}
+
+/* Range Input Styling */
+.page5-slider {
+  -webkit-appearance: none; /* Reset default browser look */
+  width: 100%;
+  height: 6px;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  /* Note: The blue progress color is best handled via inline background-gradient in React */
+  background: #e2e8f0;
+}
+
+/* Thumb (The moving blue circle) */
+.page5-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #2563eb;
+  border: 4px solid #ffffff; /* White outer ring */
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s ease;
+}
+
+/* Slider Labels Styling */
+.page5-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.page5-slider-labels span {
+  font-size: 12px;
+  color: #94a3b8; /* Muted gray for hrs labels */
+  font-weight: 500;
+}

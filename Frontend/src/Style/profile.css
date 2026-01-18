@@ -1,0 +1,94 @@
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+.profile-page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 24px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.navbar a {
+  margin-left: 16px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.card {
+  background: #111827;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.profile-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+
+.verified {
+  position: absolute;
+  color: #22c55e;
+}
+
+.actions button {
+  margin-right: 12px;
+}
+
+.primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+}
+
+.contribution-bar {
+  display: flex;
+  height: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #334155;
+}
+
+.s1 { background: #3b82f6; }
+.s2 { background: #10b981; }
+.s3 { background: #f59e0b; }
+.s4 { background: #8b5cf6; }
+.s5 { background: #f43f5e; }
+
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.project-card {
+  background: #020617;
+  padding: 16px;
+  border-radius: 10px;
+}
+
+.tag {
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.timeline-item {
+  margin-bottom: 16px;
+}

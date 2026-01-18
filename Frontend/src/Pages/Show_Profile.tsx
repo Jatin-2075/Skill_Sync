@@ -1,10 +1,7 @@
-
-const Create_Profile = () => {
-
+const ShowProfileAll = () => {
     return (
         <div>
             
         </div>
     )
 }
-export default Create_Profile;
