@@ -5,18 +5,13 @@
 }
 
 .pp-project-post-container {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f8f9fa;
-  min-height: 100vh;
-
-  /* MATCH Find Collaborators */
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 24px 40px;
+  max-width: 1400px;      /* <-- increased from 1280 */
+  margin: 0 auto;
+  width: 100%;
+  padding: 24px 40px;     /* <-- wider horizontal padding like Post Project */
 }
 
 
@@ -521,9 +516,6 @@
   gap: 6px;
 }
 
-.pp-add-item-btn:hover {
-  text-decoration: underline;
-}
 
 /* Skills Input */
 .pp-skills-input {
@@ -583,7 +575,13 @@
   flex: 1;
   height: 6px;
   border-radius: 3px;
-  background: #e5e7eb;
+  background: linear-gradient(
+              to right,
+              #3b82f6 0%,
+              #3b82f6 var(--fill),
+              #e5e7eb var(--fill),
+              #e5e7eb 100%
+            );
   outline: none;
   -webkit-appearance: none;
 }
