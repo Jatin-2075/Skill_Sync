@@ -4,5 +4,5 @@ from .views import (
 )
 
 urlpatterns = [
-    path("/publicprofileall", FunctionSendPublicProfile)
+    path("publicprofileall/", FunctionSendPublicProfile)
 ]

@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 
@@ -14,12 +13,22 @@ import Page2 from "./Features/Profile/page2";
 import Page3 from "./Features/Profile/page3";
 import Page4 from "./Features/Profile/page4";
 import Page5 from "./Features/Profile/page5";
+
 import PostProjectPage from "./Features/Recruitment/postproject";
-import FindCollaborators from "./Features/Recruitment/findcollaborators"
+import FindCollaborators from "./Features/Recruitment/findcollaborators";
 
 const App = () =>{
     return (
         <Routes>
+            {/* Intro and other not useable */}
+            <Route path="/" element={<Intro/>}/>
+
+            {/* Auth system files  */}
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/signup" element={<Signup/>}/>
+
+            {/*profile creation page*/}
+=======
 
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<Signup/>}/>

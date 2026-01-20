@@ -48,7 +48,7 @@ const Page3 = () => {
 
   const FunctionFetch = async () => {
     try {
-      const res = await API("GET", "/auth/sendstudent/");
+      const res = await API("GET", "/auth/studentapi/");
       const result = await res.json();
       if (result.success) {
         setTimeline(result.data);
@@ -101,7 +101,7 @@ const Page3 = () => {
     if (!validateForm()) return;
 
     try {
-      const res = await API("POST", "/auth/studentsave/", formData);
+      const res = await API("POST", "/auth/studentapi/", formData);
       const backendres = await res.json();
       setdatabackend(backendres);
 
@@ -132,7 +132,7 @@ const Page3 = () => {
 
   const handleDeleteTimeline = async (number : number) => {
     try {
-      const res = await API("DELETE", "/auth/deletestudent/",{ number });
+      const res = await API("DELETE", "/auth/studentapi/",{ number });
       const result = await res.json();
       console.log(result);
       FunctionFetch()

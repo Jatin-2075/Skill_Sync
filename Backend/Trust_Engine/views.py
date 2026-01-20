@@ -27,3 +27,4 @@ from Auth_System.models import (
 @permission_classes([IsAuthenticated])
 def FunctionSendPublicProfile(request):
     obj, _= PersonalDetails.objects.get()
+    return None
