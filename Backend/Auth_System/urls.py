@@ -5,12 +5,10 @@ from .views import (
     FunctionSendSkill,
     FunctionSavePersonal,
     FunctionSaveUsername,
-    FunctionSaveStudent,
     FunctionSaveProject,
     FunctionSaveColaboration,
     Functionprofilesend,
-    FunctionSendStudent,
-    FunctionDeleteStudent,
+    FunctionStudentAPI,
 )
 
 urlpatterns = [
@@ -20,10 +18,6 @@ urlpatterns = [
     path("saveskills/", FunctionSaveSkills),
     path("sendskills/", FunctionSendSkill),
     path("projectsave/", FunctionSaveProject),
+    path("studentapi/", FunctionStudentAPI),
     path("savecollaboration/", FunctionSaveColaboration),
-    path("studentsave/", FunctionSaveStudent),
-    path("profilesend/", Functionprofilesend),
-    path("sendstudent/", FunctionSendStudent),
-
-    path("deletestudent/", FunctionDeleteStudent),
 ]

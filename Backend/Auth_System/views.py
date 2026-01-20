@@ -175,39 +175,64 @@ def FunctionSaveUsername(request):
         return JsonResponse({"success": False, "msg": str(e)}, status=500)
 
 
-@api_view(["POST"])
+@api_view(["GET", "POST", "DELETE"])
 @permission_classes([IsAuthenticated])
-def FunctionSaveStudent(request):
+def FunctionStudentAPI(request):
     user = request.user
-    item = request.data
-
-    print(item)
-
     details = Details.objects.filter(user=user).first()
-    if not item or not details:
-        return JsonResponse(
-            {"success": False, "msg": "Data didn't reach us"},
-            status=400
+
+    if not details:
+        return JsonResponse({
+            "success": False,
+            "msg": "User details not found",
+            "data": []
+        }, status=404)
+
+    if request.method == "GET":
+        education = (
+            StudentDetails.objects
+            .filter(details=details)
+            .order_by("-number")
         )
 
-    last_entry = (
-        StudentDetails.objects
-        .filter(details=details)
-        .order_by("-number")
-        .first()
-    )
+        data = [{
+            "number": ed.number,
+            "schoolname": ed.schoolname,
+            "degree": ed.degree,
+            "field": ed.field,
+            "startdate": str(ed.startdate) if ed.startdate else None,
+            "enddate": str(ed.enddate) if ed.enddate else None,
+            "current": ed.current,
+            "description": ed.description,
+        } for ed in education]
 
-    number_wehave = last_entry.number + 1 if last_entry else 1
-    print(number_wehave)
+        return JsonResponse({
+            "success": True,
+            "msg": "Education timeline fetched",
+            "data": data
+        })
 
-    if number_wehave > 4:
-        return JsonResponse(
-            {"success": False, "msg": "limit reached"},
+    if request.method == "POST":
+        item = request.data
+
+        if not item:
+            return JsonResponse({"success": False, "msg": "No data"}, status=400)
+
+        last_entry = (
+            StudentDetails.objects
+            .filter(details=details)
+            .order_by("-number")
+            .first()
         )
-    try:
+
+        number_wehave = last_entry.number + 1 if last_entry else 1
+
+        if number_wehave > 4:
+            return JsonResponse({"success": False, "msg": "limit reached"})
+
         StudentDetails.objects.create(
             details=details,
-            number=number_wehave,                      
+            number=number_wehave,
             schoolname=item.get("schoolname"),
             degree=item.get("degree"),
             field=item.get("field"),
@@ -222,77 +247,20 @@ def FunctionSaveStudent(request):
             "msg": "Education history updated successfully"
         })
 
-    except Exception as e:
-        print(f"Error saving education: {str(e)}")
-        return JsonResponse(
-            {
-                "success": False,
-                "msg": "A database error occurred",
-                "error": str(e)
-            },
-        )
+    if request.method == "DELETE":
+        number = request.data.get("number")
 
+        if number is None:
+            return JsonResponse({"success": False, "msg": "No number provided"}, status=400)
 
-@api_view(["DELETE"])
-@permission_classes([IsAuthenticated])
-def FunctionDeleteStudent(request):
-    user = request.user
-    details = Details.objects.get(user=user)
-    data = request.data
-    number = data.get("number")
+        try:
+            student = StudentDetails.objects.get(details=details, number=number)
+            student.delete()
+            return JsonResponse({"success": True, "msg": "Deleted"})
 
-    if number is None:
-        return JsonResponse({"success": False, "msg": "No number provided"}, status=400)
+        except StudentDetails.DoesNotExist:
+            return JsonResponse({"success": False, "msg": "Not found"}, status=404)
 
-    try:
-        student = StudentDetails.objects.get(details=details, number=number)
-        student.delete()
-        return JsonResponse({"success": True, "msg": "Done"})
-
-    except StudentDetails.DoesNotExist:
-        return JsonResponse({"success": False, "msg": "Not found"}, status=404)
-
-    except Exception:
-        return JsonResponse({"success": False, "msg": "not Done"}, status=500)
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def FunctionSendStudent(request):
-    user = request.user
-
-    details = Details.objects.filter(user=user).first()
-    if not details:
-        return JsonResponse({
-            "success": False,
-            "msg": "User details not found",
-            "data": []
-        }, status=404)
-
-    education = (
-        StudentDetails.objects
-        .filter(details=details)
-        .order_by("-number")
-    )
-
-    data = []
-    for ed in education:
-        data.append({
-            "number": ed.number,
-            "schoolname": ed.schoolname,
-            "degree": ed.degree,
-            "field": ed.field,
-            "startdate": str(ed.startdate) if ed.startdate else None,
-            "enddate": str(ed.enddate) if ed.enddate else None,
-            "current": ed.current,
-            "description": ed.description,
-        })
-
-    return JsonResponse({
-        "success": True,
-        "msg": "Education timeline fetched",
-        "data": data
-    })
 
 
 @api_view(["POST", "GET", "DELETE"])
