@@ -6,13 +6,9 @@ import {
   ChevronRight,
   Sparkles,
   MessageSquare,
-  Plus,
-  Search,
-  Bell,
   BadgeCheck
 } from 'lucide-react';
-import { NavLink } from "react-router-dom";
-import './style/findcollaborators.css';
+import '../style/findcollaborators.css'
 
 interface SkillVectors {
   coreLogic: number;
@@ -65,37 +61,6 @@ const FindCollaborators = () => {
 
   return (
     <main className="fc-main-container">
-      <div className="fc-header-section">
-        <div className="fc-header-top">
-          <div className="fc-header-text">
-            <h1 className="fc-page-title">Team Recruitment</h1>
-            <p className="fc-page-description">
-              Find the perfect teammate. Filter by skill vectors, rating, and availability to build your dream team.
-            </p>
-          </div>
-          <button className="fc-post-btn">
-            <Plus size={18} />
-            <span>Post a Project</span>
-          </button>
-        </div>
-
-        <div className="fc-tabs-border">
-          <nav className="fc-tabs-nav">
-            <NavLink to="/findcollaborators" className={({ isActive }) => isActive ? "fc-tab fc-tab-active" : "fc-tab"}>
-              Find Collaborators
-            </NavLink>
-            <NavLink to="/postproject" className={({ isActive }) => isActive ? "fc-tab fc-tab-active" : "fc-tab"}>
-              Post a Project
-              <span className="fc-tab-badge fc-badge-new">NEW</span>
-            </NavLink>
-            <NavLink to="/myproposals" className={({ isActive }) => isActive ? "fc-tab fc-tab-active" : "fc-tab"}>
-              My Proposals
-              <span className="fc-tab-badge fc-badge-count">2</span>
-            </NavLink>
-          </nav>
-        </div>
-      </div>
-
       <div className="fc-content-wrapper">
         <aside className="fc-sidebar">
           <div className="fc-filter-card">
@@ -133,8 +98,8 @@ const FindCollaborators = () => {
                     <div className="fc-skill-item" key={key}>
                       <div className="fc-skill-header">
                         <span className="fc-skill-name-dark">{`S${index + 1}: ${formatSkillName(key)}`}</span>
-                        <span className={`fc-skill-percent-bold ${value > 0 ? 'fc-skill-active' : ''}`}>
-                          {value > 0 ? `${value}%` : 'Min %'}
+                        <span className={`fc-skill-percent-bold ${value >= 0 ? 'fc-skill-active' : ''}`}>
+                          {`${value}%`}
                         </span>
                       </div>
                       <div className="fc-skill-bar-bg-thin">

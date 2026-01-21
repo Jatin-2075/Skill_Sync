@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 
-
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 
@@ -14,41 +13,40 @@ import Page3 from "./Features/Profile/page3";
 import Page4 from "./Features/Profile/page4";
 import Page5 from "./Features/Profile/page5";
 
-import PostProjectPage from "./Features/Recruitment/postproject";
-import FindCollaborators from "./Features/Recruitment/findcollaborators";
+import MainRecruit from "./Features/Recruitment/mainrecruit";
+import PostProjectPage from "./Features/Recruitment/recruit/postproject";
+import FindCollaborators from "./Features/Recruitment/recruit/findcollaborators";
 
-const App = () =>{
-    return (
-        <Routes>
-            {/* Intro and other not useable */}
-            <Route path="/" element={<Intro/>}/>
+import MyProposals from "./Features/Recruitment/project/myproposal";
+import GiveProposals from "./Features/Recruitment/project/giveproposal"
+import ProjectDetails from "./Features/Recruitment/project/projectdetails";
 
-            {/* Auth system files  */}
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/signup" element={<Signup/>}/>
+const App = () => {
+  return (
+    <Routes>
 
-            {/*profile creation page*/}
-=======
+      <Route path="/" element={<Intro />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/signup" element={<Signup/>}/>
+      <Route path="/pageone" element={<Page1 />} />
+      <Route path="/pagetwo" element={<Page2 />} />
+      <Route path="/pagethree" element={<Page3 />} />
+      <Route path="/pagefour" element={<Page4 />} />
+      <Route path="/pagefive" element={<Page5 />} />
 
-            <Route path="/pageone" element={<Page1/>}/>
-            <Route path="/pagetwo" element={<Page2/>}/>
-            <Route path="/pagethree" element={<Page3/>}/>
-            <Route path="/pagefour" element={<Page4/>}/>
-            <Route path="/pagefive" element={<Page5/>}/>
+      <Route element={<MainLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/recruit" element={<MainRecruit />}>
+          <Route index element={<FindCollaborators />} />
+          <Route path="findcollaborators" element={<FindCollaborators />} />
+          <Route path="postproject" element={<PostProjectPage />} />
+          <Route path="myproposals" element={<MyProposals />} />
+          <Route path="giveproposals" element={<GiveProposals/>} ></Route>
+        </Route>
+      </Route>
+    </Routes>
+  );
+};
 
-
-            <Route path="/" element={<Intro/>}/>
-
-            <Route element={<MainLayout/>} >
-                <Route path="/dashboard" element={<Dashboard/>}/>
-                <Route path="/postproject" element={<PostProjectPage/>}/>
-                <Route path="/findcollaborators" element={<FindCollaborators/>} ></Route>
-            </Route> 
-        </Routes>
-    )
-}
-
-export default App;  
+export default App;
