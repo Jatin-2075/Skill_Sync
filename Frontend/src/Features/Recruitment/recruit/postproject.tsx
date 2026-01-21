@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './style/postproject.css';
+import '../style/postproject.css';
 import { X, Info, Plus, Minus, Zap, Trash2, Edit2 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
@@ -253,13 +253,8 @@ const ProjectPostPage = () => {
 
   return (
     <div className="pp-project-post-container">
-
-
-      {/* Main Content */}
       <div className="pp-main-content">
-        {/* Left Column */}
         <div className="pp-left-column">
-          {/* Basic Project Details */}
           <section className="pp-form-section">
             <div className="pp-section-header">
               <div className="pp-section-icon pp-blue">1</div>
