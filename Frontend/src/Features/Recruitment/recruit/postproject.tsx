@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import '../style/postproject.css';
 import { X, Info, Plus, Minus, Zap, Trash2, Edit2 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { API } from "../../../config/Api";
+
 
 // Core project table
 type PostProject = {
@@ -85,9 +87,9 @@ const ProjectPostPage = () => {
   const [activeTimeline, setActiveTimeline] = useState<"immediate" | "scheduled">("immediate");
   const [ratingValue, setRatingValue] = useState(0);
   const [teamSize, setTeamSize] = useState(1);
+  const [startdate,setStartDate]= useState("");
 
 
-  // --- Handlers (Logic) ---
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -205,53 +207,48 @@ const ProjectPostPage = () => {
   const percent = ratingValue;
 
   const getRatingDisplay = () => {
-    const ratings = ["Newbie", "Beginner", "Intermediate", "Advanced", "Expert"];
-    const index = Math.floor(ratingValue / 20);
-    return ratings[Math.min(index, 4)];
+    const rating= ratingValue*(35) ; 
+    return rating;
   };
 
+  
+const handlePostProject = async () => {
+  if (!postProject.projecttitle.trim() || !postProject.projectsummary.trim()) {
+    alert("⚠️ Please enter a project title and summary.");
+    return;
+  }
+  setLoading(true);
 
-  const handlePostProject = async () => {
-    if (!postProject.projecttitle.trim() || !postProject.projectsummary.trim()) {
-      alert("⚠️ Please enter a project title and summary.");
-      return;
-    }
-
-    setLoading(true);
-
-    const payload = {
-      post_project: postProject,
-      narrative: narrative,
-      team: team,
-      collaboration: collaboration,
-      techstack: skills.map((s: string) => ({ skill: s })),
-      deliverables: deliverables.map((d: DeliverableItemType) => ({
-        deliverablename: d.text,
-      })),
-    };
-
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/projects/create/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) throw new Error("Network error");
-
-      console.log("Success:", payload);
-      alert("🚀 Project posted successfully!");
-      navigate("/myproposals");
-    } catch (err) {
-      console.error(err);
-      alert("❌ Failed to post project.");
-    } finally {
-      setLoading(false);
-    }
+  const payload = {
+    post_project: postProject,
+    narrative: narrative,
+    team: team,
+    collaboration: collaboration,
+    techstack: skills.map((s: string) => ({ skill: s })),
+    deliverables: deliverables.map((d: DeliverableItemType) => ({
+      deliverablename: d.text,
+    })),
   };
 
+  try {
+    const response = await API(
+      "POST",
+      "/project/addrecruitment/",
+      payload
+    );
 
-  return (
+    console.log("Success:", await response.json());
+    alert("🚀 Project posted successfully!");
+    navigate("/myproposals");
+  } catch (err) {
+    console.error(err);
+    alert("❌ Failed to post project.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+return (
     <div className="pp-project-post-container">
       <div className="pp-main-content">
         <div className="pp-left-column">
@@ -261,7 +258,6 @@ const ProjectPostPage = () => {
               <h2 className="pp-section-title">Basic Project Details</h2>
             </div>
 
-            {/* Project Title Input */}
             <div className="pp-form-group">
               <label className="pp-form-label">
                 Project Title <span className="pp-required">*</span>
@@ -276,7 +272,6 @@ const ProjectPostPage = () => {
               />
             </div>
 
-            {/* Project Summary */}
             <div className="pp-form-group">
               <label className="pp-form-label">
                 Short Summary <span className="pp-required">*</span>
@@ -295,7 +290,6 @@ const ProjectPostPage = () => {
               />
             </div>
 
-            {/* Category and Visibility */}
             <div className="pp-form-row">
               <div className="pp-form-group">
                 <label className="pp-form-label">Category / Domain</label>
@@ -333,7 +327,6 @@ const ProjectPostPage = () => {
             </div>
           </section>
 
-          {/* Project Narrative */}
           <section className="pp-form-section">
             <div className="pp-section-header">
               <div className="pp-section-icon pp-purple">2</div>
@@ -344,7 +337,7 @@ const ProjectPostPage = () => {
             </div>
 
             <div className="pp-narrative-card">
-              {/* WHY */}
+
               <div className="pp-narrative-block">
                 <div className="pp-narrative-head">
                   🔥 <h3>The Problem (Why)</h3>
@@ -364,7 +357,6 @@ const ProjectPostPage = () => {
                 />
               </div>
 
-              {/* HOW */}
               <div className="pp-narrative-block">
                 <div className="pp-narrative-head">
                   🎯 <h3>The Solution (How)</h3>
@@ -653,8 +645,8 @@ const ProjectPostPage = () => {
                       type="date"
                       name="startDate"
                       className="pp-form-input"
-                      value=""
-                      onChange={() => { }}
+                      value={startdate}
+                      onChange={(e) => setStartDate(e.target.value)}
                     />
                     <small className="pp-hint">Select a start date or type it directly (YYYY-MM-DD).</small>
                   </div>
