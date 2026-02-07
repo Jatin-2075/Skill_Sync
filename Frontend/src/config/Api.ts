@@ -22,7 +22,7 @@ export async function API<T = any>(
 
     if (res.status === 401) {
         const refresh = localStorage.getItem("refresh");
-
+   
         if (!refresh) {
             logout();
             throw new Error("Authorization failed");
