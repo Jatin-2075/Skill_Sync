@@ -7,5 +7,5 @@ from .views import (
 urlpatterns = [
     path("addrecruitment/", FunctionAddProject),
     path("sendproject/", FunctionSendProjects),
-    path("projectdetails/", FunctionProjectDetail),
+    path("projectdetails/<uuid:project_id>/", FunctionProjectDetail),
 ]

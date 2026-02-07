@@ -1,19 +1,82 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { API } from "../../../config/Api";
+
+interface Project {
+    id: string;
+    title: string;
+    summary: string;
+    category: string;
+    creator: string;
+
+    narrative: {
+        problem: string;
+        solution: string;
+        repo: string;
+    };
+
+    team: {
+        desired_members: number;
+        min_rating: number;
+    };
+
+    collaboration: {
+        commitment: string;
+        style: string;
+    };
+
+    techstack: string[];
+}
+
+
 
 const ProjectDetails = () => {
+    const { id } = useParams();
+
+    const [project, setProject] = useState<Project | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const fetchProject = async () => {
+            try {
+                const data: any = await API("GET", `/project/detail/${id}/`);
+
+                if (!data?.project) {
+                    throw new Error("Invalid response");
+                }
+
+                setProject(data.project);
+
+            } catch (err) {
+                console.log(err);
+                setError("Failed to load project");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProject();
+    }, [id]);
+
+
+    if (loading) return <h2>Loading bro...</h2>;
+    if (error) return <h2>{error}</h2>;
+    if (!project) return <h2>No project found</h2>;
+
     return (
         <div className="project-page app-container">
-            {/* Header */}
+
             <div className="project-header">
                 <div className="project-breadcrumb">
-                    Recruitment › Projects › AI Engine Optimization
+                    Recruitment › Projects › {project?.title}
                 </div>
 
                 <div className="project-title-row">
                     <div>
-                        <h1 className="project-title">AI Engine Optimization</h1>
+                        <h1 className="project-title">{project?.title}</h1>
                         <p className="project-owner">
-                            By <span>@tech_lead_alpha</span>
+                            By <span>@{project?.creator}</span>
                         </p>
                     </div>
 
@@ -23,71 +86,56 @@ const ProjectDetails = () => {
                 </div>
 
                 <div className="project-tags">
-                    <span className="project-tag">AI</span>
-                    <span className="project-tag">Backend</span>
-                    <span className="project-tag">Performance</span>
+                    <span className="project-tag">
+                        {project?.category}
+                    </span>
                 </div>
             </div>
 
             <div className="project-layout">
-                {/* Left */}
                 <div className="project-main">
+
                     <section className="project-section">
                         <h3>Summary</h3>
-                        <p>
-                            Build a high-performance inference engine for LLM APIs with
-                            sub-200ms latency and scalable architecture.
-                        </p>
+                        <p>{project?.summary}</p>
                     </section>
 
                     <section className="project-section">
                         <h3>Problem Statement</h3>
-                        <p>
-                            Current LLM inference pipelines are slow, expensive, and not
-                            optimized for real-time workloads. We aim to redesign the system
-                            to handle millions of requests efficiently.
-                        </p>
+                        <p>{project?.narrative?.problem}</p>
                     </section>
 
                     <section className="project-section">
-                        <h3>What We’re Building</h3>
-                        <p>
-                            A distributed inference layer with smart caching, batching, and
-                            model routing. This will serve as a backbone for AI products at
-                            scale.
-                        </p>
+                        <h3>Solution</h3>
+                        <p>{project?.narrative?.solution}</p>
                     </section>
 
                     <section className="project-section">
                         <h3>Tech Stack</h3>
                         <div className="project-tech">
-                            <span className="tech-pill">Python</span>
-                            <span className="tech-pill">FastAPI</span>
-                            <span className="tech-pill">Redis</span>
-                            <span className="tech-pill">Docker</span>
-                            <span className="tech-pill">LLMs</span>
+                            {project?.techstack?.map((t, i) => (
+                                <span key={i} className="tech-pill">{t}</span>
+                            ))}
                         </div>
                     </section>
+
                 </div>
 
-                {/* Right */}
                 <aside className="project-side">
                     <div className="project-card">
                         <h4>Team Needs</h4>
-                        <p>ML Engineer, Backend Engineer</p>
-                        <p>Members needed: 3</p>
+                        <p>
+                            Members needed: {project?.team?.desired_members}
+                        </p>
+                        <p>
+                            Min rating: {project?.team?.min_rating}
+                        </p>
                     </div>
 
                     <div className="project-card">
-                        <h4>Commitment</h4>
-                        <p>Part-time (10–20 hrs/week)</p>
-                        <p>Async-first collaboration</p>
-                    </div>
-
-                    <div className="project-card">
-                        <h4>Timeline</h4>
-                        <p>Start: Feb 2026</p>
-                        <p>End: May 2026</p>
+                        <h4>Collaboration</h4>
+                        <p>{project?.collaboration?.commitment}</p>
+                        <p>{project?.collaboration?.style}</p>
                     </div>
 
                     <Link to="apply" className="project-apply-side-btn">

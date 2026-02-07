@@ -40,8 +40,7 @@ const App = () => {
           <Route index element={<FindCollaborators />} />
           <Route path="findcollaborators" element={<FindCollaborators />} />
           <Route path="postproject" element={<PostProjectPage />} />
-          {/* <Route path="myproposals" element={<MyProposals />} />
-          <Route path="giveproposals" element={<GiveProposals/>} ></Route> */}
+          <Route path="projectdetails/:id" element={<ProjectDetails/>}/>
         </Route>
       </Route>
     </Routes>
