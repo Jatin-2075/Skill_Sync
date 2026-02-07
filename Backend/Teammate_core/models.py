@@ -38,9 +38,9 @@ class ProjectDuration(models.Model):
         PostProject,
         on_delete=models.CASCADE,
     )
-    start_date = models.CharField()
-    time_zone_preferred = models.CharField()
-    end_date = models.CharField()
+    start_date = models.CharField(max_length=30)
+    time_zone_preferred = models.CharField(max_length=30)
+    end_date = models.CharField(max_length=30)
 
 class Deliverables(models.Model):
     project = models.ForeignKey(
@@ -78,3 +78,39 @@ class CollaborationSettings(models.Model):
     expected_commitment = models.CharField( max_length=30, choices=[ ("part-time", "Part-time (10-20 hrs/week)"), ("full-time", "Full-time (30+ hrs/week)"),])
     collaboration_style = models.CharField( max_length=20, choices=[ ("async", "Async First"), ("sync", "Synchronous"), ])
     communication_norms = models.TextField(blank=True)
+
+
+
+# class ProjectProposal(models.Model):
+#     STATUS_CHOICES = [
+#         ("pending", "Pending"),
+#         ("accepted", "Accepted"),
+#         ("rejected", "Rejected"),
+#     ]
+
+#     user = models.ForeignKey(
+        
+#         on_delete=models.CASCADE,
+#         related_name="sent_proposals"
+#     )
+
+#     project = models.ForeignKey(
+#         PostProject,
+#         on_delete=models.CASCADE,
+#         related_name="received_proposals"
+#     )
+
+#     proposal_text = models.TextField()
+#     proposed_role = models.CharField(max_length=100)
+#     availability = models.CharField(max_length=50)
+
+#     links = models.JSONField(default=list, blank=True) 
+
+#     status = models.CharField(
+#         max_length=10,
+#         choices=STATUS_CHOICES,
+#         default="pending"
+#     )
+
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)

@@ -1,57 +1,63 @@
-// import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
+import "../Recruitment/style/mainrecruit.css";
 
-// const MainRecruit = () => {
-//   return (
-//     <div>
-//       <div className="pp-header-section">
-//         <div className="pp-header-content">
-//           <div className="pp-header-text">
-//             <h1 className="pp-page-title">Team Recruitment</h1>
-//             <p className="pp-page-description">
-//               Find the perfect teammate. Filter by skill vectors, rating, and availability to build your dream team.
-//             </p>
-//           </div>
-//         </div>
+const MainRecruit = () => {
+  return (
+    <div className="mr-page">
+      {/* Header */}
+      <section className="mr-header-section">
+        <div className="app-container">
+          <div className="mr-header-content">
+            <div className="mr-header-text">
+              <h1 className="mr-page-title">Team Recruitment</h1>
+              <p className="mr-page-description">
+                Find the perfect teammate. Filter by skill vectors, rating, and availability to build your dream team.
+              </p>
+            </div>
+          </div>
+        </div>
 
-//         <div className="pp-tabs-border">
-//           <nav className="pp-tabs-nav">
-//             <NavLink
-//               to="findcollaborators"
-//               className={({ isActive }) =>
-//                 isActive ? "pp-tab pp-tab-active" : "pp-tab"
-//               }
-//             >
-//               Find Collaborators
-//             </NavLink>
+        {/* Tabs */}
+        <div className="mr-tabs-border">
+          <div className="app-container">
+            <nav className="mr-tabs-nav">
+              <NavLink
+                to="findcollaborators"
+                className={({ isActive }) =>
+                  isActive ? "mr-tab mr-tab-active" : "mr-tab"
+                }
+              >
+                Find Collaborators
+              </NavLink>
 
-//             <NavLink
-//               to="postproject"
-//               className={({ isActive }) =>
-//                 isActive ? "pp-tab pp-tab-active" : "pp-tab"
-//               }
-//             >
-//               Post a Project
-//               <span className="pp-tab-badge pp-badge-new">NEW</span>
-//             </NavLink>
+              <NavLink
+                to="postproject"
+                className={({ isActive }) =>
+                  isActive ? "mr-tab mr-tab-active" : "mr-tab"
+                }
+              >
+                Post a Project
+                <span className="mr-tab-badge mr-badge-new">NEW</span>
+              </NavLink>
 
-//             <NavLink
-//               to="myproposals"
-//               className={({ isActive }) =>
-//                 isActive ? "pp-tab pp-tab-active" : "pp-tab"
-//               }
-//             >
-//               My Proposals
-//               <span className="pp-tab-badge pp-badge-count">2</span>
-//             </NavLink>
-//           </nav>
-//         </div>
-//       </div>
+              <NavLink
+                to="myproposals"
+                className={({ isActive }) =>
+                  isActive ? "mr-tab mr-tab-active" : "mr-tab"
+                }
+              >
+                My Proposals
+                <span className="mr-tab-badge mr-badge-count">2</span>
+              </NavLink>
+            </nav>
+          </div>
+        </div>
+      </section>
 
-//       {/* Child pages render here */}
-//       <Outlet />
-//       <FindCollaborators />
-//     </div>
-//   );
-// };
+      {/* Page Content */}
+      <Outlet />
+    </div>
+  );
+};
 
-// export default MainRecruit;
+export default MainRecruit;

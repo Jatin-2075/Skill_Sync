@@ -1,0 +1,138 @@
+.mr-page {
+  width: 100%;
+}
+
+.app-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 15px 40px;
+  padding-bottom: 0;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding: 0 16px;
+  }
+}
+
+
+/* Header section */
+.mr-header-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+/* Header content */
+.mr-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Text */
+.mr-header-text {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mr-page-title {
+  font-size: 36px;
+  font-weight: 900;
+  color: #111418;
+  line-height: 1.4;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.mr-page-description {
+  font-size: 16px;
+  color: #617589;
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+.mr-tabs-border {
+  border-bottom: 1px solid #dbe0e6;
+}
+
+.mr-tabs-nav {
+  display: flex;
+  gap: 32px;
+  padding: 4px 0;
+  overflow-x: auto;
+}
+
+.mr-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.mr-tab {
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #617589;
+  padding: 8px 0 12px;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.mr-tab:hover {
+  color: #111418;
+  border-bottom-color: #cbd5e1;
+}
+
+.mr-tab-active {
+  color: #111418;
+  font-weight: 700;
+  border-bottom-color: #137fec;
+}
+
+
+.mr-tab-badge {
+  margin-left: 8px;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.mr-badge-new {
+  background: rgba(19, 127, 236, 0.1);
+  color: #137fec;
+}
+
+.mr-badge-count {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+
+@media (max-width: 768px) {
+  .mr-page-title {
+    font-size: 28px;
+  }
+
+  .mr-header-content {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .mr-page-title {
+    font-size: 24px;
+  }
+}
