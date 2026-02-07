@@ -525,3 +525,62 @@
   }
   .page1-form-card { padding: 1.5rem; }
 }
+
+/* ===== Modern Select Upgrade (Non-breaking) ===== */
+
+.page1-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.page1-modern-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  width: 100%;
+  padding: 0.75rem 2.75rem 0.75rem 1rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* hover */
+.page1-modern-select:hover {
+  border-color: #cbd5e1;
+}
+
+/* focus */
+.page1-modern-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(19, 127, 236, 0.12);
+}
+
+/* Custom dropdown arrow */
+.page1-select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'>\
+<path fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z' clip-rule='evenodd'/>\
+</svg>");
+}
+
+/* Disabled option look */
+.page1-modern-select option:disabled {
+  color: #94a3b8;
+}

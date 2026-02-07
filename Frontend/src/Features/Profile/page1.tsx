@@ -222,18 +222,21 @@ const Page1 = ({ }) => {
             <div className="page1-form-grid-3">
               <label className="page1-input-group">
                 <span>Country</span>
-                <select
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select Country</option>
-                  {countries.map((country) => (
-                    <option key={country.cca2} value={country.cca2}>
-                      {country.name.common}
-                    </option>
-                  ))}
-                </select>
+                <div className="page1-select-wrapper">
+                  <select
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    className="page1-modern-select"
+                  >
+                    <option value="">Select Country</option>
+                    {countries.map((country) => (
+                      <option key={country.cca2} value={country.cca2}>
+                        {country.name.common}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </label>
 
               <label className="page1-input-group">
@@ -248,16 +251,19 @@ const Page1 = ({ }) => {
 
               <label className="page1-input-group">
                 <span>Gender</span>
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleInputChange}
-                >
-                  <option value="" disabled>Select your gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">other</option>
-                </select>
+                <div className="page1-select-wrapper">
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                    className="page1-modern-select"
+                  >
+                    <option value="" disabled>Select your gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
               </label>
             </div>
 

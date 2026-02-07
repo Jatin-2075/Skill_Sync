@@ -18,9 +18,7 @@ import PostProjectPage from "./Features/Recruitment/recruit/postproject";
 import FindCollaborators from "./Features/Recruitment/recruit/findcollaborators";
 import ProjectDetails from "./Features/Recruitment/recruit/projectdetails";
 
-import MyProposals from "./Features/Recruitment/project/myproposal";
-import GiveProposals from "./Features/Recruitment/project/giveproposal"
-
+import Proposals from "./Features/Proposals/proposals";
 const App = () => {
   return (
     <Routes>
@@ -37,12 +35,13 @@ const App = () => {
 
       <Route element={<MainLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/proposals" element={<Proposals/>} ></Route>
         <Route path="/recruit" element={<MainRecruit />}>
           <Route index element={<FindCollaborators />} />
           <Route path="findcollaborators" element={<FindCollaborators />} />
           <Route path="postproject" element={<PostProjectPage />} />
-          <Route path="myproposals" element={<MyProposals />} />
-          <Route path="giveproposals" element={<GiveProposals/>} ></Route>
+          {/* <Route path="myproposals" element={<MyProposals />} />
+          <Route path="giveproposals" element={<GiveProposals/>} ></Route> */}
         </Route>
       </Route>
     </Routes>

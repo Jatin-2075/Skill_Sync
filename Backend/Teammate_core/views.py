@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 import json
 from rest_framework.response import Response
-
 from Auth_System.models import (
     PersonalDetails,
     StudentDetails,
@@ -14,9 +13,8 @@ from Auth_System.models import (
     UserSkill,
     Details,
 )
-
 from .models import PostProject, ProjectNarrative, Team, TechStack, Deliverables, CollaborationSettings
-    
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def FunctionAddProject(request):
@@ -97,3 +95,62 @@ def FunctionSendProjects(request):
     })
 
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def FunctionProjectDetail(request, project_id):
+
+    try:
+        project = PostProject.objects.get(projectid=project_id)
+
+        narrative = ProjectNarrative.objects.get(project=project)
+        team = Team.objects.get(project=project)
+        collab = CollaborationSettings.objects.get(project=project)
+
+        techstack = TechStack.objects.filter(project=project)
+        deliverables = Deliverables.objects.filter(project=project)
+
+        data = {
+            "id": str(project.projectid),
+            "title": project.project_title,
+            "summary": project.project_summary,
+            "visibility": project.project_visibility,
+            "category": project.project_category,
+
+            "narrative": {
+                "problem": narrative.problem_statement,
+                "solution": narrative.problem_solution,
+                "repo": narrative.repo_link,
+            },
+
+            "team": {
+                "desired_members": team.desired_member_number,
+                "min_rating": team.min_rating,
+            },
+
+            "collaboration": {
+                "commitment": collab.expected_commitment,
+                "style": collab.collaboration_style,
+                "norms": collab.communication_norms,
+            },
+
+            "techstack": [
+                t.skill.skill for t in techstack
+            ],
+
+            "deliverables": [
+                {
+                    "id": d.deliverable_id,
+                    "name": d.deliverable_name,
+                    "completed": d.completed
+                } for d in deliverables
+            ],
+
+            "creator": project.details.user.username,
+            "created_at": project.created_at,
+        }
+
+        return JsonResponse({"success": True, "project": data})
+
+    except PostProject.DoesNotExist:
+        return JsonResponse({"success": False, "msg": "Project not found"}, status=404)
