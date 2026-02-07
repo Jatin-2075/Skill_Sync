@@ -16,22 +16,18 @@ import Page5 from "./Features/Profile/page5";
 import MainRecruit from "./Features/Recruitment/mainrecruit";
 import PostProjectPage from "./Features/Recruitment/recruit/postproject";
 import FindCollaborators from "./Features/Recruitment/recruit/findcollaborators";
+import ProjectDetails from "./Features/Recruitment/recruit/projectdetails";
 
 import MyProposals from "./Features/Recruitment/project/myproposal";
 import GiveProposals from "./Features/Recruitment/project/giveproposal"
-import ProjectDetails from "./Features/Recruitment/project/projectdetails";
 
 const App = () => {
   return (
     <Routes>
 
-<<<<<<< HEAD
-            {/*profile creation page*/}
-=======
       <Route path="/" element={<Intro />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
->>>>>>> 332aac4fa8fa9f1d712af9c18e3f3b97c8b10ac8
 
       <Route path="/pageone" element={<Page1 />} />
       <Route path="/pagetwo" element={<Page2 />} />
