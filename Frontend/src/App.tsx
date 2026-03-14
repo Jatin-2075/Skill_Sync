@@ -1,50 +1,54 @@
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Login from "./Auth/Login";
-import Signup from "./Auth/Signup";
+import MainLayout from "./Components/MainLayout";
 
-import Intro from "./Pages/Intro";
+// Auth
+import { Login, Signup } from "./Pages/Auth/Auth";
+import CreateProfile from "./Pages/Auth/CreateProfile";
+import Profile from "./Pages/Auth/Profile";
+
+// Core pages
 import Dashboard from "./Pages/Dashboard";
-import MainLayout from "./Components/Mainlayout";
+import Community from "./Pages/Community";
+import Settings from "./Pages/Settings";
+import Intro from "./Pages/Intro";
 
-import Page1 from "./Features/Profile/page1";
-import Page2 from "./Features/Profile/page2";
-import Page3 from "./Features/Profile/page3";
-import Page4 from "./Features/Profile/page4";
-import Page5 from "./Features/Profile/page5";
+// Project pages
+import ShowProject from "./Pages/Project/ShowProject";
+import PostProject from "./Pages/Project/PostProject";
+import EnrolledProject from "./Pages/Project/EnrolledProject";
+import Porposal from "./Pages/Project/Porposal";
 
-import MainRecruit from "./Features/Recruitment/mainrecruit";
-import PostProjectPage from "./Features/Recruitment/recruit/postproject";
-import FindCollaborators from "./Features/Recruitment/recruit/findcollaborators";
-import ProjectDetails from "./Features/Recruitment/recruit/projectdetails";
-
-import Proposals from "./Features/Proposals/proposals";
-const App = () => {
+function App() {
   return (
-    <Routes>
+    <BrowserRouter>
+      <Routes>
 
-      <Route path="/" element={<Intro />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+        {/* Public */}
+        <Route path="/" element={<Intro />} />
+        <Route path="/signup" element={<Signup/>}/>
+        <Route path="/login" element={<Login />} />
+        <Route path="/create-profile" element={<CreateProfile />} />
+        <Route path="/profile" element={<Profile />} />
 
-      <Route path="/pageone" element={<Page1 />} />
-      <Route path="/pagetwo" element={<Page2 />} />
-      <Route path="/pagethree" element={<Page3 />} />
-      <Route path="/pagefour" element={<Page4 />} />
-      <Route path="/pagefive" element={<Page5 />} />
+        {/* Main App Layout */}
+        <Route element={<MainLayout />}>
 
-      <Route element={<MainLayout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/proposals" element={<Proposals/>} ></Route>
-        <Route path="/recruit" element={<MainRecruit />}>
-          <Route index element={<FindCollaborators />} />
-          <Route path="findcollaborators" element={<FindCollaborators />} />
-          <Route path="postproject" element={<PostProjectPage />} />
-          <Route path="projectdetails/:id" element={<ProjectDetails/>}/>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/settings" element={<Settings />} />
+
+          {/* Project routes */}
+          <Route path="/projects" element={<ShowProject />} />
+          <Route path="/projects/post" element={<PostProject />} />
+          <Route path="/projects/enrolled" element={<EnrolledProject />} />
+          <Route path="/projects/proposal" element={<Porposal />} />
+
         </Route>
-      </Route>
-    </Routes>
+
+      </Routes>
+    </BrowserRouter>
   );
-};
+}
 
 export default App;

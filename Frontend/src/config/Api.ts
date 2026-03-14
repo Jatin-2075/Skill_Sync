@@ -1,68 +1,67 @@
-export const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const API_BASE_URL = ""
 
-const backend_base_url: string = API_BASE_URL;
+function logout(): void {
+  localStorage.clear();
+}
 
-type HttpMethod = "POST" | "GET" | "DELETE";
+type HttpMethod = "GET" | "POST" | "DELETE" | "PUT" | "PATCH";
 
-export async function API<T = any>(
+export async function API<T>(
     method: HttpMethod,
     url: string,
-    data?: T
-): Promise<Response> {
-    let accesstoken = localStorage.getItem("access");
+    data?: any
+): Promise<T> {
 
-    let res = await fetch(backend_base_url + url, {
+    let access = localStorage.getItem("access");
+
+    let res = await fetch(API_BASE_URL + url, {
         method,
         headers: {
             "Content-Type": "application/json",
-            ...(accesstoken && { Authorization: `Bearer ${accesstoken}` }),
+            ...(access && { Authorization: `Bearer ${access}` })
         },
-        body: data ? JSON.stringify(data) : undefined,
+        body: data ? JSON.stringify(data) : undefined
     });
 
     if (res.status === 401) {
+
         const refresh = localStorage.getItem("refresh");
-   
+
         if (!refresh) {
             logout();
-            throw new Error("Authorization failed");
+            throw new Error("Unauthorized");
         }
 
-        const refreshToken = await fetch(
-            backend_base_url + "/api/token/refresh/",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ refresh }),
-            }
-        );
+        const refreshRes = await fetch(API_BASE_URL + "/api/token/refresh/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh })
+        });
 
-        if (!refreshToken.ok) {
+        if (!refreshRes.ok) {
             logout();
-            throw new Error("authorization failed");
+            throw new Error("Session expired");
         }
 
-        const refreshdata = await refreshToken.json();
-        localStorage.setItem("access", refreshdata.access);
-        accesstoken = refreshdata.access;
+        const refreshData = await refreshRes.json();
 
-        res = await fetch(backend_base_url + url, {
+        localStorage.setItem("access", refreshData.access);
+
+        access = refreshData.access;
+
+        res = await fetch(API_BASE_URL + url, {
             method,
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${accesstoken}`,
+                Authorization: `Bearer ${access}`
             },
-            body: data ? JSON.stringify(data) : undefined,
+            body: data ? JSON.stringify(data) : undefined
         });
     }
 
     if (!res.ok) {
-        throw new Error("request failed");
+        throw new Error("Request failed");
     }
 
-    return res;
-}
-
-function logout(): void {
-    localStorage.clear();
+    return await res.json();
 }

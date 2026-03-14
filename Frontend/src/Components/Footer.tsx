@@ -1,15 +1,8 @@
-const Footer = () => {
-    return (
-        <footer>
-            <div>
-                <h3>SkillSync</h3>
-                <p>Connect. Collaborate. Grow.</p>
-            </div>
+import React from "react";
 
-            <div>
-                <p>© {new Date().getFullYear()} SkillSync. All rights reserved.</p>
-            </div>
-        </footer>
+const Footer: React.FC = () => {
+    return (<footer className="w-full h-14 bg-zinc-900 text-zinc-400 flex items-center justify-center text-sm">
+        © {new Date().getFullYear()} SkillSync • Built by Jatin </footer>
     );
 };
 
