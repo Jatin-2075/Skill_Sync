@@ -1,6 +1,6 @@
 const API_BASE_URL = ""
 
-function logout(): void {
+export function logout(): void {
   localStorage.clear();
 }
 

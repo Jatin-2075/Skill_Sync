@@ -1,16 +1,23 @@
-
-
 export interface AuthTokens {
   access: string;
   refresh: string;
 }
 
-
-export interface Details {
-  uuid?: string;
-  username: string;
+export type User = {
+  name: string
+  age: number
+  gender: string
+  country: string
+  org: string
+  github?: string
+  codeforces?: string
+  leetcode?: string
+  email: string
 }
 
+export interface Details {
+  username: string;
+}
 
 export interface Personal {
   name: string;
@@ -42,8 +49,6 @@ export interface Project {
   github_url: string;
   projectgithub?: string;
   projectdemo?: string | null;
-
-  // Activity / analytics fields (from ProjectActivity component)
   score: number;
   commits_this_week: number;
   contributors_count: number;
@@ -66,14 +71,14 @@ export interface ProjectWithSkills extends Project {
 
 export interface Proposal {
   id?: number;
-  project: string;       // project id
-  proposal: string;      // max 100 chars
+  project: string;
+  proposal: string;
 }
 
 
 export interface Enrolled {
   id?: number;
-  project: string;       // project id
+  project: string;
   project_name?: string;
 }
 

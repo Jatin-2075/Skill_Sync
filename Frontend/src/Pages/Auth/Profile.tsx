@@ -1,16 +1,5 @@
 import { useState, useEffect } from "react";
-
-type User = {
-  name: string
-  age: number
-  gender: string
-  country: string
-  org: string
-  github?: string
-  codeforces?: string
-  leetcode?: string
-  email: string
-}
+import type { User } from "../../Config/Types";
 
 export default function ProfilePage() {
 

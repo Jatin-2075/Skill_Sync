@@ -44,25 +44,29 @@ export const Login = () => {
     };
 
     return (
-        <div>
-            <h2>Login</h2>
+        <div className="login-container">
+            <h2 className="login-title">Login</h2>
 
             <input
+                className="login-input"
                 placeholder="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
             />
 
             <input
+                className="login-input"
                 type="password"
                 placeholder="password"
                 onChange={(e) => setPassword(e.target.value)}
             />
 
-            <button onClick={handleSubmit}>Login</button>
+            <button className="login-button" onClick={handleSubmit}>
+                Login
+            </button>
 
-            <p>
-                New user? <NavLink to="/signup">Signup</NavLink>
+            <p className="login-text">
+                New user? <NavLink className="login-link" to="/signup">Signup</NavLink>
             </p>
         </div>
     );
@@ -110,37 +114,45 @@ export const Signup = () => {
     };
 
     return (
-        <div>
-            <h2>Signup</h2>
+        <div className="signup-container">
+            <h2 className="signup-title">Signup</h2>
 
             <input
+                className="signup-input"
                 placeholder="username"
                 onChange={(e) => setUsername(e.target.value)}
             />
 
             <input
+                className="signup-input"
                 placeholder="email"
                 onChange={(e) => setEmail(e.target.value)}
             />
 
             <input
+                className="signup-input"
                 type="password"
                 placeholder="password"
                 onChange={(e) => setPassword(e.target.value)}
             />
 
             <input
+                className="signup-input"
                 type="password"
                 placeholder="confirm password"
                 onChange={(e) => setConfirmPassword(e.target.value)}
             />
+            
 
-            <button onClick={handleSubmit}>
+            <button className="signup-button" onClick={handleSubmit}>
                 Create Account
             </button>
 
-            <p>
-                Already have account? <NavLink to="/login">Login</NavLink>
+            <p className="signup-text">
+                Already have account?{" "}
+                <NavLink className="signup-link" to="/login">
+                    Login
+                </NavLink>
             </p>
         </div>
     );

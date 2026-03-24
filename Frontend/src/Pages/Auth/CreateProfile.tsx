@@ -1,39 +1,10 @@
-// ─── Imports ──────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useCallback } from "react";
+import {API} from "../../Config/Api";
 import "./Profile.css";
+import type { Personal, Skill, CodingHandles, Details } from "../../Config/Types";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type HttpMethod = "GET" | "POST" | "DELETE" | "PUT" | "PATCH";
 type SaveStatus = "idle" | "loading" | "ok" | "err";
 type Page = "details" | "personal" | "skills" | "handles";
-
-// Matches DetailsTable
-interface Details {
-    username: string;
-}
-
-// Matches PersonalTable
-interface Personal {
-    name: string;
-    email: string;
-    country: string;
-    gender: string;
-    bio: string;
-}
-
-// Matches SkillsTable
-interface Skill {
-    id?: number;
-    skill: string;
-}
-
-// Matches UserNameTable
-interface CodingHandles {
-    git: string;
-    codeforces: string;
-    leetcode: string;
-}
 
 interface StepConfig {
     id: Page;
@@ -41,78 +12,12 @@ interface StepConfig {
     icon: string;
 }
 
-// ─── API ──────────────────────────────────────────────────────────────────────
-
-const API_BASE_URL = "";
-
-function logout(): void {
-    localStorage.clear();
-}
-
-export async function API<T>(
-    method: HttpMethod,
-    url: string,
-    data?: any
-): Promise<T> {
-    let access = localStorage.getItem("access");
-
-    let res = await fetch(API_BASE_URL + url, {
-        method,
-        headers: {
-            "Content-Type": "application/json",
-            ...(access && { Authorization: `Bearer ${access}` }),
-        },
-        body: data ? JSON.stringify(data) : undefined,
-    });
-
-    if (res.status === 401) {
-        const refresh = localStorage.getItem("refresh");
-
-        if (!refresh) {
-            logout();
-            throw new Error("Unauthorized");
-        }
-
-        const refreshRes = await fetch(API_BASE_URL + "/api/token/refresh/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refresh }),
-        });
-
-        if (!refreshRes.ok) {
-            logout();
-            throw new Error("Session expired");
-        }
-
-        const refreshData = await refreshRes.json();
-        localStorage.setItem("access", refreshData.access);
-        access = refreshData.access;
-
-        res = await fetch(API_BASE_URL + url, {
-            method,
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${access}`,
-            },
-            body: data ? JSON.stringify(data) : undefined,
-        });
-    }
-
-    if (!res.ok) throw new Error("Request failed");
-
-    return await res.json();
-}
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
 const STEPS: StepConfig[] = [
     { id: "details", label: "Account", icon: "👤" },
     { id: "personal", label: "Personal Info", icon: "🧑" },
     { id: "skills", label: "Skills", icon: "⚡" },
     { id: "handles", label: "Coding Links", icon: "💻" },
 ];
-
-// ─── Shared: Field Wrapper ────────────────────────────────────────────────────
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
     return (
@@ -122,8 +27,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
         </div>
     );
 }
-
-// ─── Shared: Save Button ──────────────────────────────────────────────────────
 
 function SaveButton({ status, onClick }: { status: SaveStatus; onClick: () => void }) {
     const label =
@@ -143,8 +46,6 @@ function SaveButton({ status, onClick }: { status: SaveStatus; onClick: () => vo
     );
 }
 
-// ─── Shared: Page Header ──────────────────────────────────────────────────────
-
 function PageHeader({ icon, title, desc }: { icon: string; title: string; desc: string }) {
     return (
         <div className="page-header">
@@ -156,8 +57,6 @@ function PageHeader({ icon, title, desc }: { icon: string; title: string; desc: 
         </div>
     );
 }
-
-// ─── Page: Details ────────────────────────────────────────────────────────────
 
 function DetailsPage() {
     const [form, setForm] = useState<Details>({ username: "" });
@@ -199,8 +98,6 @@ function DetailsPage() {
         </div>
     );
 }
-
-// ─── Page: Personal ───────────────────────────────────────────────────────────
 
 function PersonalPage() {
     const [form, setForm] = useState<Personal>({ name: "", email: "", country: "", gender: "", bio: "" });
@@ -266,8 +163,6 @@ function PersonalPage() {
     );
 }
 
-// ─── Page: Skills ─────────────────────────────────────────────────────────────
-
 function SkillsPage() {
     const [skills, setSkills] = useState<Skill[]>([]);
     const [newSkill, setNew] = useState("");
@@ -329,8 +224,6 @@ function SkillsPage() {
     );
 }
 
-// ─── Page: Coding Handles ─────────────────────────────────────────────────────
-
 function CodingHandlesPage() {
     const [form, setForm] = useState<CodingHandles>({ git: "", codeforces: "", leetcode: "" });
     const [status, setStatus] = useState<SaveStatus>("idle");
@@ -382,8 +275,6 @@ function CodingHandlesPage() {
         </div>
     );
 }
-
-// ─── Main: Profile ────────────────────────────────────────────────────────────
 
 export default function Profile() {
     const [activePage, setActivePage] = useState<Page>("details");
