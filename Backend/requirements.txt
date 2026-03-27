@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+
+sqlalchemy
+
+python-jose[cryptography]   # JWT
+passlib[bcrypt]             # password hashing
+
+python-dotenv               # env variables
+
+pydantic
+email-validator             # for email validation
+
+alembic                     # migrations
+
+python-jose

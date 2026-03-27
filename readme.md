@@ -104,3 +104,17 @@ async function getLast12MonthCommits(username) {
 }
 ```
 
+skillsync-backend/
+│
+├── app/
+│   ├── main.py          # entry point (server start)
+│   ├── db.py            # database connection
+│   ├── models/          # DB tables (ORM models)
+│   ├── schemas/         # request/response validation
+│   ├── routes/          # all API endpoints
+│   ├── services/        # business logic (real brain)
+│   ├── utils/           # helper funcs (JWT, hashing etc)
+│   └── config.py        # env variables, settings
+│
+├── requirements.txt
+└── .env
