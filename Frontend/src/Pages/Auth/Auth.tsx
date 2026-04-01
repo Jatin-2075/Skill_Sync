@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../Config/Api";
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -14,7 +15,7 @@ export const Login = () => {
 
     const handleSubmit = async () => {
         try {
-            const res = await fetch("API/api/token/", {
+            const res = await fetch(`${API_BASE_URL}/api/token/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -90,7 +91,7 @@ export const Signup = () => {
         }
 
         try {
-            const res = await fetch("API/auth/signup/", {
+            const res = await fetch(`${API_BASE_URL}/auth/signup/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
