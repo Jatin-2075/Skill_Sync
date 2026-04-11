@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import MainLayout from "./Components/MainLayout";
 
@@ -17,37 +17,40 @@ import Intro from "./Pages/Intro";
 import ShowProject from "./Pages/Project/ShowProject";
 import PostProject from "./Pages/Project/PostProject";
 import EnrolledProject from "./Pages/Project/EnrolledProject";
-import Porposal from "./Pages/Project/Porposal";
+import Proposal from "./Pages/Project/Proposal";
+import SkillQuiz from "./Pages/Skills/SkillQuiz";
+import Discover from "./Pages/Discover";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <Routes>
+      {/* Public */}
+      <Route path="/" element={<Intro />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/create-profile" element={<CreateProfile />} />
 
-        {/* Public */}
-        <Route path="/" element={<Intro />} />
-        <Route path="/signup" element={<Signup/>}/>
-        <Route path="/login" element={<Login />} />
-        <Route path="/create-profile" element={<CreateProfile />} />
+      {/* Main App Layout */}
+      <Route element={<MainLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:username" element={<Profile />} />
 
-        {/* Main App Layout */}
-        <Route element={<MainLayout />}>
+        {/* Project routes */}
+        <Route path="/projects" element={<ShowProject />} />
+        <Route path="/projects/post" element={<PostProject />} />
+        <Route path="/projects/enrolled" element={<EnrolledProject />} />
+        <Route path="/projects/proposal" element={<Proposal />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/settings" element={<Settings />} />
+        {/* Skills */}
+        <Route path="/skills/quiz" element={<SkillQuiz />} />
 
-          {/* Project routes */}
-          <Route path="/projects" element={<ShowProject />} />
-          <Route path="/projects/post" element={<PostProject />} />
-          <Route path="/projects/enrolled" element={<EnrolledProject />} />
-          <Route path="/projects/proposal" element={<Porposal />} />
-
-        </Route>
-
-      </Routes>
-    </BrowserRouter>
+        {/* Discover / Recruiter */}
+        <Route path="/discover" element={<Discover />} />
+      </Route>
+    </Routes>
   );
 }
 
